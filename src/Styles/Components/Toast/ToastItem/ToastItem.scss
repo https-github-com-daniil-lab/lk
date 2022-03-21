@@ -1,0 +1,60 @@
+.toast {
+  min-width: 270px;
+  border-radius: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  position: relative;
+  margin: 16px;
+  cursor: pointer;
+  animation-duration: 0.3s;
+  animation-name: cooltoast;
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  &.error {
+    background: rgba(255, 0, 0, 0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  &.success {
+    background: rgba(0, 255, 75, 0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  &-title {
+    padding: 8px 12px;
+    color: #fff;
+  }
+  &-text {
+    padding: 8px 12px;
+    color: #fff;
+  }
+}
+
+.fadeOut {
+  animation-name: cooltoastFadeOut;
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  animation-fill-mode: forwards;
+}
+@keyframes cooltoast {
+  from {
+    transform: translate3d(400px, 0, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes cooltoastFadeOut {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(400px, 0, 0);
+    opacity: 0;
+  }
+}

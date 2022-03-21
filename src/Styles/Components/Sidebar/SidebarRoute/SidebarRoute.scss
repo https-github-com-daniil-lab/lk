@@ -1,0 +1,23 @@
+.sidebar-route {
+  text-decoration: none;
+  color: var(--theme-color);
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: 0.3s;
+  cursor: pointer;
+  margin-bottom: 10px;
+  img {
+    width: 16px;
+    margin-right: 8px;
+  }
+  &:hover {
+    background-color: var(--hover-menu-bg);
+  }
+  &.active {
+    background-color: var(--hover-menu-bg);
+  }
+}

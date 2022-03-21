@@ -1,0 +1,19 @@
+.fade-in-transition-wrapper {
+  visibility: none;
+  overflow: auto;
+
+  display: grid;
+
+  &.active {
+    animation: FadeInTransition 1.5s;
+  }
+
+  @keyframes FadeInTransition {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

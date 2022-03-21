@@ -1,0 +1,12 @@
+.category-list-modal {
+  max-height: 200px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  &-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+}

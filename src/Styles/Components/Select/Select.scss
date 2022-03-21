@@ -1,0 +1,79 @@
+.select {
+  position: relative;
+  min-width: 250px;
+  width: 170px;
+  &-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  &-wrapper {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-columns: 1.8fr 0.2fr;
+    gap: 0px 0px;
+    padding: 7px 40px 7px 12px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+
+    svg {
+      position: absolute;
+      right: 12px;
+      top: calc(50% - 3px);
+      width: 10px;
+      height: 6px;
+      stroke-width: 2px;
+      stroke: #9098a9;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+  }
+  .options {
+    position: absolute;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-columns: 1fr;
+    gap: 0px 0px;
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 100%;
+    height: 150px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    top: 40px;
+    transition: all 150ms ease;
+    .option {
+      padding: 7px 40px 7px 12px;
+      cursor: pointer;
+      &:hover {
+        background-color: #4b87d1;
+
+        color: #ffffff;
+      }
+    }
+
+    &.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    &.hidden {
+      visibility: none;
+      opacity: 0;
+    }
+  }
+}

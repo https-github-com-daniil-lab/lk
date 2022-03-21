@@ -1,0 +1,18 @@
+.date-picker-modal {
+  width: 300px;
+  height: 300px;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-rows: 0.3fr 2.3fr 0.4fr;
+  gap: 0px 0px;
+  &-title {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 22px;
+    text-align: center;
+    letter-spacing: -0.408px;
+    color: #555555;
+  }
+}

@@ -1,0 +1,34 @@
+.login-phone {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  justify-items: center;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: var(--theme-bg-color);
+  overflow: hidden;
+  border-radius: 14px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  font-size: 15px;
+  font-weight: 500;
+
+  &-logo {
+    width: 300px;
+    height: 154.08px;
+    margin-bottom: 50px;
+  }
+  &-info {
+    margin: 20px 0;
+  }
+  &-subtitle {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #333;
+    margin: 20px 0;
+  }
+}

@@ -1,0 +1,23 @@
+.balance-block-item {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  border: 1px solid var(--theme-bg-color);
+  cursor: pointer;
+  padding: 10px 18px;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-columns: 0.3fr 1.8fr 0.9fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-template-areas: ". . .";
+  margin-bottom: 20px;
+  &.general {
+    background: linear-gradient(
+      -45deg,
+      rgba(71, 118, 230, 0.24),
+      rgba(133, 165, 241, 0.31),
+      rgba(179, 146, 233, 0.3),
+      rgba(142, 84, 233, 0.18)
+    );
+  }
+}

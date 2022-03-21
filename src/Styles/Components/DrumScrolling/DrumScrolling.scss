@@ -1,0 +1,42 @@
+.drum-scrolling {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+  overflow: hidden;
+  font-size: 12px;
+  position: relative;
+  &-item {
+    padding: 10px 20px;
+    text-align: center;
+    &.active {
+      color: blue;
+    }
+  }
+}
+.drum-scrolling-top-mask {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+}
+.drum-scrolling-bottom-mask {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 10;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+}

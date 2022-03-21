@@ -1,0 +1,41 @@
+{
+  "rootDir": "src",
+
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "strictDomEventTypes": false,
+    "noImplicitAny": false,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "paths": {
+      "Components": ["./src/Components/*"],
+      "Styles": ["./src/Styles/*"],
+      "Pages": ["./src/Pages/*"],
+      "Static": ["./src/Static/*"],
+      "Layers": ["./src/Layers/*"],
+      "Redux": ["./src/Redux/*"],
+      "Services": ["./src/Services/*"],
+    }
+  },
+  "include": [
+    "src"
+  ],
+
+}

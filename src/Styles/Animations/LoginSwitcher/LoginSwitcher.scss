@@ -1,0 +1,11 @@
+.login-switcher {
+  transition: 0.5s;
+  &.inactive {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  &.active {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}

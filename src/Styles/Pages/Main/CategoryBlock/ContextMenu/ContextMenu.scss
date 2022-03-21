@@ -1,0 +1,17 @@
+.context-menu {
+  position: relative;
+  &-box {
+    right: 0;
+    position: absolute;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 14px;
+    width: 300px;
+    overflow: hidden;
+    height: 257px;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+  }
+}

@@ -1,0 +1,8 @@
+.subscription-block {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-columns: 1fr;
+  gap: 0px 10px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}

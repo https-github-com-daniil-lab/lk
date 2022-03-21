@@ -1,0 +1,32 @@
+.category-block {
+  &-controll {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-columns: 1fr 0.5fr;
+    gap: 0px 0px;
+    justify-items: start;
+    align-items: center;
+    margin: 0 30px;
+    &-title {
+      font-family: "Montserrat";
+      font-style: normal;
+      font-weight: 500;
+      font-size: 25px;
+      line-height: 30px;
+      text-align: right;
+      color: #ffffff;
+    }
+  }
+  &-wrapper {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 10px 0px;
+    grid-template-areas:
+      ". . ."
+      ". . ."
+      ". . ."
+      ". . .";
+  }
+}

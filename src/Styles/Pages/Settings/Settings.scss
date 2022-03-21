@@ -1,0 +1,9 @@
+.settings {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-columns: 1fr;
+  gap: 10px 0px;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

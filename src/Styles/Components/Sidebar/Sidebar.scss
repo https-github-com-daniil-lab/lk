@@ -1,0 +1,15 @@
+.sidebar {
+  .sidebar-logo-wrapper {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-columns: 1fr;
+    gap: 0px 0px;
+    justify-items: center;
+    align-items: center;
+    .sidebar-logo {
+      padding: 22px;
+      width: 150px;
+      height: 77.31px;
+    }
+  }
+}

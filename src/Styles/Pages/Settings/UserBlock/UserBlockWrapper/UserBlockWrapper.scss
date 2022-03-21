@@ -1,0 +1,20 @@
+.user-block-wrapper {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  border: 1px solid var(--theme-bg-color);
+  cursor: pointer;
+  padding: 10px;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-rows: 1fr;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.2fr 1.8fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "."
+    ".";
+  &-title {
+    margin-bottom: 20px;
+  }
+  //   justify-items: center;
+}

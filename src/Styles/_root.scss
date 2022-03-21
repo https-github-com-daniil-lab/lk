@@ -1,0 +1,175 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+@import "Styles/_vars.scss";
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  font-family: "Montserrat";
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(25, 25, 25, 0.23);
+  border-radius: 10px;
+}
+
+input {
+  border: none;
+  background-color: var(--input-light-bg);
+  border-radius: 4px;
+  font-family: var(--body-font);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 20px;
+  box-shadow: 0 0 0 2px rgba(134, 140, 160, 0.02);
+  color: var(--theme-color);
+  outline: none;
+}
+
+.button-primary {
+  background-color: #3a6df0;
+  border: none;
+  padding: 14px 26px;
+  color: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  white-space: nowrap;
+  width: 100%;
+  font-size: 14px;
+  &:hover {
+    background-color: #3665da;
+  }
+}
+
+.button-secondary {
+  background-color: #ffffff;
+  border: none;
+  padding: 14px 26px;
+  color: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  white-space: nowrap;
+  width: 100%;
+  font-size: 14px;
+  color: var(--theme-color);
+  &:hover {
+    background-color: #f3f3f3;
+  }
+}
+.app-card {
+  font-size: 16px;
+  background-color: var(--content-bg);
+  border-radius: 14px;
+  border: 1px solid var(--theme-bg-color);
+  padding: 20px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  display: inherit;
+  &-header {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 0px 0px;
+    align-items: center;
+  }
+}
+.content-section-title {
+  color: var(--content-title-color);
+  margin-bottom: 14px;
+}
+.content-section-controll {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-columns: 1fr 0.1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-template-areas: ". .";
+  align-items: center;
+  justify-items: end;
+
+  span {
+    position: relative;
+    top: -4px;
+  }
+  img {
+  }
+}
+.app-card:hover {
+  // transform: scale(1.02);
+  // background-color: var(--theme-bg-color);
+}
+textarea {
+  resize: none;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  // border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: 0.3s ease;
+  &:hover {
+    // transform: scale(1.01);
+    background: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.card-glassmorphism {
+  background-color: rgb(146, 151, 179 / 13%);
+  border-radius: 14px;
+  border: 1px solid rgb(255, 255, 255 / 31%);
+  padding: 20px;
+}
+
+// @font-face {
+//   font-family: "Montserrat Regular";
+//   src: local("Montserrat Regular"),
+//     url(../Static/fonts/Montserrat-Regular.ttf) format("ttf");
+// }
+
+// @font-face {
+//   font-family: "Montserrat Black";
+//   src: local("Montserrat Black"),
+//     url(../Static/fonts/Montserrat-Black.ttf) format("ttf");
+// }
+
+// @font-face {
+//   font-family: "Montserrat Black Italic";
+//   src: local("Montserrat Black Italic"),
+//     url(../Static/fonts/Montserrat-BlackItalic.ttf) format("ttf");
+// }
+
+// @font-face {
+//   font-family: "Montserrat Bold Italic";
+//   src: local("Montserrat Bold Italic"),
+//     url(../Static/fonts/Montserrat-BoldItalic.ttf) format("ttf");
+// }
+
+// @font-face {
+//   font-family: "Montserrat Extra Bold";
+//   src: local("Montserrat Extra Bold"),
+//     url(../Static/fonts/Montserrat-ExtraBold.ttf) format("ttf");
+// }

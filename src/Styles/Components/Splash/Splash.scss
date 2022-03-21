@@ -1,0 +1,28 @@
+.splash-container {
+  background-color: #eff3f8;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+
+  transition: 2s;
+  z-index: 10;
+  .splash-logo {
+    width: 400px;
+    height: 206px;
+  }
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  &.inactive {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

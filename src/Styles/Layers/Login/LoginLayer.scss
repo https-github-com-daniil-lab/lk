@@ -1,0 +1,29 @@
+.login-layer {
+  display: grid;
+  grid-auto-columns: 1fr;
+  gap: 0px 0px;
+  justify-items: center;
+  align-items: center;
+  height: 100vh;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(71, 118, 230, 0.7),
+    rgba(133, 165, 240, 0.7),
+    rgba(179, 146, 233, 0.7),
+    rgba(142, 84, 233, 0.7)
+  );
+
+  animation: gradient 6s linear infinite reverse;
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
