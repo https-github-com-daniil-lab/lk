@@ -78,14 +78,14 @@ input {
   &-header {
     display: grid;
     grid-auto-columns: 1fr;
-    grid-template-columns: 1.5fr 1fr;
+    grid-template-columns: 1fr 1.4fr;
     gap: 0px 0px;
     align-items: center;
   }
 }
 .content-section-title {
   color: var(--content-title-color);
-  margin-bottom: 14px;
+  // margin-bottom: 14px;
 }
 .content-section-controll {
   display: grid;

@@ -7,6 +7,7 @@ import {
   SHOW_PRELOADER,
   SHOW_TOAST,
   UPDATE_CATEGORY,
+  UPDATE_OPERATION
 } from "./Constants";
 import {
   IPreloaderHideAction,
@@ -16,6 +17,7 @@ import {
   IUpdateCategory,
   IUserLogoutAction,
   IUserSetAction,
+  IUpdateOperation
 } from "./Interfaces";
 import { IToast } from "./StateInterface";
 
@@ -71,6 +73,13 @@ export const Logout = (): IUserLogoutAction => {
 export const UpdateCategory = (): IUpdateCategory => {
   return {
     type: UPDATE_CATEGORY,
+    payload: null,
+  };
+};
+
+export const UpdateOperations = (): IUpdateOperation => {
+  return {
+    type: UPDATE_OPERATION,
     payload: null,
   };
 };

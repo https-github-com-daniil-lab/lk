@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useGetBaseCategory from "Services/BaseCategory";
+import Category from "Services/Category"
 import { IBaseCategory, TransactionType, IBalances } from "Services/Interfaces";
 import CalendarDark from "Static/icons/calendar-dark.svg";
 import { API_URL } from "Utils/Config";
@@ -9,8 +10,12 @@ import ContextButton from "Components/ContextButton/ContextButton";
 import DatePicker from "Components/DatePicker/DatePicker";
 import CategoryListModal from "./CategoryListModal/CategoryListModal";
 import BillList from "./BillList/BillList";
+import Bill from "Services/Bill";
 
 import "Styles/Pages/Main/ChartBlock/AddOperationModal/AddOperationModal.scss";
+import Modal from "Components/Modal/Modal";
+import MapModal from "./MapModal/MapModal";
+import Transaction from "Services/Transaction";
 
 interface Props {
   onClose: () => void;
@@ -19,9 +24,15 @@ interface Props {
 const AddOperationModal: React.FunctionComponent<Props> = ({
   onClose,
 }: Props) => {
-  const { categories, load } = useGetBaseCategory();
+  const { useAddOperation } = Transaction;
+  const { useGetBill } = Bill;
+  const { useGetCategory } = Category
 
-  const [date, setDate] = useState<null | string>(null);
+  const { categories, load } = useGetCategory();
+  const { balances, load: loadBill } = useGetBill();
+
+  
+  const [date, setDate] = useState<null | string[]>(null);
 
   const [operationType, setOperationType] =
     useState<TransactionType>("WITHDRAW");
@@ -35,23 +46,60 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
 
   const [description, setDescription] = useState<string>("");
 
-  const [location, setLocation] = useState<string>("");
+  const [location, setLocation] = useState<number[] | null>(null);
+
+  const [mapModal, setMapModal] = useState<boolean>(false);
+
+  const [expand, setExpand] = useState<boolean>(false);
+
+  const onEnter = (v: string[]): void => {
+    if (Array.isArray(v)) {
+      setDate(v);
+    } else {
+      setDate([v]);
+    }
+    setExpand(false);
+  };
+
+  const { OperationAdd } = useAddOperation({
+    bill,
+    date,
+    selectedCategory,
+    summ,
+    description,
+    location,
+    operationType,
+  });
+
+  const _addOperation = async (): Promise<void> => {
+    await OperationAdd();
+    onClose()
+  };
 
   useEffect(() => {
     if (load) setSelectedCategory(categories[0]);
-  }, [load]);
+    if (loadBill) setBill(balances[0]);
+  }, [load, loadBill]);
 
   return (
     <div className="add-operation-modal">
       <h1 className="add-operation-modal-title">Добавить операцию</h1>
       <div className="add-operation-modal-row">
         <span>{date ?? "Дата и время"}</span>
-        <ContextButton
-          button={<img src={CalendarDark} alt="Calendar" />}
-          content={({}, onClose) => (
-            <DatePicker {...{ onClose }} onEnter={setDate} />
-          )}
-        />
+        <div style={{ position: "relative" }}>
+          <img onClick={() => setExpand(true)} src={CalendarDark} />
+          <DatePicker
+            style={{
+              right: 0,
+              zIndex: 9999,
+              background: "#ffffff",
+            }}
+            onClose={() => setExpand(false)}
+            onEnter={onEnter}
+            show={expand}
+            type="mini"
+          />
+        </div>
       </div>
       <div className="add-operation-modal-block">
         <span className="add-operation-modal-block-title">Тип операции</span>
@@ -120,7 +168,7 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
             gridTemplateAreas: ". .",
           }}
         >
-          <span>{selectedCategory?.name}</span>
+          <span>{bill?.name}</span>
           <ContextButton
             button={<button className="button-primary">Выбрать</button>}
             content={({}, onClose) => (
@@ -152,9 +200,16 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
         />
       </div>
 
-      <div className="add-operation-modal-block">
+      <div
+        className="add-operation-modal-block"
+        onClick={() => setMapModal(true)}
+      >
         <span className="add-operation-modal-block-title">Местоположение</span>
-        <span>Адресс еще не указан</span>
+        <span>
+          {location
+            ? `${location[0]} - ${location[1]}`
+            : "Адресс еще не указан"}
+        </span>
       </div>
 
       <div className="add-operation-modal-scan">
@@ -166,10 +221,25 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
         <button className="button-secondary" onClick={onClose}>
           Отмена
         </button>
-        <button className="button-primary" onClick={() => {}}>
+        <button className="button-primary" onClick={_addOperation}>
           Добавить
         </button>
       </div>
+
+      <Modal
+        style={{
+          padding: 0,
+        }}
+        zIndex={15}
+        show={mapModal}
+        onClose={() => setMapModal(false)}
+      >
+        <MapModal
+          onEnter={(v) => {
+            if (v) setLocation(v);
+          }}
+        />
+      </Modal>
     </div>
   );
 };

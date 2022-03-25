@@ -18,9 +18,7 @@ const CategoryItem: React.FunctionComponent<Props> = (props: Props) => {
       <div
         className="category-item-image"
         style={{
-          background: `linear-gradient(135deg, ${props.color} 0%, ${HexToRgbA(
-            props.color
-          )} 100%)`,
+          background: props.color
         }}
       >
         <img

@@ -41,7 +41,7 @@ const colors = [
 
 type arcradius = { x: number; y: number };
 
-const CreateDonutChart = (data: number[]) => {
+const CreateDonutChart = (data: string[] | number[]) => {
   const [chartData, setChartData] = useState<Array<any>>([]);
 
   const arcradius = (

@@ -4,6 +4,7 @@ import {
   IToastHideAction,
   IToastShowAction,
   IUpdateCategory,
+  IUpdateOperation,
   IUserLogoutAction,
   IUserSetAction,
 } from "Redux/Interfaces";
@@ -14,4 +15,4 @@ export type PreloaderActionType = IPreloaderShowAction | IPreloaderHideAction;
 
 export type ToastActionType = IToastShowAction | IToastHideAction;
 
-export type EffectsActionType = IUpdateCategory;
+export type EffectsActionType = IUpdateCategory | IUpdateOperation;

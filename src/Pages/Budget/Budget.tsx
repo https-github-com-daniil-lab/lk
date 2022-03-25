@@ -15,13 +15,6 @@ const Budget: React.FunctionComponent<Props> = (props: Props) => {
         </div>
         <ExpenseIncomeBlock />
       </div>
-      <div className="app-card">
-        <div className="app-card-header">
-          <div className="content-section-title">Операции</div>
-          <div className="content-section-controll"></div>
-        </div>
-        <ExpenseIncomeBlock />
-      </div>
     </div>
   );
 };

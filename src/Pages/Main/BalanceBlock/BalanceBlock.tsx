@@ -11,8 +11,10 @@ import "Styles/Pages/Main/BalanceBlock/BalanceBlock.scss";
 interface Props {}
 
 const BalanceBlock: React.FunctionComponent<Props> = (props: Props) => {
-  const { useGetBill } = Bill;
+  const { useGetBill, useTinkoff } = Bill;
   const { load, balances, generalBalance } = useGetBill();
+
+  const { transactions } = useTinkoff();
 
   return (
     <Load {...{ load }} className="balance-block">
@@ -21,7 +23,7 @@ const BalanceBlock: React.FunctionComponent<Props> = (props: Props) => {
         title="Общий баланс"
         price={generalBalance}
       />
-      {balances.map((balance, i) => {
+      {[...balances, ...transactions].map((balance, i) => {
         return (
           <BalanceBlockItem
             key={i}

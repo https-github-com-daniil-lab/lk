@@ -6,6 +6,7 @@ import {
   SHOW_PRELOADER,
   SHOW_TOAST,
   UPDATE_CATEGORY,
+  UPDATE_OPERATION
 } from "Redux/Constants";
 import { UserType } from "Services/Interfaces";
 import { IToast } from "./StateInterface";
@@ -49,5 +50,10 @@ export interface IUserLogoutAction {
 
 export interface IUpdateCategory {
   type: typeof UPDATE_CATEGORY;
+  payload: null;
+}
+
+export interface IUpdateOperation {
+  type: typeof UPDATE_OPERATION;
   payload: null;
 }

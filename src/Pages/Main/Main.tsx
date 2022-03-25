@@ -13,12 +13,15 @@ import "Styles/Pages/Main/Main.scss";
 import Modal from "Components/Modal/Modal";
 import AddOperationModal from "./ChartBlock/AddOperationModal/AddOperationModal";
 import FadeIn from "Components/FadeIn/FadeIn";
+import AddBillModal from "./BalanceBlock/AddBillModal/AddBillModal";
 
 interface Props {}
 
 const Main: React.FunctionComponent<Props> = (props: Props) => {
   const [showAddOperationModal, setShowAddOperationModal] =
     useState<boolean>(false);
+
+  const [showBillModal, setShowBillModal] = useState<boolean>(false);
   return (
     <div className="main">
       <div className="app-card">
@@ -37,7 +40,10 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
       <div className="app-card">
         <div className="app-card-header">
           <div className="content-section-title">Балансы</div>
-          <div className="content-section-controll">
+          <div
+            className="content-section-controll"
+            onClick={() => setShowBillModal(true)}
+          >
             <span>Добавить счет</span>{" "}
             <img src={PlusCircleFill} alt={"Plus icon"} />
           </div>
@@ -70,6 +76,13 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
         style={{ width: "30%" }}
       >
         <AddOperationModal onClose={() => setShowAddOperationModal(false)} />
+      </Modal>
+      <Modal
+        show={showBillModal}
+        onClose={() => setShowBillModal(false)}
+        style={{ width: "30%" }}
+      >
+        <AddBillModal onClose={() => setShowBillModal(false)} />
       </Modal>
     </div>
   );

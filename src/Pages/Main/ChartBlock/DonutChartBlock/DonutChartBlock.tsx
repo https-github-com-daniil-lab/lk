@@ -8,11 +8,11 @@ import CreateDonutChart from "Utils/CreateDonutChart";
 import "Styles/Pages/Main/ChartBlock/DonutChartBlock/DonutChartBlock.scss";
 
 interface Props {
-  data: number[];
+  data: number[] | string[];
   income: number;
   expenses: number;
-  selectedDate: string;
-  setDate: (v: string) => void;
+  selectedDate: string[];
+  setDate: (v: string[]) => void;
 }
 
 const DonutChartBlock: React.FunctionComponent<Props> = (props: Props) => {

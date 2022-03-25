@@ -1,5 +1,7 @@
 import React from "react";
 
+import Transaction from "Services/Transaction";
+
 import useCircleChart from "Utils/Hooks/useCircleChart";
 import CircleChart from "Components/CircleChart/CircleChart";
 import LineChart from "Components/LineChart/LineChart";
@@ -61,6 +63,11 @@ const TestIcon = () => {
 };
 
 const ExpenseIncomeBlock: React.FunctionComponent<Props> = (props: Props) => {
+  const { useBudgetСalculation, useGetTransaction } = Transaction;
+
+  const { transactions, prev, next, selectedDate, load } = useGetTransaction();
+  const budget = useBudgetСalculation(transactions, selectedDate);
+
   const expense = useCircleChart(67);
   const income = useCircleChart(74);
 
@@ -68,9 +75,9 @@ const ExpenseIncomeBlock: React.FunctionComponent<Props> = (props: Props) => {
     <div className="expense-income-block">
       <div className="expense-income-info">
         <div className="expense-income-header-date expense-income-wrapper">
-          <span>Prev</span>
-          <span>Август 2021</span>
-          <span>Next</span>
+          <span onClick={prev}>Prev</span>
+          <span>{selectedDate[0]}</span>
+          <span onClick={next}>Next</span>
         </div>
         <div className="expense-income-card expense-income-wrapper">
           <div className="expense-income-card-content">

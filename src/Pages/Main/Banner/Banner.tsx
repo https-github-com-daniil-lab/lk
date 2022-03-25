@@ -24,13 +24,15 @@ const Banner: React.FunctionComponent<Props> = (props: Props) => {
       {advertisingRandom && (
         <div className="banner">
           <div className="banner-image-wrapper">
-            <img
-              src={`${API_URL}api/v1/advertising/content/${
-                advertisingRandom.files[
-                  Math.floor(Math.random() * advertisingRandom.files.length)
-                ].path
-              }`}
-            />
+            {advertisingRandom.files.length > 0 && (
+              <img
+                src={`${API_URL}api/v1/advertising/content/${
+                  advertisingRandom.files[
+                    Math.floor(Math.random() * advertisingRandom.files.length)
+                  ].path
+                }`}
+              />
+            )}
           </div>
 
           <div className="banner-content">

@@ -15,3 +15,5 @@ export const GetToasts = (store: RootStore) => store.toast.toasts;
 
 export const GetUpdateCategory = (store: RootStore) =>
   store.effects.updateCategory;
+
+export const GetUpdateOperations = (store: RootStore) => store.effects.updateOperation

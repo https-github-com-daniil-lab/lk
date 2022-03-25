@@ -21,4 +21,5 @@ export interface IToastState {
 
 export interface IEffectsState {
   updateCategory: boolean | null;
+  updateOperation: boolean | null;
 }

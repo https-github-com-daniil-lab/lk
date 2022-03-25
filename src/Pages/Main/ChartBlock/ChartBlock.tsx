@@ -28,12 +28,14 @@ const ChartBlock: React.FunctionComponent<Props> = (props: Props) => {
     <Load {...{ load }}>
       <div className="chart-block">
         <ChartBlockHistory {...{ transactions }} />
-        <DonutChartBlock
-          data={prices}
-          income={income}
-          expenses={expenses}
-          {...{ selectedDate, setDate }}
-        />
+        {load ? (
+          <DonutChartBlock
+            data={prices}
+            income={income}
+            expenses={expenses}
+            {...{ selectedDate, setDate }}
+          />
+        ) : null}
       </div>
     </Load>
   );

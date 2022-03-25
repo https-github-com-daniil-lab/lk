@@ -11,3 +11,5 @@ export const SHOW_TOAST = "SHOW_TOAST";
 export const HIDE_TOAST = "HIDE_TOAST";
 
 export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
+
+export const UPDATE_OPERATION = "UPDATE_OPERATION"
