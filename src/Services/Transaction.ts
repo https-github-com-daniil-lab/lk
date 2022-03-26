@@ -22,7 +22,59 @@ import {
 } from "./Interfaces";
 import { AppDispatch } from "Redux/Store";
 import { HidePreloader, ShowPreloader } from "Redux/Actions";
-import Bill from "./Bill";
+
+const useGetTinkoffTransactions = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const userId = useSelector(GetUserId);
+
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [load, setLoad] = useState<boolean>(false);
+
+  const get = async (): Promise<void> => {
+    try {
+      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/${userId}`);
+      if (res.data.status === 200) {
+        const cards = res.data.data;
+        let r: any = [];
+        for (let i = 0; i < cards.length; i++) {
+          const trRes = await axios.get(
+            `${API_URL}api/v1/tinkoff/transactions/${cards[i].id}?page=0&pageSize=100`
+          );
+          r = [
+            ...r,
+            ...trRes.data.data.page.map((item) => ({
+              name: cards[i].cardNumber,
+              balance: item.amount,
+            })),
+          ];
+        }
+        setTransactions(r);
+        setLoad(true);
+      } else {
+        throw new Error(res.data.message);
+      }
+    } catch (error: any) {
+      dispatch(
+        ShowToast({
+          text: error.message,
+          title: "Ошибка",
+          type: "error",
+        })
+      );
+      setLoad(true);
+    }
+  };
+
+  useEffect(() => {
+    get();
+  }, []);
+
+  return {
+    // transactions,
+    // load,
+  };
+};
 
 export type TransactionsSortedType = {
   createAt: string;
@@ -40,10 +92,6 @@ interface State {
 const useGetTransaction = () => {
   const userId = useSelector(GetUserId);
   const updateOperations = useSelector(GetUpdateOperations);
-
-  // const { useTinkoff } = Bill;
-
-  // const { transactions: transactionsTinkoff } = useTinkoff();
 
   const [state, setState] = useState<State>({
     transactions: [],
@@ -297,6 +345,7 @@ const useAddOperation = (OperationParams: OperationParamsType) => {
 
 export default {
   useGetTransaction,
+  useGetTinkoffTransactions,
   useBudgetСalculation,
   useAddOperation,
 };

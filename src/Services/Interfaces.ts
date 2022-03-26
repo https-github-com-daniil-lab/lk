@@ -60,6 +60,19 @@ export type BalanceType = {
   cents: number;
 };
 
+export interface ITinkoffCard {
+  balance: BalanceType;
+  bankName: string;
+  cardId: string;
+  cardNumber: string;
+  createdInBank: string;
+  currency: string;
+  expiration: string;
+  id: string;
+  name: string;
+  status: string;
+}
+
 export interface IBalances {
   balance: BalanceType;
   id: string;

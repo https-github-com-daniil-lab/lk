@@ -5,11 +5,12 @@ import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
 import { GetUserId, GetUserToken } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 import { API_URL } from "Utils/Config";
-import { IBalances } from "./Interfaces";
+import { IBalances, ITinkoffCard } from "./Interfaces";
 
 const useGetBill = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const userId = useSelector(GetUserId);
-  const token = useSelector(GetUserToken);
 
   const [balances, setBalances] = useState<IBalances[]>([]);
 
@@ -34,7 +35,14 @@ const useGetBill = () => {
         throw new Error(res.data.message);
       }
     } catch (error: any) {
-      console.log(error.message);
+      dispatch(
+        ShowToast({
+          text: error.message,
+          title: "Ошибка",
+          type: "error",
+        })
+      );
+      setLoad(true);
     }
   };
 
@@ -50,6 +58,46 @@ const useGetBill = () => {
     load,
     balances,
     generalBalance,
+  };
+};
+
+const useGetTinkoffCards = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const userId = useSelector(GetUserId);
+
+  const [cards, setCards] = useState<ITinkoffCard[]>([]);
+
+  const [load, setLoad] = useState<boolean>(false);
+
+  const get = async (): Promise<void> => {
+    try {
+      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/${userId}`);
+      if (res.data.status === 200) {
+        setCards(res.data.data);
+        setLoad(true);
+      } else {
+        throw new Error(res.data.message);
+      }
+    } catch (error: any) {
+      dispatch(
+        ShowToast({
+          text: error.message,
+          title: "Ошибка",
+          type: "error",
+        })
+      );
+      setLoad(true);
+    }
+  };
+
+  useEffect(() => {
+    get();
+  }, []);
+
+  return {
+    cards,
+    load,
   };
 };
 
@@ -101,16 +149,12 @@ const useAddBill = (name: string, balance: string) => {
 };
 
 const useTinkoff = (
-  login?: string,
-  password?: string,
-  date?: string,
-  code?: string
+  login: string,
+  password: string,
+  date: string,
+  code: string
 ) => {
   const dispatch = useDispatch<AppDispatch>();
-
-  const userId = useSelector(GetUserId);
-
-  const [transactions, setTransactions] = useState([]);
 
   const [status, setStatus] = useState<"signin" | "code">("signin");
 
@@ -153,55 +197,10 @@ const useTinkoff = (
     }
   };
 
-  const getTinkoffTransactions = async (): Promise<void> => {
-    try {
-      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/${userId}`);
-      console.log("tt", res.data);
-      if (res.data.status === 200) {
-        const cards = res.data.data;
-        let r: any = [];
-
-        for (let i = 0; i < cards.length; i++) {
-          const trRes = await axios.get(
-            `${API_URL}api/v1/tinkoff/transactions/${cards[i].id}?page=0&pageSize=100`
-          );
-          r = [
-            ...r,
-            ...trRes.data.data.page.map((item) => ({
-              name: cards[i].cardNumber,
-              balance: item.amount,
-            })),
-          ];
-        }
-
-        setTransactions(r);
-      } else {
-        throw new Error(res.data.message);
-      }
-    } catch (error: any) {
-      dispatch(
-        ShowToast({
-          text: error.message,
-          title: "Ошибка",
-          type: "error",
-        })
-      );
-    }
-  };
-
-  const init = async (): Promise<void> => {
-    await getTinkoffTransactions();
-  };
-
-  useEffect(() => {
-    init();
-  }, []);
-
   return {
     syncTinkoff,
     signin,
     status,
-    transactions,
   };
 };
 
@@ -230,4 +229,10 @@ const useSber = (login: string, date: string) => {
   };
 };
 
-export default { useGetBill, useAddBill, useTinkoff, useSber };
+export default {
+  useGetBill,
+  useGetTinkoffCards,
+  useAddBill,
+  useTinkoff,
+  useSber,
+};
