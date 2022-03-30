@@ -45,7 +45,7 @@ const ChartBlockHistoryItem: React.FunctionComponent<Props> = (
       </div>
       <div className="chart-block-history-item-price-wrapper">
         <span>
-          {props.type === "WITHDRAW" ? `-${props.price}` : props.price}
+          {props.type === "WITHDRAW" || props.type === "SPEND" ? `-${props.price}` : props.price}
         </span>
       </div>
     </div>

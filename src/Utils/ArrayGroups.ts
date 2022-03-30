@@ -1,17 +1,17 @@
 const ArrayGroups = (array: any[]): any[] => {
   const g = array.reduce((groups, transaction) => {
-    const createAt = transaction.createAt.split("T")[0];
-    if (!groups[createAt]) {
-      groups[createAt] = [];
+    const date = transaction.date.split("T")[0];
+    if (!groups[date]) {
+      groups[date] = [];
     }
-    groups[createAt].push(transaction);
+    groups[date].push(transaction);
     return groups;
   }, {});
 
-  const res = Object.keys(g).map((createAt) => {
+  const res = Object.keys(g).map((date) => {
     return {
-      createAt,
-      transactions: g[createAt],
+      date,
+      transactions: g[date],
     };
   });
 

@@ -73,6 +73,16 @@ export interface ITinkoffCard {
   status: string;
 }
 
+export interface ITinkoffTransaction {
+  amount: BalanceType;
+  currency: string;
+  date: string;
+  description: string;
+  id: string;
+  status: string;
+  transactionType: TransactionType;
+}
+
 export interface IBalances {
   balance: BalanceType;
   id: string;
@@ -80,7 +90,7 @@ export interface IBalances {
   user: UserType;
 }
 
-export type TransactionType = "WITHDRAW" | "DEPOSIT";
+export type TransactionType = "WITHDRAW" | "DEPOSIT" | "EARN" | "SPEND";
 
 export interface ITransaction {
   action: TransactionType;
@@ -127,3 +137,29 @@ export interface IAdvertising {
   content: string;
   files: IFiles[];
 }
+
+export type OperationParamsType = {
+  bill: IBalances | null;
+  date: string[] | null;
+  selectedCategory: IBaseCategory | null;
+  summ: string | null;
+  description: string | null;
+  location: number[] | null;
+  operationType: TransactionType;
+};
+
+export type UserTranscationsType = {
+  action: TransactionType;
+  category: ICategory | null;
+  date: string;
+  currency: string;
+  amount: string | number;
+  title: string;
+}
+
+export interface TransactionsSorted {
+  date: string;
+  transactions: UserTranscationsType[];
+}
+
+

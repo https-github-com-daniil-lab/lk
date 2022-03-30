@@ -1,19 +1,20 @@
 import React, { useMemo, useState } from "react";
+import ReactDOM from "react-dom";
 
 import "Styles/Components/ContextButton/ContextButton.scss";
 
 interface Props {
   content: React.FunctionComponent;
   button: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
 const ContextButton: React.FunctionComponent<Props> = ({
   content,
   button,
+  style,
 }: Props) => {
   const [expand, setExpand] = useState<boolean>(false);
-
-  const onClose = (): void => setExpand(false);
 
   return (
     <div className={`context-button`}>
@@ -21,18 +22,15 @@ const ContextButton: React.FunctionComponent<Props> = ({
         {button}
       </div>
       <div
-        className={`context-button-container ${expand ? "active" : "inactive"}`}
+        {...{ style }}
+        className={`context-button-container ${expand ? "active" : ""}`}
       >
-        {content({}, onClose)}
+        {content({}, { close: () => setExpand(false) })}
       </div>
-      {expand && (
-        <div
-          onClick={onClose}
-          className={`context-button-backdrop ${
-            expand ? "active" : "inactive"
-          }`}
-        ></div>
-      )}
+      <div
+        onClick={() => setExpand(false)}
+        className={`context-button-backdrop ${expand ? "active" : ""}`}
+      ></div>
     </div>
   );
 };

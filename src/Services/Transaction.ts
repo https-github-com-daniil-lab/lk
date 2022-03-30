@@ -4,125 +4,206 @@ import moment from "moment";
 
 import { useEffect, useMemo, useState } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
-import { ShowToast, UpdateOperations } from "Redux/Actions";
-
-import { GetUserId, GetUserToken, GetUpdateOperations } from "Redux/Selectors";
-
-import ArrayGroups from "Utils/ArrayGroups";
+import { GetUserId, GetUpdateOperations } from "Redux/Selectors";
 
 import { API_URL } from "Utils/Config";
 
 import {
-  IBalances,
-  IBaseCategory,
+  ITinkoffTransaction,
   ITransaction,
-  TransactionType,
+  OperationParamsType,
+  UserTranscationsType,
+  TransactionsSorted
 } from "./Interfaces";
-import { AppDispatch } from "Redux/Store";
-import { HidePreloader, ShowPreloader } from "Redux/Actions";
 
-const useGetTinkoffTransactions = () => {
-  const dispatch = useDispatch<AppDispatch>();
+import ArrayGroups from "Utils/ArrayGroups";
 
-  const userId = useSelector(GetUserId);
+import Category from "./Category"
 
-  const [transactions, setTransactions] = useState<any[]>([]);
-  const [load, setLoad] = useState<boolean>(false);
 
-  const get = async (): Promise<void> => {
+const useGetTransaction = () => {
+  const userId = useSelector(GetUserId)
+
+  const [load, setLoad] = useState<boolean>(false)
+
+  const [selectedDate, setSelectedDate] = useState<string[]>([moment().format("YYYY-MM-DD")])
+
+  const [transactions, setTransactions] = useState<TransactionsSorted[]>([])
+
+  const filterByDate = (v: TransactionsSorted) => selectedDate.includes(v.date);
+
+  const income = useMemo(() => {
+    return transactions
+      .filter(filterByDate)
+      .map((item) =>
+        item.transactions
+          .filter((i) => i.action === "DEPOSIT" || i.action === "EARN")
+          .reduce((x, y) => x + y.amount, 0)
+      )
+      .reduce((x, y) => x + y, 0);
+  }, [selectedDate])
+
+  const expenses = useMemo(() => {
+    return transactions
+      .filter(filterByDate)
+      .map((item) =>
+        item.transactions
+          .filter((i) => i.action === "WITHDRAW" || i.action === "SPEND")
+          .reduce((x, y) => x + y.amount, 0)
+      )
+      .reduce((x, y) => x + y, 0);
+
+  }, [selectedDate])
+
+
+  const setDate = (dates: string[]): void => setSelectedDate(dates.map((i) => moment(i).format("YYYY-MM-DD")))
+
+
+  const filterdTransactions = useMemo(() => {
+    const f = transactions.filter(filterByDate);
+
+    if (f) return f;
+    else return [];
+  }, [selectedDate, transactions]);
+
+
+  const prices = useMemo(() => {
+    const f = transactions.find(filterByDate)?.transactions.map((t) => t.amount);
+    if (f) return f;
+    else return [];
+  }, [selectedDate, transactions]);
+
+
+
+  const sorted = (array: UserTranscationsType[]): TransactionsSorted[] => {
+    const sortedTransactionByGroup = ArrayGroups(array);
+    const sortedTransactionByDate = sortedTransactionByGroup.sort(
+      (x, y) =>
+        <any>moment(y.date).format("L") -
+        <any>moment(x.date).format("L")
+    );
+    return sortedTransactionByDate;
+  };
+
+  const getOrdinaryTransactions = async (): Promise<ITransaction[]> => {
     try {
-      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/${userId}`);
+      const res = await axios.get(
+        `${API_URL}api/v1/transaction/user/${userId}?page=0&pageSize=100`
+      );
       if (res.data.status === 200) {
-        const cards = res.data.data;
-        let r: any = [];
-        for (let i = 0; i < cards.length; i++) {
-          const trRes = await axios.get(
-            `${API_URL}api/v1/tinkoff/transactions/${cards[i].id}?page=0&pageSize=100`
-          );
-          r = [
-            ...r,
-            ...trRes.data.data.page.map((item) => ({
-              name: cards[i].cardNumber,
-              balance: item.amount,
-            })),
-          ];
-        }
-        setTransactions(r);
-        setLoad(true);
+        return res.data.data.page
       } else {
         throw new Error(res.data.message);
       }
     } catch (error: any) {
-      dispatch(
-        ShowToast({
-          text: error.message,
-          title: "Ошибка",
-          type: "error",
-        })
-      );
-      setLoad(true);
+      console.log(error)
+      return []
     }
-  };
+  }
+
+  const getTinkoffTransactions = async (): Promise<ITinkoffTransaction[]> => {
+    try {
+      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/${userId}`);
+      if (res.data.status === 200) {
+        const cards = res.data.data;
+
+        let array: ITinkoffTransaction[] = []
+
+        for (let i = 0; i < cards.length; i++) {
+          const tr = await axios.get(
+            `${API_URL}api/v1/tinkoff/transactions/${cards[i].id}?page=0&pageSize=100`
+          );
+          array = [...array, ...tr.data.data.page]
+        }
+        return array
+      } else {
+        throw new Error(res.data.message);
+      }
+
+    } catch (error: any) {
+      console.log(error)
+      return []
+    }
+  }
+
+  const get = async (): Promise<void> => {
+    const ordinaryTransactions = await getOrdinaryTransactions()
+    const tinkoffTransactions = await getTinkoffTransactions()
+
+    const t: UserTranscationsType[] = []
+
+    for (let i = 0; i < ordinaryTransactions.length; i++) {
+      const transaction = ordinaryTransactions[i]
+      t.push({
+        action: transaction.action,
+        category: transaction.category ?? null,
+        date: transaction.createAt,
+        currency: transaction.currency,
+        amount: transaction.sum,
+        title: transaction.bill.name
+      })
+    }
+
+    for (let i = 0; i < tinkoffTransactions.length; i++) {
+      const transaction = tinkoffTransactions[i]
+      t.push({
+        action: transaction.transactionType,
+        category: null,
+        date: transaction.date,
+        currency: transaction.currency,
+        amount: transaction.amount.amount,
+        title: "Tinkoff"
+      })
+    }
+
+    const sort = sorted(t)
+
+    setTransactions(sort)
+
+    setLoad(true)
+  }
+
+  const init = async (): Promise<void> => await get()
 
   useEffect(() => {
-    get();
-  }, []);
+    init()
+  }, [])
+
 
   return {
-    // transactions,
-    // load,
-  };
-};
-
-export type TransactionsSortedType = {
-  createAt: string;
-  transactions: ITransaction[];
-};
-
-interface State {
-  transactions: TransactionsSortedType[];
-  income: number;
-  expenses: number;
-  load: boolean;
-  selectedDate: string[];
+    load,
+    transactions: filterdTransactions,
+    selectedDate,
+    setDate,
+    prices,
+    allTransactions: transactions,
+    income,
+    expenses
+  }
 }
 
-const useGetTransaction = () => {
-  const userId = useSelector(GetUserId);
-  const updateOperations = useSelector(GetUpdateOperations);
+const useGetBudget = () => {
 
-  const [state, setState] = useState<State>({
-    transactions: [],
-    income: 0,
-    expenses: 0,
-    load: false,
-    selectedDate: [moment().format("YYYY-MM-DD")],
-  });
+  const { allTransactions: transactions, } = useGetTransaction()
 
-  const filterByDate = (v) => state.selectedDate.includes(v.createAt);
+  const { useGetCategory } = Category
+  const { categories, load } = useGetCategory()
 
-  const setDate = (v: string[]): void => {
-    setState({
-      ...state,
-      selectedDate: v.map((i) => moment(i).format("YYYY-MM-DD")),
-    });
-  };
+
+  const [selectedMonth, setSelectedMonth] = useState<string>(moment().format("YYYY-MM-DD"))
+
+
 
   const prev = (): void => {
-    let currentDate = moment(state.selectedDate);
-
-    setState({
-      ...state,
-      selectedDate: [
-        moment(currentDate).subtract(1, "months").format("YYYY-MM-DD"),
-      ],
-    });
+    let currentDate = moment(selectedMonth);
+    setSelectedMonth(moment(currentDate).subtract(1, "months").format("YYYY-MM-DD"))
   };
 
+
   const next = (): void => {
-    let currentDate = moment(state.selectedDate);
+    let currentDate = moment(selectedMonth);
     let futureMonth = moment(currentDate).add(1, "M");
     let futureMonthEnd = moment(futureMonth).endOf("month");
 
@@ -132,156 +213,52 @@ const useGetTransaction = () => {
     ) {
       futureMonth = futureMonth.add(1, "d");
     }
-
-    setState({
-      ...state,
-      selectedDate: [futureMonth.format("YYYY-MM-DD")],
-    });
+    setSelectedMonth(futureMonth.format("YYYY-MM-DD"))
   };
 
-  /**
-   *
-   * Расчет доходов
-   */
-  const getIncome = (array: ITransaction[]): number => {
-    return array
-      .filter((i) => i.action === "DEPOSIT")
-      .reduce((x, y) => x + y.sum, 0);
-  };
 
-  /**
-   *
-   * Расчет расходов
-   */
-  const getExpenses = (array: ITransaction[]): number => {
-    return array
-      .filter((i) => i.action === "WITHDRAW")
-      .reduce((x, y) => x + y.sum, 0);
-  };
 
-  /**
-   *
-   * Сортировка по дате
-   */
-  const sorted = (array: ITransaction[]): TransactionsSortedType[] => {
-    const sortedTransactionByGroup = ArrayGroups(array);
-    const sortedTransactionByDate = sortedTransactionByGroup.sort(
-      (x, y) =>
-        <any>moment(y.createAt).format("L") -
-        <any>moment(x.createAt).format("L")
-    );
-    return sortedTransactionByDate;
-  };
 
-  /**
-   *
-   *  Обработка данных
-   */
-  const set = (transactions: ITransaction[]): void => {
-    const sortedTransactions: TransactionsSortedType[] = sorted(transactions);
-    const incomeTransactions = getIncome(transactions);
-    const expensesTransaction = getExpenses(transactions);
+  const expenses = useMemo(() => {
 
-    setState({
-      expenses: expensesTransaction,
-      income: incomeTransactions,
-      selectedDate: [moment().format("YYYY-MM-DD")],
-      transactions: sortedTransactions,
-      load: true,
-    });
-  };
+    const f = transactions.filter(transaction => transaction.date.split("-")[1] === selectedMonth.split("-")[1] && transaction.date.split("-")[0] === selectedMonth.split("-")[0]).map(t => t.transactions)
 
-  const get = async (): Promise<void> => {
-    try {
-      const res = await axios.get(
-        `${API_URL}api/v1/transaction/user/${userId}?page=0&pageSize=100`
-      );
-      if (res.data.status === 200) {
-        set(res.data.data.page);
-      } else {
-        throw new Error(res.data.message);
-      }
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+    const merged = f.flat(1)
 
-  const init = async (): Promise<void> => {
-    await get();
-  };
+    const exp = merged.filter(t => t.action === "WITHDRAW" || t.action === "SPEND")
 
-  const prices = useMemo(() => {
-    const f = state.transactions
-      .find(filterByDate)
-      ?.transactions.map((t) => t.sum);
-    if (f) return f;
-    else return [];
-  }, [state.selectedDate, state.transactions]);
+    const amount = exp.length > 0 ? exp.map(item => item.amount).reduce((prev, next) => prev + next) : 0
 
-  const filterdTransactions = useMemo(() => {
-    const f = state.transactions.filter(filterByDate);
-    console.log(f);
-    if (f) return f;
-    else return [];
-  }, [state.selectedDate, state.transactions]);
+    console.log({
+      array: exp,
+      amount
+    })
+
+    return "expenses"
+  }, [selectedMonth])
 
   useEffect(() => {
-    init();
-  }, [updateOperations]);
+    if (load) {
+      console.log("categories", categories)
+    }
+  }, [load])
+
+
+
 
   return {
-    ...state,
-    transactions: filterdTransactions,
-    prices: prices,
+    selectedMonth,
+    expenses,
     prev,
-    next,
-    selectedDate: state.selectedDate,
-    setDate,
-  };
-};
+    next
+  }
+}
 
-const useBudgetСalculation = (
-  transactions: TransactionsSortedType[],
-  selectedDate: string[]
-) => {
-  // console.log("old", transactions);
-  // console.log(
-  //   "new",
-
-  // // const te = transactions.transactions
-  //   .filter((i) => i.action === "WITHDRAW")
-  //   .reduce((x, y) => x + y.sum, 0);
-  const f = (item: TransactionsSortedType) =>
-    selectedDate.includes(item.createAt);
-
-  const calc = (): void => {
-    console.log("transactions", transactions);
-    const t = transactions.filter(f);
-    console.log("TTTT", t);
-  };
-
-  useEffect(() => {
-    calc();
-  }, []);
-
-  return {};
-};
-
-type OperationParamsType = {
-  bill: IBalances | null;
-  date: string[] | null;
-  selectedCategory: IBaseCategory | null;
-  summ: string | null;
-  description: string | null;
-  location: number[] | null;
-  operationType: TransactionType;
-};
 
 const useAddOperation = (OperationParams: OperationParamsType) => {
-  const dispatch = useDispatch<AppDispatch>();
 
   const OperationAdd = async (): Promise<void> => {
-    dispatch(ShowPreloader());
+
     const {
       bill,
       operationType,
@@ -295,22 +272,22 @@ const useAddOperation = (OperationParams: OperationParamsType) => {
     const data =
       operationType === "WITHDRAW"
         ? {
-            amount: summ,
-            cents: 0,
-            description: description,
-            categoryId: selectedCategory?.id,
-            lon: location![1],
-            lat: location![0],
-            placeName: "string",
-            time: `${date}T16:23:25.356Z`,
-          }
+          amount: summ,
+          cents: 0,
+          description: description,
+          categoryId: selectedCategory?.id,
+          lon: location![1],
+          lat: location![0],
+          placeName: "string",
+          time: `${date}T16:23:25.356Z`,
+        }
         : {
-            amount: summ,
-            cents: 0,
-            description: description,
-            categoryId: selectedCategory?.id,
-            time: `${date}T16:23:25.356Z`,
-          };
+          amount: summ,
+          cents: 0,
+          description: description,
+          categoryId: selectedCategory?.id,
+          time: `${date}T16:23:25.356Z`,
+        };
 
     try {
       const url =
@@ -319,33 +296,23 @@ const useAddOperation = (OperationParams: OperationParamsType) => {
           : `api/v1/bill/deposit/${bill?.id}`;
 
       const res = await axios.patch(`${API_URL}${url}`, data);
-      console.log("res", res);
       if (res.data.status === 200) {
         console.log(res.data.data);
-        dispatch(UpdateOperations());
-        dispatch(HidePreloader());
-        dispatch(
-          ShowToast({
-            type: "success",
-            title: "Успех",
-            text: "Операция успешно добавлена",
-          })
-        );
       } else {
         throw new Error(res.data.message);
       }
     } catch (error: any) {
-      dispatch(HidePreloader());
-      console.log(error.response);
       console.log(error.message);
     }
   };
   return { OperationAdd };
 };
 
+
+
+
 export default {
   useGetTransaction,
-  useGetTinkoffTransactions,
-  useBudgetСalculation,
   useAddOperation,
-};
+  useGetBudget
+}

@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import Bill from "Services/Bill";
 import PhoneMask from "Utils/PhoneMask";
-
+import DatePicker from "Components/DatePicker/DatePicker";
 import "Styles/Pages/Main/BalanceBlock/AddBillModal/AddBank/TinkoffBank/TinkoffBank.scss";
 
 interface Props {}
 
 const TinkoffBank: React.FunctionComponent<Props> = (props: Props) => {
+  const { useTinkoff } = Bill;
+
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [code, setCode] = useState<string>("");
-
+  const [expand, setExpand] = useState<boolean>(true);
   const [date, setDate] = useState<string>("");
 
-  const { useTinkoff } = Bill;
   const { signin, syncTinkoff, status } = useTinkoff(
     login,
     password,
@@ -21,14 +22,16 @@ const TinkoffBank: React.FunctionComponent<Props> = (props: Props) => {
     code
   );
 
-  const _connect = async (): Promise<void> => {
-    if (status === "signin") await signin();
-    if (status === "code") await syncTinkoff();
-  };
-
   const _handlePhone = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const mask = PhoneMask(event.target.value);
     setLogin(mask);
+  };
+
+  const _handleCalendar = (v: string[]): void => {};
+
+  const _connect = async (): Promise<void> => {
+    if (status === "signin") await signin();
+    if (status === "code") await syncTinkoff();
   };
 
   return (
@@ -47,7 +50,7 @@ const TinkoffBank: React.FunctionComponent<Props> = (props: Props) => {
         <br />
         Синхронизация данных не позволяет переводить деньги с вашего счета!
       </p>
-      <div>
+      <div className="tinkoff-bank-container">
         <span>Введите логин от мобильного банка</span>
         <input
           type="text"
@@ -56,7 +59,7 @@ const TinkoffBank: React.FunctionComponent<Props> = (props: Props) => {
           placeholder="+7**********"
         />
       </div>
-      <div>
+      <div className="tinkoff-bank-container">
         <span>
           Пароль от интернет-банка и пин-код для входа в приложение
           Тинькофф-различные пароли.
@@ -70,19 +73,18 @@ const TinkoffBank: React.FunctionComponent<Props> = (props: Props) => {
           placeholder="Пароль"
         />
       </div>
-      <div>
+      <div
+        className="tinkoff-bank-calendar-wrapper"
+        onClick={(e: any) => {
+          setExpand(true);
+        }}
+      >
         <span>Дата загрузки операций</span>
-        <input
-          type="text"
-          disabled
-          value={date}
-          onClick={() => alert("calendar")}
-          placeholder="21 ноября 2021"
-        />
+        <input type="text" disabled value={date} placeholder="21 ноября 2021" />
       </div>
 
       {status === "code" ? (
-        <div>
+        <div className="tinkoff-bank-container">
           <span>Код из смс</span>
           <input
             type="text"

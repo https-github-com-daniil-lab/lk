@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-
 import ChartBlock from "./ChartBlock/ChartBlock";
 import BalanceBlock from "./BalanceBlock/BalanceBlock";
 import Banner from "./Banner/Banner";
 import CategoryBlock from "./CategoryBlock/CategoryBlock";
 import ContextButton from "Components/ContextButton/ContextButton";
 import CategoryConstructor from "./CategoryBlock/CategoryConstructor/CategoryConstructor";
-
 import PlusCircleFill from "Static/icons/plus-circle-fill.svg";
-
-import "Styles/Pages/Main/Main.scss";
 import Modal from "Components/Modal/Modal";
 import AddOperationModal from "./ChartBlock/AddOperationModal/AddOperationModal";
 import FadeIn from "Components/FadeIn/FadeIn";
 import AddBillModal from "./BalanceBlock/AddBillModal/AddBillModal";
+
+import "Styles/Pages/Main/Main.scss";
 
 interface Props {}
 
@@ -53,17 +51,19 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
       <div className="app-card">
         <div className="app-card-header">
           <div className="content-section-title">Категории</div>
-          <ContextButton
-            button={
-              <div className="content-section-controll">
-                <span>Добавить категорию</span>
-                <img src={PlusCircleFill} alt={"Plus icon"} />
-              </div>
-            }
-            content={(params, ctx) => (
-              <CategoryConstructor {...{ ctx, params }} />
-            )}
-          ></ContextButton>
+          <div>
+            <ContextButton
+              button={
+                <div className="content-section-controll">
+                  <span>Добавить категорию</span>
+                  <img src={PlusCircleFill} alt={"Plus icon"} />
+                </div>
+              }
+              content={(params, ctx) => (
+                <CategoryConstructor {...{ ...ctx, params }} />
+              )}
+            />
+          </div>
         </div>
         <CategoryBlock />
       </div>

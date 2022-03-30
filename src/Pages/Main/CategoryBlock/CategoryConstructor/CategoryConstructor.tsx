@@ -13,7 +13,7 @@ import { GetUserId } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 
 interface Props {
-  ctx: () => void;
+  close: () => void;
 }
 
 export type CategoryType = {
@@ -74,12 +74,12 @@ const CategoryConstructor: React.FunctionComponent<Props> = (props: Props) => {
           className="button-primary"
           onClick={() => {
             addCategory(category, userId!, dispatch);
-            props.ctx();
+            props.close();
           }}
         >
           Добавить
         </button>
-        <button className="button-secondary" onClick={props.ctx}>
+        <button className="button-secondary" onClick={props.close}>
           Отмена
         </button>
       </div>

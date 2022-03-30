@@ -21,8 +21,7 @@ const useDraggableScroll = (
       const dx = event.clientX - initialPosition.mouseX;
       const dy = event.clientY - initialPosition.mouseY;
 
-      if (direction !== "horizontal")
-        ref.current.scrollTop = initialPosition.scrollTop - dy;
+      ref.current.scrollTop = initialPosition.scrollTop - dy;
       if (direction !== "vertical")
         ref.current.scrollLeft = initialPosition.scrollLeft - dx;
     }

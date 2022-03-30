@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useGetBaseCategory from "Services/BaseCategory";
-import Category from "Services/Category"
+import Category from "Services/Category";
 import { IBaseCategory, TransactionType, IBalances } from "Services/Interfaces";
 import CalendarDark from "Static/icons/calendar-dark.svg";
 import { API_URL } from "Utils/Config";
@@ -11,11 +11,11 @@ import DatePicker from "Components/DatePicker/DatePicker";
 import CategoryListModal from "./CategoryListModal/CategoryListModal";
 import BillList from "./BillList/BillList";
 import Bill from "Services/Bill";
-
-import "Styles/Pages/Main/ChartBlock/AddOperationModal/AddOperationModal.scss";
 import Modal from "Components/Modal/Modal";
 import MapModal from "./MapModal/MapModal";
 import Transaction from "Services/Transaction";
+import "Styles/Pages/Main/ChartBlock/AddOperationModal/AddOperationModal.scss";
+import Select from "Components/Select/Select";
 
 interface Props {
   onClose: () => void;
@@ -26,12 +26,11 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
 }: Props) => {
   const { useAddOperation } = Transaction;
   const { useGetBill } = Bill;
-  const { useGetCategory } = Category
+  const { useGetCategory } = Category;
 
   const { categories, load } = useGetCategory();
   const { balances, load: loadBill } = useGetBill();
 
-  
   const [date, setDate] = useState<null | string[]>(null);
 
   const [operationType, setOperationType] =
@@ -73,7 +72,7 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
 
   const _addOperation = async (): Promise<void> => {
     await OperationAdd();
-    onClose()
+    onClose();
   };
 
   useEffect(() => {
@@ -87,17 +86,12 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
       <div className="add-operation-modal-row">
         <span>{date ?? "Дата и время"}</span>
         <div style={{ position: "relative" }}>
-          <img onClick={() => setExpand(true)} src={CalendarDark} />
-          <DatePicker
-            style={{
-              right: 0,
-              zIndex: 9999,
-              background: "#ffffff",
-            }}
-            onClose={() => setExpand(false)}
-            onEnter={onEnter}
-            show={expand}
-            type="mini"
+          <ContextButton
+            button={<img src={CalendarDark} />}
+            content={(_, ctx) => (
+              <DatePicker {...ctx} onEnter={onEnter} type="mini" />
+            )}
+            style={{ left: -200 }}
           />
         </div>
       </div>
@@ -142,15 +136,12 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
               alt="Category base icon"
             />
           </div>
-          <span>{selectedCategory?.name}</span>
-          <ContextButton
-            button={<button className="button-primary">Выбрать</button>}
-            content={({}, onClose) => (
-              <CategoryListModal
-                {...{ onClose }}
-                handler={(v) => setSelectedCategory(v)}
-              />
-            )}
+          <Select
+            value={selectedCategory?.name ?? ""}
+            data={categories.map((i) => ({
+              label: i.name,
+            }))}
+            handler={(index) => setSelectedCategory(categories[index])}
           />
         </div>
       </div>
@@ -169,11 +160,12 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
           }}
         >
           <span>{bill?.name}</span>
-          <ContextButton
-            button={<button className="button-primary">Выбрать</button>}
-            content={({}, onClose) => (
-              <BillList {...{ onClose }} handler={(v) => setBill(v)} />
-            )}
+          <Select
+            value={bill?.name ?? ""}
+            data={balances.map((i) => ({
+              label: i.name,
+            }))}
+            handler={(index) => setBill(balances[index])}
           />
         </div>
       </div>

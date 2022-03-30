@@ -18,7 +18,7 @@ const CategoryItem: React.FunctionComponent<Props> = (props: Props) => {
       <div
         className="category-item-image"
         style={{
-          background: props.color
+          background: props.color,
         }}
       >
         <img

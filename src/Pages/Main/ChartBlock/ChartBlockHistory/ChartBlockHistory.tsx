@@ -1,24 +1,23 @@
 import React from "react";
-
-import { TransactionsSortedType } from "Services/Transaction";
-
+import { TransactionsSorted } from "Services/Interfaces";
 import ChartBlockHistoryWrapper from "./ChartBlockHistoryWrapper/ChartBlockHistoryWrapper";
 import ChartBlockHistoryItem from "./ChartBlockHistoryItem/ChartBlockHistoryItem";
 
 import "Styles/Pages/Main/ChartBlock/ChartBlockHistory/ChartBlockHistory.scss";
 
 interface Props {
-  transactions: TransactionsSortedType[];
+  transactions: TransactionsSorted[];
 }
 
 const ChartBlockHistory: React.FunctionComponent<Props> = (props: Props) => {
   const { transactions } = props;
 
+
   return (
     <div className="chart-block-history">
       {transactions.map((g, i) => {
         return (
-          <ChartBlockHistoryWrapper key={i} title={g.createAt}>
+          <ChartBlockHistoryWrapper key={i} title={g.date}>
             {g.transactions.map((transaction, k) => {
               return (
                 <ChartBlockHistoryItem
@@ -28,9 +27,10 @@ const ChartBlockHistory: React.FunctionComponent<Props> = (props: Props) => {
                     color: transaction.category?.color.hex,
                     path: transaction.category?.icon.name,
                   }}
-                  title={transaction.category?.name ?? transaction.bill.name}
+                  title={transaction.title}
+                  //title={transaction.category?.name ?? transaction.bill.name}
                   subtitle={"**** 1234"}
-                  price={transaction.sum}
+                  price={transaction.amount}
                 />
               );
             })}
