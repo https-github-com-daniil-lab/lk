@@ -14,6 +14,8 @@ import ModalEmail from "./ModalEmail/ModalEmail";
 import { useSelector } from "react-redux";
 import { GetUserEmail, GetUserName } from "Redux/Selectors";
 import "Styles/Pages/Settings/UserBlock/UserBlock.scss";
+import ModalRemoveData from "./ModalRemoveData/ModalRemoveData";
+import ModalExportData from "./ModalExportData/ModalExportData";
 
 interface Props {}
 
@@ -25,6 +27,9 @@ const UserBlock: React.FunctionComponent<Props> = (props: Props) => {
 
   const [phoneModal, setPhoneModal] = useState<boolean>(false);
   const [emailModal, setEmailModal] = useState<boolean>(false);
+
+  const [exportDataModal, setExportDataModal] = useState<boolean>(false);
+  const [removeDataModal, setRemoveDataModal] = useState<boolean>(false);
 
   const [wallet, setWallet] = useState<IWallet>();
 
@@ -55,15 +60,19 @@ const UserBlock: React.FunctionComponent<Props> = (props: Props) => {
         </div>
       </UserBlockWrapper>
       <UserBlockWrapper title="Данные">
-        <div className="user-block-item">
+        <div
+          className="user-block-item"
+          onClick={() => setExportDataModal(true)}
+        >
           <img src={DownloadIcon} alt="Download" />
           <span>Экспортировать данные в CSV</span>
-          <div></div>
         </div>
-        <div className="user-block-item">
+        <div
+          className="user-block-item"
+          onClick={() => setRemoveDataModal(true)}
+        >
           <img src={RemoveIcon} alt="Remove" />
           <span>Удалить данные</span>
-          <div></div>
         </div>
       </UserBlockWrapper>
       <UserBlockWrapper title="Валюта">
@@ -80,6 +89,20 @@ const UserBlock: React.FunctionComponent<Props> = (props: Props) => {
       </Modal>
       <Modal show={emailModal} onClose={() => setEmailModal(false)}>
         <ModalEmail onClose={() => setEmailModal(false)} />
+      </Modal>
+      <Modal
+        show={exportDataModal}
+        onClose={() => setExportDataModal(false)}
+        style={{ width: "30%" }}
+      >
+        <ModalExportData onClose={() => setExportDataModal(false)} />
+      </Modal>
+      <Modal
+        show={removeDataModal}
+        onClose={() => setRemoveDataModal(false)}
+        style={{ width: "30%" }}
+      >
+        <ModalRemoveData onClose={() => setRemoveDataModal(false)} />
       </Modal>
     </div>
   );

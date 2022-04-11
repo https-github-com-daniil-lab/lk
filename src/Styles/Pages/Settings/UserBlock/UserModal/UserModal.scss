@@ -9,10 +9,39 @@
     "."
     "."
     ".";
-  span {
+  > span:first-child {
     font-size: 22px;
   }
   input {
     height: 30px;
+  }
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    a {
+      text-align: center;
+      text-decoration: none;
+    }
+  }
+  .tip {
+    margin-top: 1rem;
+    text-align: center;
+
+    &__text {
+      font-size: 14px;
+      color: #9c9aa8;
+    }
+  }
+  .delete {
+    font-size: 14px;
+    color: #9c9aa8;
+    text-align: center;
+
+    &__link {
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 }

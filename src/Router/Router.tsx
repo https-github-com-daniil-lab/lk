@@ -17,6 +17,7 @@ import { AppDispatch } from "Redux/Store";
 import Auth from "Services/Auth";
 import Splash from "Components/Splash/Splash";
 import Settings from "Pages/Settings/Settings";
+import Sub from "Pages/Sub/Sub";
 
 interface Props {}
 
@@ -56,6 +57,7 @@ const Router: React.FunctionComponent<Props> = (props: Props) => {
             <Route path="/cardscan" element={<CardScan />} />
             <Route path="/support" element={<Support />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/sub/:id" element={<Sub />} />
           </Route>
         </Routes>
       </BrowserRouter>

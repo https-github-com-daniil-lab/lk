@@ -41,7 +41,6 @@ const useGetTinkoffTransactions = () => {
           const trRes = await axios.get(
             `${API_URL}api/v1/tinkoff/transactions/${cards[i].id}?page=0&pageSize=100`
           );
-          console.log();
           r = [...r, ...trRes.data.data.page];
         }
 
@@ -223,7 +222,6 @@ const useGetTransaction = () => {
 
   const filterdTransactions = useMemo(() => {
     const f = state.transactions.filter(filterByDate);
-    console.log(f);
     if (f) return f;
     else return [];
   }, [state.selectedDate, state.transactions]);
@@ -320,7 +318,6 @@ const useAddOperation = (OperationParams: OperationParamsType) => {
       location,
       date,
     } = OperationParams;
-    console.log(selectedCategory);
     const data =
       operationType === "WITHDRAW"
         ? {
@@ -348,9 +345,7 @@ const useAddOperation = (OperationParams: OperationParamsType) => {
           : `api/v1/bill/deposit/${bill?.id}`;
 
       const res = await axios.patch(`${API_URL}${url}`, data);
-      console.log("res", res);
       if (res.data.status === 200) {
-        console.log(res.data.data);
         dispatch(UpdateOperations());
         dispatch(HidePreloader());
         dispatch(

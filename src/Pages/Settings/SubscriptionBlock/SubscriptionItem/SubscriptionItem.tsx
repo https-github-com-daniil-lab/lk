@@ -1,32 +1,38 @@
 import React from "react";
-import { ISubscription } from "Services/Interfaces";
+import { Link } from "react-router-dom";
+import { ISubscription, ISubscriptionGroup } from "Services/Interfaces";
 import Logo from "Static/Images/Logo.svg";
 
 import "Styles/Pages/Settings/SubscriptionBlock/SubscriptionItem/SubscriptionItem.scss";
 
-interface Props extends ISubscription {}
+interface Props {
+  subscriptionGroup: ISubscriptionGroup;
+  list: string[];
+}
 
-const SubscriptionItem: React.FunctionComponent<Props> = ({
-  name,
-  description,
-  price,
-  expiration,
-  newPrice,
-}: Props) => {
+const SubscriptionItem: React.FC<Props> = ({ subscriptionGroup, list }) => {
+  const { id, name } = subscriptionGroup;
+
   return (
     <div className="subscription-item">
-      <img src={Logo} />
       <span className="subscription-item-title">{name}</span>
-      <span className="subscription-item-subtitle">{description}</span>
-      <div className="subscription-item-price-value">
-        <div>
-          <sup className="currency">₽</sup>
-          <span className="amount">{newPrice}</span>
-          <span className="duration"> / {expiration} д</span>
-          {/* <span>{price}</span> */}
-        </div>
-      </div>
-      <button className="button-primary">Продлить подписку</button>
+
+      <ul className="subscription-item-list">
+        {list.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+
+      <span className="subscription-item-date">
+        от {subscriptionGroup.variants[0].price} руб./мес
+      </span>
+
+      <Link
+        to={`/sub/${id}`}
+        className="button-primary subscription-item-button"
+      >
+        Продлить подписку
+      </Link>
     </div>
   );
 };

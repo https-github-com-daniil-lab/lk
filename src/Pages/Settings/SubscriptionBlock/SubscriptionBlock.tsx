@@ -1,35 +1,64 @@
-import React, { useRef } from "react";
-import Subscription from "Services/Subscription";
-import SubscriptionItem from "./SubscriptionItem/SubscriptionItem";
 import Load from "Components/Load/Load";
-import useDraggableScroll from "Utils/Hooks/useDraggableScroll";
-
+import Modal from "Components/Modal/Modal";
+import React, { useState } from "react";
+import { ISubscriptionGroup } from "Services/Interfaces";
+import { useGetSubscriptionGroups } from "Services/Subscription";
 import "Styles/Pages/Settings/SubscriptionBlock/SubscriptionBlock.scss";
+import SubscribeModal from "./SubscribeModal/SubscribeModal";
+import SubscriptionItem from "./SubscriptionItem/SubscriptionItem";
 
-interface Props {}
+const SubscriptionBlock: React.FC = () => {
+  const { load, subscriptionGroups } = useGetSubscriptionGroups();
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [selectedSubscriptionGroup, setSelectedSubscriptionGroup] =
+    useState<ISubscriptionGroup>();
 
-const SubscriptionBlock: React.FunctionComponent<Props> = (props: Props) => {
-  const ref = useRef(null);
-  const { onMouseDown } = useDraggableScroll(ref, { direction: "horizontal" });
-  const { useGetSubscriptions } = Subscription;
-  const { load, subscriptions } = useGetSubscriptions();
   return (
-    <Load
-      {...{ load }}
-      baseDivProps={{
-        ref: ref,
-        onMouseDown: onMouseDown,
-        style: {
-          gridTemplateColumns: subscriptions.map((_) => "1fr").join(" "),
-        },
-      }}
-      className="subscription-block noselect"
-    >
-      {subscriptions.map((subscription, i) => {
-        return <SubscriptionItem key={i} {...subscription} />;
-      })}
-    </Load>
+    <>
+      <Load {...{ load }} className="subscription-block">
+        {subscriptionGroups.map((subscriptionGroup) => (
+          <SubscriptionItem
+            key={subscriptionGroup.id}
+            subscriptionGroup={subscriptionGroup}
+            list={lists[subscriptionGroup.name]}
+          />
+        ))}
+      </Load>
+    </>
   );
+};
+
+const lists = {
+  Pro: [
+    "Быстрый старт",
+    "Touch ID / Face ID",
+    "Уникальный интерфейс",
+    "Светлая и темная тема",
+    "Встроенный калькулятор+ конвертер валют",
+    "Синхронизация личных устройств",
+    "Ведение совместного учета",
+    "Экспорт в CSV-файлы",
+    "Синхронизация с банками",
+    "Автоматическое резервное копирование",
+    "Автоплатежи",
+    "Геометки",
+  ],
+  Premium: [
+    "Быстрый старт",
+    "Touch ID / Face ID",
+    "Уникальный интерфейс",
+    "Светлая и темная тема",
+    "Встроенный калькулятор+ конвертер валют",
+    "Синхронизация личных устройств",
+    "Ведение совместного учета",
+    "Экспорт в CSV-файлы",
+    "Синхронизация с банками",
+    "Автоматическое резервное копирование",
+    "Автоплатежи",
+    "Геометки",
+    "Виджет для быстрого ввода расходов/доходов",
+    "Анализ активов",
+  ],
 };
 
 export default SubscriptionBlock;

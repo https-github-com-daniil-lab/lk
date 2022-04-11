@@ -5,7 +5,7 @@ import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
 import { GetUserId, GetUserToken } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 import { API_URL } from "Utils/Config";
-import { IBalances, ITinkoffCard } from "./Interfaces";
+import { IBalances, ISberCard, ITinkoffCard, ITochkaCard } from "./Interfaces";
 
 const useGetBill = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -80,13 +80,101 @@ const useGetTinkoffCards = () => {
         throw new Error(res.data.message);
       }
     } catch (error: any) {
-      dispatch(
-        ShowToast({
-          text: error.message,
-          title: "Ошибка",
-          type: "error",
-        })
+      if (error.response.status !== 404) {
+        dispatch(
+          ShowToast({
+            text: error.message,
+            title: "Ошибка",
+            type: "error",
+          })
+        );
+      }
+      setLoad(true);
+    }
+  };
+
+  useEffect(() => {
+    get();
+  }, []);
+
+  return {
+    cards,
+    load,
+  };
+};
+
+const useGetSberCards = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const userId = useSelector(GetUserId);
+
+  const [cards, setCards] = useState<ISberCard[]>([]);
+
+  const [load, setLoad] = useState<boolean>(false);
+
+  const get = async (): Promise<void> => {
+    try {
+      const { data } = await axios.get(`${API_URL}api/v1/sber/cards/${userId}`);
+      if (data.status === 200) {
+        setCards(data.data);
+        setLoad(true);
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      if (error.response.status !== 404) {
+        dispatch(
+          ShowToast({
+            text: error.message,
+            title: "Ошибка",
+            type: "error",
+          })
+        );
+      }
+      setLoad(true);
+    }
+  };
+
+  useEffect(() => {
+    get();
+  }, []);
+
+  return {
+    cards,
+    load,
+  };
+};
+
+const useGetTochkaCards = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const userId = useSelector(GetUserId);
+
+  const [cards, setCards] = useState<ITochkaCard[]>([]);
+
+  const [load, setLoad] = useState<boolean>(false);
+
+  const get = async (): Promise<void> => {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}api/v1/tochka/cards/${userId}`
       );
+      if (data.status === 200) {
+        setCards(data.data);
+        setLoad(true);
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      if (error.response.status !== 404) {
+        dispatch(
+          ShowToast({
+            text: error.message,
+            title: "Ошибка",
+            type: "error",
+          })
+        );
+      }
       setLoad(true);
     }
   };
@@ -115,7 +203,6 @@ const useAddBill = (name: string, balance: string) => {
           balance,
           cents: 0,
         });
-        console.log(res.data);
         if (res.data.status === 201) {
           dispatch(HidePreloader());
           dispatch(
@@ -149,24 +236,44 @@ const useAddBill = (name: string, balance: string) => {
 };
 
 const useTinkoff = (
-  login: string,
+  phone: string,
+  exportStartDate: string | null,
   password: string,
-  date: string,
   code: string
 ) => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const userId = useSelector(GetUserId);
+
   const [status, setStatus] = useState<"signin" | "code">("signin");
+  const [id, setId] = useState<string>();
 
   const signin = async (): Promise<void> => {
-    if (!login && !password && !code && !date && !code) return;
     try {
-      if (code!.length === 0) {
-      } else {
-        throw new Error("Некорректные поля");
+      if (!phone) {
+        throw new Error("Введите номер телефона");
+      }
+
+      if (!exportStartDate) {
+        throw new Error("Введите дату");
+      }
+
+      dispatch(ShowPreloader());
+
+      const { data } = await axios.post(
+        `${API_URL}api/v1/tinkoff/connect/start`,
+        {
+          userId,
+          phone,
+          exportStartDate: new Date(exportStartDate),
+        }
+      );
+
+      if (data.status === 200) {
+        setStatus("code");
+        setId(data.id);
       }
     } catch (error: any) {
-      dispatch(HidePreloader());
       dispatch(
         ShowToast({
           text: error.message,
@@ -174,19 +281,30 @@ const useTinkoff = (
           type: "error",
         })
       );
+    } finally {
+      dispatch(HidePreloader());
     }
   };
 
   const syncTinkoff = async (): Promise<void> => {
-    if (!login && !password && !code && !date && !code) return;
-
     try {
-      if (login!.length != 0 && password!.length != 0 && date!.length === 0) {
-      } else {
-        throw new Error("Некорректные поля");
+      if (!password) {
+        throw new Error("Введите код");
       }
+
+      if (!code) {
+        throw new Error("Введите код");
+      }
+
+      const { data } = await axios.post(
+        `${API_URL}api/v1/tinkoff/connect/submit`,
+        {
+          id,
+          code,
+          password,
+        }
+      );
     } catch (error: any) {
-      dispatch(HidePreloader());
       dispatch(
         ShowToast({
           text: error.message,
@@ -194,6 +312,8 @@ const useTinkoff = (
           type: "error",
         })
       );
+    } finally {
+      dispatch(HidePreloader());
     }
   };
 
@@ -204,15 +324,28 @@ const useTinkoff = (
   };
 };
 
-const useSber = (login: string, date: string) => {
+const useSber = (phone: string, startExportDate: string | null) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const syncTinkoff = async (): Promise<void> => {
+  const userId = useSelector(GetUserId);
+
+  const syncSber = async (): Promise<void> => {
     try {
-      if (login.length !== 0 && date.length === 0) {
-      } else {
-        throw new Error("Некорректные поля");
+      if (!phone) {
+        throw new Error("Введите логин");
       }
+
+      if (!startExportDate) {
+        throw new Error("Введите дату");
+      }
+
+      dispatch(ShowPreloader());
+
+      const { data } = await axios.post(`${API_URL}api/v1/sber/connect/start`, {
+        userId,
+        phone,
+        startExportDate: new Date(startExportDate),
+      });
     } catch (error: any) {
       dispatch(HidePreloader());
       dispatch(
@@ -225,13 +358,15 @@ const useSber = (login: string, date: string) => {
     }
   };
   return {
-    syncTinkoff,
+    syncSber,
   };
 };
 
 export default {
   useGetBill,
   useGetTinkoffCards,
+  useGetSberCards,
+  useGetTochkaCards,
   useAddBill,
   useTinkoff,
   useSber,

@@ -9,6 +9,7 @@ interface Props {
   price: string | number;
   className?: string;
   subtitle?: string;
+  icon?: string;
 }
 
 const BalanceBlockItem: React.FunctionComponent<Props> = ({
@@ -16,10 +17,11 @@ const BalanceBlockItem: React.FunctionComponent<Props> = ({
   price,
   className,
   subtitle,
+  icon,
 }: Props) => {
   return (
     <div className={`balance-block-item ${className}`}>
-      <img src={WalletBalanceIcon} alt="Wallet icon" />
+      <img src={icon || WalletBalanceIcon} alt="Wallet icon" width={20} />
       <div>
         <span>{title}</span>
         <span className="balance-block-item-subtitle">{subtitle ?? ""}</span>

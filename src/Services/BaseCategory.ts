@@ -25,7 +25,6 @@ const useGetBaseCategory = () => {
         throw new Error(res.data.message);
       }
     } catch (error: any) {
-      console.log(error.message);
     }
   };
 

@@ -168,7 +168,6 @@ const addCategory = async (
         categoryLimit: 0,
       },
     });
-    console.log(response);
     dispatch(UpdateCategory());
   } catch (error: any) {
     console.log(error);

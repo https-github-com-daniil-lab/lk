@@ -10,7 +10,7 @@ interface Props {}
 const Settings: React.FunctionComponent<Props> = (props: Props) => {
   return (
     <div className="settings">
-      <div className="app-card" style={{ height: 422 }}>
+      <div className="app-card">
         <div className="app-card-header">
           <div className="content-section-title">Подписки</div>
           <div className="content-section-controll"></div>

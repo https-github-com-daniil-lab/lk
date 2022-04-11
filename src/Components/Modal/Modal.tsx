@@ -18,7 +18,7 @@ const Modal = ({ show, children, onClose, zIndex, style }: Props) => {
     ? ReactDOM.createPortal(
         <div
           className={`modal ${id} ${show ? "active" : "inactive"}`}
-          style={{ zIndex: zIndex ?? 9 }}
+          style={{ zIndex: zIndex ?? 10 }}
           onClick={(e: any) => {
             if (show) {
               if (e.target.className.includes("modal " + id)) {

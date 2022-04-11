@@ -14,7 +14,6 @@ const useGetAdvertising = () => {
     try {
       const res = await axios.get(`${API_URL}api/v1/advertising/`, {});
       if (res.data.status === 200) {
-        console.log(res.data.data);
         setAdvertising(res.data.data);
         setLoad(true);
       } else {

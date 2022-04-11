@@ -60,6 +60,13 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
     setExpand(false);
   };
 
+  const clearLocation = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    setLocation(null);
+  };
+
   const { OperationAdd } = useAddOperation({
     bill,
     date,
@@ -197,11 +204,20 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
         onClick={() => setMapModal(true)}
       >
         <span className="add-operation-modal-block-title">Местоположение</span>
-        <span>
-          {location
-            ? `${location[0]} - ${location[1]}`
-            : "Адресс еще не указан"}
-        </span>
+        <div className="add-operation-modal-block-controls">
+          {location ? (
+            <>
+              <span>
+                {location[0]} - {location[1]}
+              </span>
+              <button className="button-primary" onClick={clearLocation}>
+                Очистить
+              </button>
+            </>
+          ) : (
+            <span>Адрес еще не указан</span>
+          )}
+        </div>
       </div>
 
       <div className="add-operation-modal-scan">
@@ -222,7 +238,7 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
         style={{
           padding: 0,
         }}
-        zIndex={15}
+        zIndex={16}
         show={mapModal}
         onClose={() => setMapModal(false)}
       >

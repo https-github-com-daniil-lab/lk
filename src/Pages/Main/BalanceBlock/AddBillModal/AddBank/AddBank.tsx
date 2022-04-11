@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import Modal from "Components/Modal/Modal";
 import SberBank from "./SberBank/SberBank";
 import TinkoffBank from "./TinkoffBank/TinkoffBank";
+import TinkoffIcon from "Static/Images/tinkoff.png";
+import SberIcon from "Static/Images/sber.png";
+import TochkaIcon from "Static/Images/tochka.svg";
 
 import PlusFillIcon from "Static/icons/plus.svg";
 
@@ -23,25 +26,48 @@ const AddBank: React.FunctionComponent<Props> = (props: Props) => {
     show: false,
   });
 
+  const handleOnClose = () => {
+    setBankModal(oldBankModal => ({
+      ...oldBankModal,
+      show: false,
+    }));
+  };
+
   return (
     <div className="add-bank">
       <span className="add-bill-modal-title">Выберите банк</span>
       <div
         className="bank-wrapper"
-        onClick={() => setBankModal({ content: <TinkoffBank />, show: true })}
+        onClick={() => setBankModal({ content: <TinkoffBank onClose={handleOnClose} />, show: true })}
       >
-        <span>Тинькофф</span>
+        <div className="bank-wrapper-brand">
+          <img src={TinkoffIcon} alt="Точка" width={60} />
+          <span>Тинькофф</span>
+        </div>
         <img src={PlusFillIcon} />
       </div>
       <div
         className="bank-wrapper"
-        onClick={() => setBankModal({ content: <SberBank />, show: true })}
+        onClick={() => setBankModal({ content: <SberBank onClose={handleOnClose} />, show: true })}
       >
-        <span>Сбербанк</span>
+        <div className="bank-wrapper-brand">
+          <img src={SberIcon} alt="Точка" width={60} />
+          <span>Сбербанк</span>
+        </div>
+        <img src={PlusFillIcon} />
+      </div>
+      <div
+        className="bank-wrapper"
+        onClick={() => {}}
+      >
+        <div className="bank-wrapper-brand">
+          <img src={TochkaIcon} alt="Точка" width={60} />
+          <span>Точка</span>
+        </div>
         <img src={PlusFillIcon} />
       </div>
       <Modal
-        zIndex={11}
+        zIndex={12}
         show={bankModal.show}
         onClose={() => setBankModal({ show: false, content: null })}
       >

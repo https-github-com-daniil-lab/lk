@@ -73,6 +73,27 @@ export interface ITinkoffCard {
   status: string;
 }
 
+export interface ISberCard {
+  id: string;
+  cardNumber: string;
+  description: string;
+  name: string;
+  cardId: string;
+  status: string;
+  expireDate: string;
+  cardAccount: string;
+  balance: BalanceType;
+  cardName: string;
+  bankName: string;
+}
+
+export interface ITochkaCard {
+  id: string;
+  cardNumber: string;
+  balance: BalanceType;
+  bankName: string;
+}
+
 export interface ITinkoffTransaction {
   amount: BalanceType;
   currency: string;
@@ -125,6 +146,12 @@ export interface ISubscription {
   newPrice: number;
 }
 
+export interface ISubscriptionGroup {
+  id: string;
+  name: string;
+  variants: ISubscription[]
+}
+
 export type IFiles = {
   id: string;
   path: string;
@@ -155,11 +182,9 @@ export type UserTranscationsType = {
   currency: string;
   amount: string | number;
   title: string;
-}
+};
 
 export interface TransactionsSorted {
   date: string;
   transactions: UserTranscationsType[];
 }
-
-

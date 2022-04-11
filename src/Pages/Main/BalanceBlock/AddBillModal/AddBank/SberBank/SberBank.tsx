@@ -1,17 +1,27 @@
+import DateField from "Components/DateField/DateField";
 import React, { useState } from "react";
 import Bill from "Services/Bill";
-
 import "Styles/Pages/Main/BalanceBlock/AddBillModal/AddBank/SberBank/SberBank.scss";
+import PhoneMask from "Utils/PhoneMask";
 
-interface Props {}
+interface Props {
+  onClose: () => void;
+}
 
-const SberBank: React.FunctionComponent<Props> = (props: Props) => {
+const SberBank: React.FunctionComponent<Props> = ({ onClose }: Props) => {
   const [login, setLogin] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<string | null>(null);
+
+  const _handlePhone = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const mask = PhoneMask(event.target.value);
+    setLogin(mask);
+  };
 
   const { useSber } = Bill;
-  const sber = useSber(login, date);
-  const _connect = async (): Promise<void> => {};
+  const { syncSber } = useSber(login, date);
+  const _connect = async (): Promise<void> => {
+    await syncSber();
+  };
 
   return (
     <div className="sber-bank">
@@ -22,28 +32,26 @@ const SberBank: React.FunctionComponent<Props> = (props: Props) => {
         <br />
         Синхронизация данных не позволяет переводить деньги с вашего счета!
       </p>
-      <div>
+      <div className="row">
         <span>Введите логин от мобильного банка</span>
         <input
           type="text"
           value={login}
-          onChange={(e) => setLogin(e.target.value)}
+          onChange={_handlePhone}
           placeholder="+7**********"
         />
       </div>
-      <div>
-        <span>Дата загрузки операций</span>
-        <input
-          type="text"
-          disabled
-          value={date}
-          onClick={() => alert("calendar")}
-          placeholder="21 ноября 2021"
-        />
+
+      <DateField date={date} setDate={setDate} label="Дата загрузки операций" />
+
+      <div className="buttons">
+        <button className="button-secondary" onClick={onClose}>
+          Отмена
+        </button>
+        <button className="button-primary" onClick={_connect}>
+          Подключить
+        </button>
       </div>
-      <button className="button-primary" onClick={() => {}}>
-        Подключить
-      </button>
     </div>
   );
 };

@@ -1,13 +1,9 @@
-import React, { useState } from "react";
-
-import Bill from "Services/Bill";
-
 import Modal from "Components/Modal/Modal";
-import AddBank from "./AddBank/AddBank";
-
+import React, { useState } from "react";
+import Bill from "Services/Bill";
 import CardIcon from "Static/icons/card.svg";
-
 import "Styles/Pages/Main/BalanceBlock/AddBillModal/AddBillModal.scss";
+import AddBank from "./AddBank/AddBank";
 
 interface Props {
   onClose: () => void;
@@ -82,7 +78,7 @@ const AddBillModal: React.FunctionComponent<Props> = ({ onClose }: Props) => {
         </button>
       </div>
       <Modal
-        zIndex={10}
+        zIndex={11}
         show={addBankModal}
         onClose={() => setAddBankModal(false)}
       >

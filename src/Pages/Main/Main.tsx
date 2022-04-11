@@ -42,7 +42,7 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
             className="content-section-controll"
             onClick={() => setShowBillModal(true)}
           >
-            <span>Добавить счет</span>{" "}
+            <span>Добавить счет</span>
             <img src={PlusCircleFill} alt={"Plus icon"} />
           </div>
         </div>

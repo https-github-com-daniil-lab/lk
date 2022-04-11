@@ -173,7 +173,6 @@ class Auth {
 
         if (response.status === 200) {
           this.dispatch(HidePreloader());
-          console.log(response);
           return true;
         } else {
           throw new Error(response.data.message);
@@ -207,17 +206,13 @@ class Auth {
           url: `${API_URL}api/v1/user/`,
           data,
         });
-        console.log(response);
         if (response.status === 201) {
           this.dispatch(HidePreloader());
-          console.log(response);
         } else {
           throw new Error(response.data.message);
         }
       } catch (error: any) {
         this.dispatch(HidePreloader());
-        console.log(error.request);
-        console.log(error.message);
         alert(error.message);
       }
     }

@@ -20,6 +20,15 @@
       margin-bottom: 15px;
       font-weight: bold;
     }
+    &-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      button {
+        width: auto;
+      }
+    }
   }
   &-row {
     display: grid;
