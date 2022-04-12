@@ -1,3 +1,5 @@
+
+import Header from "Components/Header/Header";
 import Modal from "Components/Modal/Modal";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -10,7 +12,9 @@ const Settings: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [isSuccessSubscribe, setIsSuccessSubscribe] = useState(false);
   const [isFailSubscribe, setIsFailSubscribe] = useState(false);
-  const [failMessage, setFailMessage] = useState("Произошла неизвестная ошибка при оплате");
+  const [failMessage, setFailMessage] = useState(
+    "Произошла неизвестная ошибка при оплате"
+  );
 
   useEffect(() => {
     const message = searchParams.get("message");
@@ -19,7 +23,6 @@ const Settings: React.FC = () => {
     if (success === "true" || success === "false") {
       setIsSuccessSubscribe(success === "true");
       setIsFailSubscribe(success === "false");
-
       message && setFailMessage(message);
 
       navigate("/settings");
@@ -29,18 +32,18 @@ const Settings: React.FC = () => {
   return (
     <>
       <div className="settings">
-        <div className="app-card">
-          <div className="app-card-header">
-            <div className="content-section-title">Подписки</div>
-            <div className="content-section-controll"></div>
+        <div className="settings-subs">
+          <Header />
+          <h1 className="main__title">Настройки</h1>
+          <div className="app-card">
+            <div className="app-card-header">
+              <div className="content-section-title">Подписка</div>
+              <div className="content-section-controll"></div>
+            </div>
+            <SubscriptionBlock />
           </div>
-          <SubscriptionBlock />
         </div>
         <div className="app-card">
-          <div className="app-card-header">
-            <div className="content-section-title">Пользователь</div>
-            <div className="content-section-controll"></div>
-          </div>
           <UserBlock />
         </div>
       </div>

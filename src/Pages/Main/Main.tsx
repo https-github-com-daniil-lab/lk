@@ -12,19 +12,25 @@ import FadeIn from "Components/FadeIn/FadeIn";
 import AddBillModal from "./BalanceBlock/AddBillModal/AddBillModal";
 
 import "Styles/Pages/Main/Main.scss";
+import Header from "Components/Header/Header";
+import { useSelector } from "react-redux";
 
 interface Props {}
 
 const Main: React.FunctionComponent<Props> = (props: Props) => {
+  const username = useSelector((state: any) => state?.user?.user?.username);
   const [showAddOperationModal, setShowAddOperationModal] =
     useState<boolean>(false);
 
   const [showBillModal, setShowBillModal] = useState<boolean>(false);
   return (
     <div className="main">
+      <Header />
+      <h1 className="main__title">
+        Добрый день{username ? `, ${username}!` : "!"}
+      </h1>
       <div className="app-card">
         <div className="app-card-header">
-          <div className="content-section-title">Операции</div>
           <div
             className="content-section-controll"
             onClick={() => setShowAddOperationModal(true)}
@@ -37,7 +43,6 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
       </div>
       <div className="app-card">
         <div className="app-card-header">
-          <div className="content-section-title">Балансы</div>
           <div
             className="content-section-controll"
             onClick={() => setShowBillModal(true)}
@@ -50,7 +55,9 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
       </div>
       <div className="app-card">
         <div className="app-card-header">
-          <div className="content-section-title">Категории</div>
+          <div className="content-section-title content-section-category">
+            <h1>Категории</h1>
+          </div>
           <div>
             <ContextButton
               button={

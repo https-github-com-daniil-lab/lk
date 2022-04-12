@@ -65,8 +65,10 @@ const useGetTransaction = () => {
     const f = transactions
       .find(filterByDate)
       ?.transactions.map((t) => t.amount);
-    if (f) return f;
-    else return [];
+
+    if (f) return f as number[] | string[];
+
+   else return [];
   }, [selectedDate, transactions]);
 
   const sorted = (array: UserTranscationsType[]): TransactionsSorted[] => {
