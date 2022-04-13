@@ -16,6 +16,12 @@ body {
   font-family: "Montserrat";
   overflow: hidden;
 }
+html {
+  font-size: 15px;
+  @media screen and (max-width: 945px) {
+    font-size: 12px;
+  }
+}
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -32,7 +38,7 @@ input {
   background-color: var(--input-light-bg);
   border-radius: 4px;
   font-family: var(--body-font);
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 500;
   padding: 10px 20px;
   box-shadow: 0 0 0 2px rgba(134, 140, 160, 0.02);
@@ -50,9 +56,31 @@ input {
   transition: 0.3s;
   white-space: nowrap;
   width: 100%;
-  font-size: 14px;
+  font-size: 0.9rem;
   &:hover {
     background-color: #c80d61;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.button-info {
+  align-items: center;
+  padding: 5px 16px;
+  background: #6a82fb;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05);
+  border-radius: 50px;
+  transition: 0.3s;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+  color: #fff;
+  &:hover {
+    background-color: #3f5be8;
   }
   &:disabled {
     opacity: 0.5;
@@ -72,14 +100,14 @@ input {
   transition: 0.3s;
   white-space: nowrap;
   width: 100%;
-  font-size: 14px;
+  font-size: 0.9rem;
   color: var(--theme-color);
   &:hover {
     background-color: #f3f3f3;
   }
 }
 .app-card {
-  font-size: 16px;
+  font-size: 1.1rem;
   padding: 20px 10px 20px 20px;
   cursor: pointer;
   transition: 0.3s ease;
@@ -94,9 +122,10 @@ input {
   color: var(--content-title-color);
   font-weight: 500;
   font-weight: 500;
-  font-size: 25px;
-  position: relative;
-  bottom: -40px;
+  font-size: 1.6rem;
+  h1 {
+    font-size: 1.5rem;
+  }
   // margin-bottom: 14px;
 }
 .content-section-category {

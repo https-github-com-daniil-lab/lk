@@ -48,7 +48,7 @@ const LoginCode: React.FunctionComponent<Props> = (props: Props) => {
         <button className="button-secondary" onClick={props.back}>
           Назад
         </button>
-        <button className="button-primary" onClick={_confirm}>
+        <button className="button-info" onClick={_confirm}>
           Продолжить
         </button>
       </div>

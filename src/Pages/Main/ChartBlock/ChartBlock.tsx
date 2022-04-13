@@ -11,7 +11,7 @@ const ChartBlock: React.FunctionComponent<Props> = (props: Props) => {
   const { useGetTransaction } = Transaction;
   const {
     load,
-    transactions,
+    allTransactions,
     selectedDate,
     setDate,
     prices,
@@ -22,7 +22,7 @@ const ChartBlock: React.FunctionComponent<Props> = (props: Props) => {
   return (
     <Load {...{ load }}>
       <div className="chart-block">
-        <ChartBlockHistory {...{ transactions }} />
+        <ChartBlockHistory transactions={allTransactions} />
         {load ? (
           <DonutChartBlock
             data={prices}

@@ -45,7 +45,7 @@ const LoginPassword: React.FunctionComponent<Props> = (props: Props) => {
       <div className="login-password-info">
         <p className="login-password-subtitle">Введите пароль для входа</p>
       </div>
-      <button className="button-primary" onClick={_confirm}>
+      <button className="button-info" onClick={_confirm}>
         Продолжить
       </button>
       <button className="button-secondary" onClick={props.back}>

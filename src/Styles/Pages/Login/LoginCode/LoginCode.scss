@@ -6,12 +6,12 @@
   justify-items: center;
   align-items: center;
   padding: 20px 40px;
-  background-color: var(--theme-bg-color);
+  background-color: #eff3f8;
   overflow: hidden;
   border-radius: 14px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 500;
 
   &-logo {
@@ -32,7 +32,7 @@
   &-subtitle {
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 0.93rem;
     line-height: 17px;
     text-align: center;
     color: #333;

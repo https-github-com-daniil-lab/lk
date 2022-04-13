@@ -5,13 +5,7 @@
   justify-items: center;
   align-items: center;
   height: 100vh;
-  background: repeating-linear-gradient(
-    -45deg,
-    rgba(71, 118, 230, 0.7),
-    rgba(133, 165, 240, 0.7),
-    rgba(179, 146, 233, 0.7),
-    rgba(142, 84, 233, 0.7)
-  );
+  background: #eff3f8;
 
   animation: gradient 6s linear infinite reverse;
 

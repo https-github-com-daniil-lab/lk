@@ -71,9 +71,19 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
           конфиденциальности
         </span>
       </p>
-      <button className="button-primary" onClick={_auth}>
+      <button
+        className="button-info"
+        onClick={_auth}
+        style={{
+          width: "262px",
+          height: "60px",
+        }}
+      >
         Продолжить
       </button>
+      <p className="login-phone-subtitle">
+        <span>Восстановаить аккаунт</span>
+      </p>
     </div>
   );
 };
