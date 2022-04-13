@@ -2,7 +2,13 @@ import axios from "Utils/Axios";
 
 import { AppDispatch, RootStore } from "Redux/Store";
 
-import { HidePreloader, Logout, SetUser, ShowPreloader } from "Redux/Actions";
+import {
+  HidePreloader,
+  Logout,
+  SetUser,
+  ShowPreloader,
+  ShowToast,
+} from "Redux/Actions";
 
 import { Buffer } from "buffer";
 
@@ -81,7 +87,17 @@ class Auth {
           throw new Error(response.data.message);
         }
       } catch (error: any) {
-        alert(error.message);
+        if (error.response.status === 400) {
+          this.dispatch(
+            ShowToast({
+              title: "Ошибка",
+              text: "Неверный логин или пароль",
+              type: "error",
+            })
+          );
+        } else {
+          alert(error.message);
+        }
       }
     }
   }
@@ -179,7 +195,17 @@ class Auth {
         }
       } catch (error: any) {
         this.dispatch(HidePreloader());
-        alert(error.message);
+        if (error.response.status === 400) {
+          this.dispatch(
+            ShowToast({
+              title: "Ошибка",
+              text: "Неверный смс код",
+              type: "error",
+            })
+          );
+        } else {
+          alert(error.message);
+        }
       }
     }
   }
