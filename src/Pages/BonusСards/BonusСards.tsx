@@ -14,7 +14,6 @@ interface Props {}
 
 const BonusСards: React.FunctionComponent<Props> = (props: Props) => {
   const { bonus, load } = Bonus.useGetCards();
-  console.log(bonus);
   return (
     <div className="bonuscard">
       <div className="bonuscard-content">

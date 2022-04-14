@@ -9,7 +9,6 @@ const CircleChart: React.FunctionComponent<Props> = ({
   strokeDashoffset,
   color,
 }: Props) => {
-  console.log(strokeDashoffset);
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -13,26 +13,32 @@ import Dateslider from "Components/DateSlider/Dateslider";
 interface Props {
   selectedCategory: ICategory;
   setCategody: React.Dispatch<React.SetStateAction<ICategory>>;
+  expenses: number;
+  income: number;
+  prev: () => void;
+  next: () => void;
+  selectedDate: string;
 }
 
 const ExpenseIncomeBlock: React.FunctionComponent<Props> = ({
   selectedCategory,
   setCategody,
+  income,
+  prev,
+  next,
+  expenses,
+  selectedDate,
 }) => {
-  const { useGetTransaction } = Transaction;
-  const { selectedDate, expenses, prev, next, income } = useGetTransaction();
   const { load, categories } = Catigories.useGetCategory();
 
   const expenseCircle = useCircleChart(
-    expenses / (selectedCategory?.categoryLimit || 1)
+    expenses / selectedCategory?.categoryLimit
   );
-  const incomeCircle = useCircleChart(
-    income / (selectedCategory?.categoryLimit || 1)
-  );
+  const incomeCircle = useCircleChart(income / selectedCategory?.categoryLimit);
   return (
     <div className="expense-income-block">
       <div className="expense-income-info">
-        <Dateslider prev={prev} next={next} selectedDate={selectedDate[0]} />
+        <Dateslider prev={prev} next={next} selectedDate={selectedDate} />
         <div className="expense-income-card expense-income-wrapper">
           <div className="expense-income-card-content">
             <span>Расход</span>
@@ -52,7 +58,9 @@ const ExpenseIncomeBlock: React.FunctionComponent<Props> = ({
               }
               color="#F0187B"
             />
-            <div className="expense-income-card-bar-value">{expenses} %</div>
+            <div className="expense-income-card-bar-value">
+              {expenses / selectedCategory?.categoryLimit <= 100 || 0} %
+            </div>
           </div>
         </div>
         <div className="expense-income-card expense-income-wrapper">
@@ -74,7 +82,9 @@ const ExpenseIncomeBlock: React.FunctionComponent<Props> = ({
               }
               color="#6A82FB"
             />
-            <div className="expense-income-card-bar-value">{income} %</div>
+            <div className="expense-income-card-bar-value">
+              {income / selectedCategory?.categoryLimit <= 100 || 0} %
+            </div>
           </div>
         </div>
       </div>
@@ -123,7 +133,12 @@ const ExpenseIncomeBlock: React.FunctionComponent<Props> = ({
                   <span className="expense-income-history-row-info-amount">
                     {data?.user?.plannedIncome} из {data?.categoryLimit} ₽
                   </span>
-                  <LineChart value={45} color="#6A82FB" />
+                  <LineChart
+                    value={
+                      data?.user?.plannedIncome / (data?.categoryLimit || 1)
+                    }
+                    color="#6A82FB"
+                  />
                 </div>
               </div>
             );

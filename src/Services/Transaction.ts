@@ -251,12 +251,6 @@ const useGetBudget = () => {
     return "expenses";
   }, [selectedMonth]);
 
-  useEffect(() => {
-    if (load) {
-      console.log("categories", categories);
-    }
-  }, [load]);
-
   return {
     selectedMonth,
     expenses,

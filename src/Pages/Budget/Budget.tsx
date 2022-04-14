@@ -28,13 +28,46 @@ const Budget: React.FunctionComponent<Props> = (props: Props) => {
   }, [categories[0]]);
 
   const { useGetTransaction } = Transaction;
-  const { transactions, selectedDate, income, expenses, next, prev } =
-    useGetTransaction();
-  console.log(transactions);
-  console.log(
-    transactions[0]?.transactions[0]?.category?.name == selectedCategory?.name
-  );
-  console.log("category: ", selectedCategory);
+  const { transactions, selectedDate, next, prev } = useGetTransaction();
+
+  const [fillterTransactions, setFillterTransactions] = useState(transactions);
+
+  const [income, setIncome] = useState(0);
+  const [expenses, setExpenses] = useState(0);
+
+  useEffect(() => {
+    setFillterTransactions(
+      transactions.map((a) => {
+        const newTransactions = a?.transactions?.filter(
+          (b) => b.category?.name === selectedCategory?.name
+        );
+        return { ...a, transactions: newTransactions };
+      })
+    );
+  }, [transactions, selectedCategory?.name]);
+
+  useEffect(() => {
+    setIncome(
+      fillterTransactions
+        ?.map((item) =>
+          item.transactions
+            .filter((i) => i.action === "DEPOSIT" || i.action === "EARN")
+            .reduce((x, y) => +x + +y.amount, 0)
+        )
+        .reduce((x, y) => x + y, 0)
+    );
+
+    setExpenses(
+      fillterTransactions
+        ?.map((item) =>
+          item.transactions
+            .filter((i) => i.action === "WITHDRAW" || i.action === "SPEND")
+            .reduce((x, y) => +x + +y.amount, 0)
+        )
+        .reduce((x, y) => x + y, 0)
+    );
+  }, [fillterTransactions]);
+
   const expenseCircle = useCircleChart(expenses);
   return (
     <div className="budget">
@@ -45,6 +78,11 @@ const Budget: React.FunctionComponent<Props> = (props: Props) => {
           <ExpenseIncomeBlock
             selectedCategory={selectedCategory}
             setCategody={setCategody}
+            expenses={expenses}
+            income={income}
+            prev={prev}
+            next={next}
+            selectedDate={selectedDate[0]}
           />
         </div>
       </div>
@@ -72,15 +110,15 @@ const Budget: React.FunctionComponent<Props> = (props: Props) => {
                 </div>
                 <div className="operations-item operations-categories">
                   <div className="operations-categories-title">
-                    <h1>{categories[0]?.name}</h1>
+                    <h1>{selectedCategory?.name}</h1>
                     <div
                       className="operations-icon"
                       style={{
-                        backgroundColor: categories[0]?.color?.hex,
+                        backgroundColor: selectedCategory?.color?.hex,
                       }}
                     >
                       <img
-                        src={`${API_URL}api/v1/image/content/${categories[0]?.icon?.name}`}
+                        src={`${API_URL}api/v1/image/content/${selectedCategory?.icon?.name}`}
                       />
                     </div>
                   </div>
@@ -109,13 +147,7 @@ const Budget: React.FunctionComponent<Props> = (props: Props) => {
                 </div>
 
                 <div className="operations-transactions">
-                  <ChartBlockHistory
-                    transactions={transactions.filter(
-                      (a) =>
-                        a.transactions[0]?.category?.name ==
-                        selectedCategory?.name
-                    )}
-                  />
+                  <ChartBlockHistory transactions={fillterTransactions} />
                 </div>
               </div>
             </div>

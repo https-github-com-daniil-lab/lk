@@ -14,6 +14,8 @@ const PersonalAreaLayer: React.FunctionComponent<Props> = (props: Props) => {
 
   const [sideComponent, setSideComponent] = useState<string | null>(null);
 
+  const [mobileMenu, setMobileMenu] = useState(false);
+
   useMemo(() => {
     [...Routes.dashboardRoutes, ...Routes.supportRouters].forEach(
       (route, idx) => {
