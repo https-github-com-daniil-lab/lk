@@ -1,62 +1,80 @@
-import React from "react";
+import React, { useState } from "react";
 import Transaction from "Services/Transaction";
 import useCircleChart from "Utils/Hooks/useCircleChart";
 import CircleChart from "Components/CircleChart/CircleChart";
 import LineChart from "Components/LineChart/LineChart";
 import Load from "Components/Load/Load";
 import "Styles/Pages/Budget/ExpenseIncomeBlock/ExpenseIncomeBlock.scss";
-import Catigories from "../../../Services/Category";
+import Catigories, { ICategory } from "../../../Services/Category";
 
 import { API_URL } from "Utils/Config";
 import Dateslider from "Components/DateSlider/Dateslider";
 
-interface Props {}
+interface Props {
+  selectedCategory: ICategory;
+  setCategody: React.Dispatch<React.SetStateAction<ICategory>>;
+}
 
-const ExpenseIncomeBlock: React.FunctionComponent<Props> = (props: Props) => {
-  const { useGetBudget } = Transaction;
-  const { selectedMonth, expenses, prev, next } = useGetBudget();
+const ExpenseIncomeBlock: React.FunctionComponent<Props> = ({
+  selectedCategory,
+  setCategody,
+}) => {
+  const { useGetTransaction } = Transaction;
+  const { selectedDate, expenses, prev, next, income } = useGetTransaction();
   const { load, categories } = Catigories.useGetCategory();
 
-  const expense = useCircleChart(67);
-  const income = useCircleChart(74);
+  const expenseCircle = useCircleChart(
+    expenses / (selectedCategory?.categoryLimit || 1)
+  );
+  const incomeCircle = useCircleChart(
+    income / (selectedCategory?.categoryLimit || 1)
+  );
   return (
     <div className="expense-income-block">
       <div className="expense-income-info">
-        <Dateslider />
+        <Dateslider prev={prev} next={next} selectedDate={selectedDate[0]} />
         <div className="expense-income-card expense-income-wrapper">
           <div className="expense-income-card-content">
             <span>Расход</span>
             <span className="expense-income-card-content-title">Сейчас</span>
-            <span>68 495 ₽</span>
+            <span>{expenses} ₽</span>
             <span className="expense-income-card-content-title">
               Запланировано
             </span>
-            <span>189 800 ₽</span>
+            <span>{selectedCategory?.categoryLimit} ₽</span>
           </div>
           <div className="expense-income-card-bar">
             <CircleChart
-              strokeDashoffset={expense.strokeDashOffsetValue}
+              strokeDashoffset={
+                expenseCircle.strokeDashOffsetValue <= 0
+                  ? 0
+                  : expenseCircle.strokeDashOffsetValue
+              }
               color="#F0187B"
             />
-            <div className="expense-income-card-bar-value">67%</div>
+            <div className="expense-income-card-bar-value">{expenses} %</div>
           </div>
         </div>
         <div className="expense-income-card expense-income-wrapper">
           <div className="expense-income-card-content">
             <span>Доход</span>
             <span className="expense-income-card-content-title">Сейчас</span>
-            <span>68 495 ₽</span>
+            <span>{income} ₽</span>
             <span className="expense-income-card-content-title">
               Запланировано
             </span>
-            <span>189 800 ₽</span>
+            <span>{selectedCategory?.categoryLimit} ₽</span>
           </div>
           <div className="expense-income-card-bar">
             <CircleChart
-              strokeDashoffset={income.strokeDashOffsetValue}
+              strokeDashoffset={
+                incomeCircle.strokeDashOffsetValue <= 0
+                  ? 0
+                  : incomeCircle.strokeDashOffsetValue
+              }
               color="#6A82FB"
             />
-            <div className="expense-income-card-bar-value">74%</div>
+            <div className="expense-income-card-bar-value">{income} %</div>
           </div>
         </div>
       </div>
@@ -64,7 +82,13 @@ const ExpenseIncomeBlock: React.FunctionComponent<Props> = (props: Props) => {
         <div className="expense-income-history expense-income-wrapper">
           {categories.map((data, i) => {
             return (
-              <div key={i} className="expense-income-history-row">
+              <div
+                key={i}
+                className="expense-income-history-row"
+                onClick={() => {
+                  setCategody(data);
+                }}
+              >
                 <div className="expense-income-history-icon-wrapper">
                   <div
                     className="expense-income-history-icon"
@@ -97,7 +121,7 @@ const ExpenseIncomeBlock: React.FunctionComponent<Props> = (props: Props) => {
                     </svg>
                   </div>
                   <span className="expense-income-history-row-info-amount">
-                    {data.user.plannedIncome} из {data.categoryLimit} ₽
+                    {data?.user?.plannedIncome} из {data?.categoryLimit} ₽
                   </span>
                   <LineChart value={45} color="#6A82FB" />
                 </div>

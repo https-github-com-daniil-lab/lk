@@ -25,9 +25,32 @@ const useGetTransaction = () => {
     moment().format("YYYY-MM-DD"),
   ]);
 
+  function next() {
+    if (!moment(selectedDate[0]).isSameOrAfter(moment().subtract(1, "day")))
+      setDate([moment(selectedDate[0]).add(1, "months").format("YYYY-MM-DD")]);
+  }
+
+  function prev() {
+    setDate([
+      moment(selectedDate[0]).subtract(1, "months").format("YYYY-MM-DD"),
+    ]);
+  }
+
+  useEffect(() => {
+    if (moment(selectedDate[0]).isAfter(moment())) {
+      setSelectedDate([moment().format("YYYY-MM-DD")]);
+    }
+  }, [selectedDate]);
+
   const [transactions, setTransactions] = useState<TransactionsSorted[]>([]);
 
-  const filterByDate = (v: TransactionsSorted) => selectedDate.includes(v.date);
+  const filterByDate = (v: TransactionsSorted) => {
+    const now = moment(selectedDate[0]);
+    return now.isBetween(
+      moment(v.date).subtract(1, "month"),
+      moment(v.date).add(1, "day")
+    );
+  };
 
   const income = useMemo(() => {
     return transactions
@@ -35,10 +58,10 @@ const useGetTransaction = () => {
       .map((item) =>
         item.transactions
           .filter((i) => i.action === "DEPOSIT" || i.action === "EARN")
-          .reduce((x, y) => x + y.amount, 0)
+          .reduce((x, y) => +x + +y.amount, 0)
       )
       .reduce((x, y) => x + y, 0);
-  }, [selectedDate]);
+  }, [selectedDate, transactions]);
 
   const expenses = useMemo(() => {
     return transactions
@@ -46,10 +69,10 @@ const useGetTransaction = () => {
       .map((item) =>
         item.transactions
           .filter((i) => i.action === "WITHDRAW" || i.action === "SPEND")
-          .reduce((x, y) => x + y.amount, 0)
+          .reduce((x, y) => +x + +y.amount, 0)
       )
       .reduce((x, y) => x + y, 0);
-  }, [selectedDate]);
+  }, [selectedDate, transactions]);
 
   const setDate = (dates: string[]): void =>
     setSelectedDate(dates.map((i) => moment(i).format("YYYY-MM-DD")));
@@ -67,8 +90,7 @@ const useGetTransaction = () => {
       ?.transactions.map((t) => t.amount);
 
     if (f) return f as number[] | string[];
-
-   else return [];
+    else return [];
   }, [selectedDate, transactions]);
 
   const sorted = (array: UserTranscationsType[]): TransactionsSorted[] => {
@@ -150,9 +172,7 @@ const useGetTransaction = () => {
       });
     }
 
-    const sort = sorted(t);
-
-    setTransactions(sort);
+    setTransactions(sorted(t));
 
     setLoad(true);
   };
@@ -172,11 +192,13 @@ const useGetTransaction = () => {
     allTransactions: transactions,
     income,
     expenses,
+    next,
+    prev,
   };
 };
 
 const useGetBudget = () => {
-  const { allTransactions: transactions } = useGetTransaction();
+  const { allTransactions } = useGetTransaction();
 
   const { useGetCategory } = Category;
   const { categories, load } = useGetCategory();
@@ -207,7 +229,7 @@ const useGetBudget = () => {
   };
 
   const expenses = useMemo(() => {
-    const f = transactions
+    const f = allTransactions
       .filter(
         (transaction) =>
           transaction.date.split("-")[1] === selectedMonth.split("-")[1] &&
@@ -223,13 +245,8 @@ const useGetBudget = () => {
 
     const amount =
       exp.length > 0
-        ? exp.map((item) => item.amount).reduce((prev, next) => prev + next)
+        ? exp.map((item) => item.amount).reduce((prev, next) => +prev + +next)
         : 0;
-
-    console.log({
-      array: exp,
-      amount,
-    });
 
     return "expenses";
   }, [selectedMonth]);

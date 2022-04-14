@@ -12,6 +12,7 @@
     right: 0;
     padding: 0 10px;
     z-index: 9999;
+    right: -5px;
     transform: translateY(-25%);
     img {
       height: 35px;
@@ -20,6 +21,7 @@
   &-prev {
     position: absolute;
     top: 50%;
+    left: -5px;
     padding: 0 10px;
     z-index: 9999;
     transform: translateY(-25%);

@@ -10,6 +10,7 @@ import "Styles/Pages/Main/ChartBlock/DonutChartBlock/DonutChartBlock.scss";
 import PrevIcon from "../../../../Static/icons/prev.svg";
 import NextIcon from "../../../../Static/icons/next.svg";
 import { dateFormat } from "highcharts";
+import moment from "moment";
 
 interface Props {
   data: number[] | string[];
@@ -17,55 +18,69 @@ interface Props {
   expenses: number;
   selectedDate: string[];
   setDate: (v: string[]) => void;
+  next: () => void;
+  prev: () => void;
 }
 
 const DonutChartBlock: React.FunctionComponent<Props> = (props: Props) => {
-  const { data, selectedDate, setDate } = props;
+  const { data, selectedDate, setDate, next, prev } = props;
   const { chartData } = CreateDonutChart(data);
   return (
     <div className="donut-chart-wrapper">
-      <span
-        className="donut-chart-prev"
-        onClick={(e) => {
-          const date = new Date(
-            +new Date(selectedDate[0]) - 1000 * 60 * 60 * 24 * 30
-          )
-            .toLocaleDateString()
-            .split(".");
-          setDate([`${date[2]}-${date[1]}-${date[0]}`]);
-        }}
-      >
+      <span className="donut-chart-prev" onClick={prev}>
         <img src={PrevIcon} alt="" />
       </span>
       <span
         className="donut-chart-next"
-        onClick={(e) => {
-          const date = new Date(
-            +new Date(selectedDate[0]) + 1000 * 60 * 60 * 24 * 30
+        style={{
+          filter: moment(selectedDate[0]).isSameOrAfter(
+            moment().subtract(1, "day")
           )
-            .toLocaleDateString()
-            .split(".");
-          setDate([`${date[2]}-${date[1]}-${date[0]}`]);
+            ? "opacity(0.5)"
+            : "none",
         }}
+        onClick={next}
       >
         <img src={NextIcon} alt="" />
       </span>
       <div className="donut-chart">
         <DonutChartBlockCalendar {...{ selectedDate, setDate }} />
-        <svg width="300px" height="300px" viewBox="0 0 42 42" className="donut">
-          <circle
-            strokeLinejoin="round"
-            cx="21"
-            cy="21"
-            r="15"
-            fill="transparent"
-            stroke="rgba(255, 255, 255, 1)"
-            strokeWidth="7"
-          ></circle>
-          {chartData.map((p, i) => {
-            return <Path key={i} d={p.d} stroke={p.stroke} index={i} />;
-          })}
-        </svg>
+        <div className="center">
+          <svg
+            width="300px"
+            height="300px"
+            viewBox="0 0 42 42"
+            className="donut"
+          >
+            <circle
+              strokeLinejoin="round"
+              cx="21"
+              cy="21"
+              r="15"
+              fill="transparent"
+              stroke="rgba(255, 255, 255, 1)"
+              strokeWidth="7"
+            ></circle>
+            {chartData.length !== 0 && chartData.length > 1
+              ? chartData.map((p, i) => {
+                  return <Path key={i} d={p.d} stroke={p.stroke} index={i} />;
+                })
+              : chartData.length !== 0 && (
+                  <circle
+                    strokeLinejoin="round"
+                    cx="21"
+                    cy="21"
+                    r="15"
+                    fill="transparent"
+                    stroke="rgba(0, 255, 255, 1)"
+                    strokeWidth="7"
+                    style={{
+                      WebkitAnimation: `all 1s linear forwards`,
+                    }}
+                  ></circle>
+                )}
+          </svg>
+        </div>
         <div className="donut-chart-label">
           <div className="donut-chart-label-wrapper">
             <span>Доходы</span>

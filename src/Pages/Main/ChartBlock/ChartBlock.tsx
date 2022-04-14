@@ -17,6 +17,8 @@ const ChartBlock: React.FunctionComponent<Props> = (props: Props) => {
     prices,
     income,
     expenses,
+    next,
+    prev,
   } = useGetTransaction();
 
   return (
@@ -29,6 +31,8 @@ const ChartBlock: React.FunctionComponent<Props> = (props: Props) => {
             income={income}
             expenses={expenses}
             {...{ selectedDate, setDate }}
+            next={next}
+            prev={prev}
           />
         ) : null}
       </div>
