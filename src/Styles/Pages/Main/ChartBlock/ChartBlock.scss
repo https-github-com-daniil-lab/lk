@@ -7,4 +7,12 @@
   padding: 15px;
   border-radius: 14px;
   height: 350px;
+  @media screen and (max-width: 945px) {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: 700px;
+  }
+  @media screen and (max-width: 500px) {
+    padding: 5px;
+  }
 }

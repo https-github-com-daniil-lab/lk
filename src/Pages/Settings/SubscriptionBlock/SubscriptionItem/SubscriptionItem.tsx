@@ -43,7 +43,7 @@ const SubscriptionItem: React.FC<Props> = ({ subscriptionGroup, list }) => {
         to={`/sub/${id}`}
         className="button-primary subscription-item-button"
       >
-        Продлить подписку
+        Оформить подписку
       </Link>
     </div>
   );

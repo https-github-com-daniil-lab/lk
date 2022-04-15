@@ -46,10 +46,7 @@ const useGetTransaction = () => {
 
   const filterByDate = (v: TransactionsSorted) => {
     const now = moment(selectedDate[0]);
-    return now.isBetween(
-      moment(v.date).subtract(1, "month"),
-      moment(v.date).add(1, "day")
-    );
+    return moment(now).get("month") == moment(v.date).get("month");
   };
 
   const income = useMemo(() => {

@@ -10,6 +10,9 @@
   gap: 0px 0px;
   align-items: center;
   justify-items: center;
+  @media screen and (max-width: 945px) {
+    height: 100%;
+  }
 
   background: repeating-linear-gradient(
     -45deg,
@@ -39,7 +42,6 @@
     max-height: 860px;
     height: 90vh;
 
-    overflow: hidden;
     width: 100%;
     border-radius: 14px;
     backdrop-filter: blur(20px);
@@ -47,19 +49,19 @@
     font-size: 1rem;
     font-weight: 500;
     @media screen and (max-width: 945px) {
-      height: 100vh;
+      height: 100%;
       border-radius: 0;
     }
     .wrapper {
       width: 100%;
       height: 100%;
-      overflow: hidden;
       display: grid;
       grid-auto-columns: 1fr;
       grid-template-columns: 0.4fr 1.9fr;
       gap: 0px 0px;
       @media screen and (max-width: 945px) {
-        display: block;
+        display: grid;
+        grid-template-columns: 1fr;
       }
       .left-side {
         width: 250px;
@@ -68,10 +70,11 @@
         background-color: rgb(255, 255, 255);
         position: relative;
         display: flex;
+        border-radius: 14px;
         flex-direction: column;
         justify-content: space-between;
         overflow-y: auto;
-        overflow-x: inherit;
+        overflow-x: hidden;
         @media screen and (max-width: 945px) {
           position: absolute;
           transform: translateX(calc(-100% - 20px));

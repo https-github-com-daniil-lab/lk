@@ -1,6 +1,7 @@
 .sub {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
 
@@ -11,6 +12,7 @@
 }
 
 .layout {
+  flex-wrap: wrap;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -22,6 +24,7 @@
 .block {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 
   &-item {
     display: flex;
@@ -40,6 +43,7 @@
 
 .variant {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
   margin-left: 0.5rem;

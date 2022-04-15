@@ -6,6 +6,9 @@
     margin-bottom: 70px;
     background: linear-gradient(90deg, #4776e6 0%, #8e54e9 65.67%);
     border-radius: 46px 0px 0px 46px;
+    @media screen and (max-width: 945px) {
+      border-radius: 0;
+    }
     .app-card {
       padding-bottom: 0;
       padding-top: 0;

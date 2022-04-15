@@ -1,4 +1,3 @@
-
 import Header from "Components/Header/Header";
 import Modal from "Components/Modal/Modal";
 import React, { useEffect, useState } from "react";
