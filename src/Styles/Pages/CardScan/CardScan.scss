@@ -1,0 +1,19 @@
+.scan {
+  overflow: auto;
+  &-content {
+    background: linear-gradient(90deg, #4776e6 0%, #8e54e9 65.67%);
+    border-radius: 46px 0px 0px 46px;
+    padding: 20px;
+    height: 70%;
+    margin-bottom: 100px;
+  }
+  &-wrapper {
+      padding: 2rem 1rem 0;
+  }
+  &-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      width: auto !important;
+  }
+}

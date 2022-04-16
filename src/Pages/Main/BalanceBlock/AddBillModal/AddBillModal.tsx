@@ -82,7 +82,7 @@ const AddBillModal: React.FunctionComponent<Props> = ({ onClose }: Props) => {
         show={addBankModal}
         onClose={() => setAddBankModal(false)}
       >
-        <AddBank onClose={() => setAddBankModal(false)} />
+        <AddBank />
       </Modal>
     </div>
   );

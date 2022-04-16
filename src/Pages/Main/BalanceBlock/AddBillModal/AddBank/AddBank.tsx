@@ -11,23 +11,19 @@ import PlusFillIcon from "Static/icons/plus.svg";
 
 import "Styles/Pages/Main/BalanceBlock/AddBillModal/AddBank/AddBank.scss";
 
-interface Props {
-  onClose: () => void;
-}
-
 type BankModalType = {
   content: React.ReactNode | null;
   show: boolean;
 };
 
-const AddBank: React.FunctionComponent<Props> = (props: Props) => {
+const AddBank: React.FC = () => {
   const [bankModal, setBankModal] = useState<BankModalType>({
     content: null,
     show: false,
   });
 
   const handleOnClose = () => {
-    setBankModal(oldBankModal => ({
+    setBankModal((oldBankModal) => ({
       ...oldBankModal,
       show: false,
     }));
@@ -38,7 +34,12 @@ const AddBank: React.FunctionComponent<Props> = (props: Props) => {
       <span className="add-bill-modal-title">Выберите банк</span>
       <div
         className="bank-wrapper"
-        onClick={() => setBankModal({ content: <TinkoffBank onClose={handleOnClose} />, show: true })}
+        onClick={() =>
+          setBankModal({
+            content: <TinkoffBank onClose={handleOnClose} />,
+            show: true,
+          })
+        }
       >
         <div className="bank-wrapper-brand">
           <img src={TinkoffIcon} alt="Точка" width={60} />
@@ -48,7 +49,12 @@ const AddBank: React.FunctionComponent<Props> = (props: Props) => {
       </div>
       <div
         className="bank-wrapper"
-        onClick={() => setBankModal({ content: <SberBank onClose={handleOnClose} />, show: true })}
+        onClick={() =>
+          setBankModal({
+            content: <SberBank onClose={handleOnClose} />,
+            show: true,
+          })
+        }
       >
         <div className="bank-wrapper-brand">
           <img src={SberIcon} alt="Точка" width={60} />
@@ -56,10 +62,7 @@ const AddBank: React.FunctionComponent<Props> = (props: Props) => {
         </div>
         <img src={PlusFillIcon} />
       </div>
-      <div
-        className="bank-wrapper"
-        onClick={() => {}}
-      >
+      <div className="bank-wrapper" onClick={() => {}}>
         <div className="bank-wrapper-brand">
           <img src={TochkaIcon} alt="Точка" width={60} />
           <span>Точка</span>

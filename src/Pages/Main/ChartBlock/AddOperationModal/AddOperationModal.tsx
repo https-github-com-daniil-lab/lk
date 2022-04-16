@@ -3,12 +3,13 @@ import DatePicker from "Components/DatePicker/DatePicker";
 import Modal from "Components/Modal/Modal";
 import Select from "Components/Select/Select";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Bill from "Services/Bill";
 import Category from "Services/Category";
 import { IBalances, IBaseCategory, TransactionType } from "Services/Interfaces";
 import Transaction from "Services/Transaction";
 import CalendarDark from "Static/icons/calendar-dark.svg";
-import ScanQr from "Static/icons/scan-qr.svg";
+import ScanQr from "Static/icons/scan-qr-nigger.svg";
 import "Styles/Pages/Main/ChartBlock/AddOperationModal/AddOperationModal.scss";
 import { API_URL } from "Utils/Config";
 import HexToRgbA from "Utils/HexToRgbA";
@@ -16,11 +17,17 @@ import MapModal from "./MapModal/MapModal";
 
 interface Props {
   onClose: () => void;
+  qr?: File;
+  initialSum?: string;
+  noQrLink?: boolean;
 }
 
-const AddOperationModal: React.FunctionComponent<Props> = ({
+const AddOperationModal: React.FC<Props> = ({
   onClose,
-}: Props) => {
+  qr,
+  initialSum,
+  noQrLink,
+}) => {
   const { useAddOperation } = Transaction;
   const { useGetBill } = Bill;
   const { useGetCategory } = Category;
@@ -38,7 +45,7 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
 
   const [bill, setBill] = useState<IBalances | null>(null);
 
-  const [summ, setSumm] = useState<string>("");
+  const [summ, setSumm] = useState("");
 
   const [description, setDescription] = useState<string>("");
 
@@ -48,7 +55,9 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
 
   const [expand, setExpand] = useState<boolean>(false);
 
-  const [qr, setQr] = useState<File | null>(null);
+  useEffect(() => {
+    initialSum && setSumm(initialSum);
+  }, [initialSum]);
 
   const onEnter = (v: string[]): void => {
     if (Array.isArray(v)) {
@@ -177,7 +186,7 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
       </div>
 
       <div className="add-operation-modal-block">
-        <span className="add-operation-modal-block-title">Суммма</span>
+        <span className="add-operation-modal-block-title">Сумма</span>
         <input
           type="text"
           placeholder="Введите сумму"
@@ -219,15 +228,12 @@ const AddOperationModal: React.FunctionComponent<Props> = ({
         </div>
       </div>
 
-      <label className="add-operation-modal-scan">
-        <img src={ScanQr} alt="Scan qr icon" />
-        <span>Загрузить чек</span>
-        <input
-          type="file"
-          onChange={(e) => setQr(e.target.files && e.target.files[0])}
-          style={{ display: "none" }}
-        />
-      </label>
+      {!noQrLink && (
+        <Link to="/cardscan" className="add-operation-modal-scan">
+          <img src={ScanQr} alt="Scan qr icon" />
+          <span>Сканировать чек</span>
+        </Link>
+      )}
 
       <div className="add-operation-modal-controll">
         <button className="button-secondary" onClick={onClose}>
