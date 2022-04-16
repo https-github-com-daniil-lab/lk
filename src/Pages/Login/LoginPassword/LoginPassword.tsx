@@ -18,7 +18,11 @@ const LoginPassword: React.FunctionComponent<Props> = (props: Props) => {
 
   const [password, setPassword] = useState<string>("");
 
-  const _confirm = async (): Promise<void> => {
+  const _confirm = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+
     if (params.type === "signin") {
       const auth = new Auth(dispatch);
       if (params.phone) await auth.SignIn(params.phone, password);
@@ -33,7 +37,7 @@ const LoginPassword: React.FunctionComponent<Props> = (props: Props) => {
   };
 
   return (
-    <div className={`login-password`}>
+    <form onSubmit={_confirm} className={`login-password`}>
       <img src={Logo} alt="Wallet Box" className="login-password-logo" />
       <input
         type="password"
@@ -45,13 +49,13 @@ const LoginPassword: React.FunctionComponent<Props> = (props: Props) => {
       <div className="login-password-info">
         <p className="login-password-subtitle">Введите пароль для входа</p>
       </div>
-      <button className="button-info" onClick={_confirm}>
+      <button className="button-info" type="submit">
         Продолжить
       </button>
-      <button className="button-secondary" onClick={props.back}>
+      <button className="button-secondary" type="button" onClick={props.back}>
         Отмена
       </button>
-    </div>
+    </form>
   );
 };
 

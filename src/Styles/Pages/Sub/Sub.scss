@@ -22,9 +22,8 @@
 }
 
 .block {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
 
   &-item {
     display: flex;

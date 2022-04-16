@@ -10,7 +10,7 @@ const SubBlockItemVariant: React.FC<Props> = ({
   subscription,
   setSubscription,
 }) => {
-  const { id, name } = subscription;
+  const { id, description } = subscription;
 
   const handleVariantChange = () => {
     setSubscription(subscription);
@@ -24,7 +24,7 @@ const SubBlockItemVariant: React.FC<Props> = ({
         value={id}
         onChange={handleVariantChange}
       />
-      <span>{name}</span>
+      <span>{description}</span>
     </label>
   );
 };

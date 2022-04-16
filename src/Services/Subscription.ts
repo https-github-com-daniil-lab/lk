@@ -5,7 +5,11 @@ import { GetUserToken } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 import axios from "Utils/Axios";
 import { API_URL } from "Utils/Config";
-import { ISubscription, ISubscriptionGroup } from "./Interfaces";
+import {
+  IActiveSubscription,
+  ISubscription,
+  ISubscriptionGroup,
+} from "./Interfaces";
 
 export const useGetSubscriptions = () => {
   const token = useSelector(GetUserToken);
@@ -45,6 +49,7 @@ export const useGetSubscriptionGroups = () => {
     ISubscriptionGroup[]
   >([]);
   const [load, setLoad] = useState<boolean>(false);
+
   const get = async (): Promise<void> => {
     try {
       const { data } = await axios.get(
@@ -62,6 +67,12 @@ export const useGetSubscriptionGroups = () => {
           })
         )
       );
+
+      // Injecting lite subscription
+      setSubscriptionGroups((subs) => [
+        { id: "lite", name: "Lite", variants: [] },
+        ...subs,
+      ]);
       setLoad(true);
     } catch (error: any) {
       console.log(error.message);
@@ -119,5 +130,48 @@ export const useGetSubscriptionGroupsById = (id: string) => {
   return {
     subscriptionGroup,
     isLoading,
+  };
+};
+
+export const useGetActiveSubscriptions = () => {
+  const [activeSubscriptions, setActiveSubscriptions] = useState<
+    IActiveSubscription[]
+  >([]);
+  const [load, setLoad] = useState<boolean>(false);
+
+  const get = async (): Promise<void> => {
+    try {
+      const { data } = await axios.get(`${API_URL}api/v1/subscription/`);
+
+      if (data.status !== 200) {
+        throw new Error(data.message);
+      }
+
+      setActiveSubscriptions(
+        data.data
+          .filter((sub: IActiveSubscription) => sub.active)
+          .sort(
+            (a: IActiveSubscription, b: IActiveSubscription) =>
+              new Date(b.endDate) - new Date(a.endDate)
+          )
+      );
+    } catch (error: any) {
+      console.log(error.message);
+    } finally {
+      setLoad(true);
+    }
+  };
+
+  const init = async (): Promise<void> => {
+    await get();
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  return {
+    activeSubscriptions,
+    load,
   };
 };

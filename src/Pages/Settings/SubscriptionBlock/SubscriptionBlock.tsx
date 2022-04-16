@@ -1,13 +1,19 @@
 import Load from "Components/Load/Load";
-import React from "react";
-import { useGetSubscriptionGroups } from "Services/Subscription";
+import React, { useEffect, useState } from "react";
+import { IActiveSubscription } from "Services/Interfaces";
+import {
+  useGetActiveSubscriptions,
+  useGetSubscriptionGroups,
+} from "Services/Subscription";
 import "Styles/Pages/Settings/SubscriptionBlock/SubscriptionBlock.scss";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SubscriptionPossibilities from "Utils/SubscriptionPossibilities";
 import SubscriptionItem from "./SubscriptionItem/SubscriptionItem";
 
 const SubscriptionBlock: React.FC = () => {
-  const { load, subscriptionGroups } = useGetSubscriptionGroups();
+  const { load: groupLoaded, subscriptionGroups } = useGetSubscriptionGroups();
+  const { load: activeLoaded, activeSubscriptions } =
+    useGetActiveSubscriptions();
 
   return (
     <Swiper
@@ -31,12 +37,13 @@ const SubscriptionBlock: React.FC = () => {
         },
       }}
     >
-      <Load {...{ load }} className="subscription-block">
+      <Load load={groupLoaded && activeLoaded} className="subscription-block">
         {subscriptionGroups.map((subscriptionGroup) => (
           <SwiperSlide>
             <SubscriptionItem
               key={subscriptionGroup.id}
               subscriptionGroup={subscriptionGroup}
+              activeSubscriptions={activeSubscriptions}
               list={SubscriptionPossibilities[subscriptionGroup.name]}
             />
           </SwiperSlide>

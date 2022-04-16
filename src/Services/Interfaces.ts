@@ -152,6 +152,19 @@ export interface ISubscriptionGroup {
   variants: ISubscription[];
 }
 
+export interface IRole {
+  id: string;
+  name: string;
+}
+
+export interface IActiveSubscription {
+  id: string;
+  startDate: string;
+  endDate: string;
+  variant: ISubscription & IRole;
+  active: boolean;
+}
+
 export type IFiles = {
   id: string;
   path: string;

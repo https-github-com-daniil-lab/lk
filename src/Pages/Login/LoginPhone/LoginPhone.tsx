@@ -28,7 +28,9 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
     setPhone(mask);
   };
 
-  const _auth = async (): Promise<void> => {
+  const _auth = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+
     const auth = new Auth(dispatch);
 
     const isRegister = await auth.ChekRegister(phone);
@@ -49,7 +51,7 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
   };
 
   return (
-    <div className={`login-phone`}>
+    <form onSubmit={_auth} className={`login-phone`}>
       <img src={Logo} alt="Wallet Box" className="login-phone-logo" />
       <input
         type="text"
@@ -73,7 +75,7 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
       </p>
       <button
         className="button-info"
-        onClick={_auth}
+        type="submit"
         style={{
           width: "262px",
           height: "60px",
@@ -84,7 +86,7 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
       <p className="login-phone-subtitle">
         <span>Восстановаить аккаунт</span>
       </p>
-    </div>
+    </form>
   );
 };
 

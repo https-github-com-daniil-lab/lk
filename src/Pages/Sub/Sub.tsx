@@ -47,11 +47,11 @@ const Sub: React.FC = () => {
 
             <div className="buttons">
               <Link
-                to="/"
+                to="/settings"
                 className="button-secondary"
                 style={{ width: "auto" }}
               >
-                Выход
+                Назад
               </Link>
               <button
                 className="button-primary"
