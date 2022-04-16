@@ -36,6 +36,7 @@
   }
 
   &-wrapper {
+    width: 30%;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     overflow-y: auto;
@@ -49,5 +50,15 @@
     max-width: calc(100% - 100px);
     cursor: default;
     overflow-x: hidden;
+    @media screen and (max-width: 945px) {
+      width: 70%;
+      padding: 10px 20px;
+
+      max-height: calc(100vh - 50px);
+      max-width: calc(100% - 50px);
+    }
+    @media screen and (max-width: 500px) {
+      width: 100%;
+    }
   }
 }

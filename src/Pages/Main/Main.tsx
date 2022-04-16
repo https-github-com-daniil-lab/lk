@@ -80,15 +80,10 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
       <Modal
         show={showAddOperationModal}
         onClose={() => setShowAddOperationModal(false)}
-        style={{ width: "30%" }}
       >
         <AddOperationModal onClose={() => setShowAddOperationModal(false)} />
       </Modal>
-      <Modal
-        show={showBillModal}
-        onClose={() => setShowBillModal(false)}
-        style={{ width: "30%" }}
-      >
+      <Modal show={showBillModal} onClose={() => setShowBillModal(false)}>
         <AddBillModal onClose={() => setShowBillModal(false)} />
       </Modal>
     </div>

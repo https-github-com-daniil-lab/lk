@@ -14,10 +14,13 @@
 
 body {
   font-family: "Montserrat";
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100%;
 }
 html {
   font-size: 15px;
+  height: 100%;
+  overflow: hidden;
   @media screen and (max-width: 945px) {
     font-size: 12px;
   }
@@ -88,6 +91,10 @@ input {
   &:disabled {
     opacity: 0.5;
   }
+}
+
+#root {
+  height: 100%;
 }
 
 .button-secondary {

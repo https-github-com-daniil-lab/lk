@@ -5,6 +5,8 @@ import Routes from "Utils/Routes";
 import Sidebar from "Components/Sidebar/Sidebar";
 
 import "Styles/Layers/PersonalArea/PersonalAreaLayer.scss";
+
+import MenuIcon from "../../Static/icons/menu-icon.png";
 interface Props {}
 
 const PersonalAreaLayer: React.FunctionComponent<Props> = (props: Props) => {
@@ -35,8 +37,29 @@ const PersonalAreaLayer: React.FunctionComponent<Props> = (props: Props) => {
   return (
     <div className="personal-area-layer" id="body">
       <div className="app">
-        <div className="wrapper">
-          <div className="left-side">
+        <div
+          className="meniIcon"
+          style={{ zIndex: 999 }}
+          onClick={() => setMobileMenu((a) => !a)}
+        >
+          <img src={MenuIcon} alt="menu" role="button" />
+        </div>
+        <div
+          className="wrapper"
+          onClick={(e) => {
+            if (
+              e.target instanceof HTMLDivElement &&
+              !e.target.contains(document.querySelector(".meniIcon"))
+            )
+              return setMobileMenu(false);
+          }}
+        >
+          <div
+            className="left-side"
+            style={{
+              transform: `translateX(${mobileMenu ? 0 : "calc(-100% - 20px)"})`,
+            }}
+          >
             <Sidebar activeRoute={activeRoute} />
             <div className="left-side__image">
               <img src={sideComponent || ""} aria-hidden="true" alt="" />
