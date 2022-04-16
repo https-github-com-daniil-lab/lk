@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Routes from "Utils/Routes";
 
@@ -17,6 +17,12 @@ const PersonalAreaLayer: React.FunctionComponent<Props> = (props: Props) => {
   const [sideComponent, setSideComponent] = useState<string | null>(null);
 
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setInnerWidth(window.innerWidth);
+    });
+  }, []);
 
   useMemo(() => {
     [...Routes.dashboardRoutes, ...Routes.supportRouters].forEach(
@@ -39,7 +45,10 @@ const PersonalAreaLayer: React.FunctionComponent<Props> = (props: Props) => {
       <div className="app">
         <div
           className="meniIcon"
-          style={{ zIndex: 999 }}
+          style={{
+            zIndex: 999,
+            display: innerWidth > 945 ? "none" : "block",
+          }}
           onClick={() => setMobileMenu((a) => !a)}
         >
           <img src={MenuIcon} alt="menu" role="button" />
@@ -57,7 +66,9 @@ const PersonalAreaLayer: React.FunctionComponent<Props> = (props: Props) => {
           <div
             className="left-side"
             style={{
-              transform: `translateX(${mobileMenu ? 0 : "calc(-100% - 20px)"})`,
+              transform: `translateX(${
+                mobileMenu || innerWidth > 945 ? 0 : "calc(-100% - 20px)"
+              })`,
             }}
           >
             <Sidebar activeRoute={activeRoute} />
