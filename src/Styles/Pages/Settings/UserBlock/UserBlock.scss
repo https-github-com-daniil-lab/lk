@@ -6,6 +6,14 @@
   grid-template-rows: 1fr;
   gap: 0px 30px;
   grid-template-areas: ". . .";
+  @media screen and (max-width: 945px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas:
+      "."
+      "."
+      ".";
+  }
 }
 .user-block-item {
   width: 100%;

@@ -74,7 +74,7 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
         </div>
         <CategoryBlock />
       </div>
-      <div className="app-card">
+      <div className="app-card" style={{ minHeight: "200px" }}>
         <Banner />
       </div>
       <Modal
