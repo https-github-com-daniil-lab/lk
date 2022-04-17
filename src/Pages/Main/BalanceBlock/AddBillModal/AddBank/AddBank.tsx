@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
 import Modal from "Components/Modal/Modal";
-import SberBank from "./SberBank/SberBank";
-import TinkoffBank from "./TinkoffBank/TinkoffBank";
 import TinkoffIcon from "Static/Images/tinkoff.png";
 import SberIcon from "Static/Images/sber.png";
 import TochkaIcon from "Static/Images/tochka.svg";
@@ -10,6 +8,7 @@ import TochkaIcon from "Static/Images/tochka.svg";
 import PlusFillIcon from "Static/icons/plus.svg";
 
 import "Styles/Pages/Main/BalanceBlock/AddBillModal/AddBank/AddBank.scss";
+import BankModal from "./BankModal/BankModal";
 
 type BankModalType = {
   content: React.ReactNode | null;
@@ -36,7 +35,7 @@ const AddBank: React.FC = () => {
         className="bank-wrapper"
         onClick={() =>
           setBankModal({
-            content: <TinkoffBank onClose={handleOnClose} />,
+            content: <BankModal bank="tinkoff" onClose={handleOnClose} />,
             show: true,
           })
         }
@@ -51,7 +50,7 @@ const AddBank: React.FC = () => {
         className="bank-wrapper"
         onClick={() =>
           setBankModal({
-            content: <SberBank onClose={handleOnClose} />,
+            content: <BankModal bank="sber" onClose={handleOnClose} />,
             show: true,
           })
         }
@@ -62,7 +61,15 @@ const AddBank: React.FC = () => {
         </div>
         <img src={PlusFillIcon} />
       </div>
-      <div className="bank-wrapper" onClick={() => {}}>
+      <div
+        className="bank-wrapper"
+        onClick={() =>
+          setBankModal({
+            content: <BankModal bank="tochka" onClose={handleOnClose} />,
+            show: true,
+          })
+        }
+      >
         <div className="bank-wrapper-brand">
           <img src={TochkaIcon} alt="Точка" width={60} />
           <span>Точка</span>

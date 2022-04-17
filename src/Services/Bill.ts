@@ -1,10 +1,12 @@
-import axios from "Utils/Axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
-import { GetUserId, GetUserToken } from "Redux/Selectors";
+import { GetUserId } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
+import axios from "Utils/Axios";
 import { API_URL } from "Utils/Config";
+import submitBankConnection from "Utils/submitBankConnection";
+import { Banks } from "Utils/Types";
 import { IBalances, ISberCard, ITinkoffCard, ITochkaCard } from "./Interfaces";
 
 const useGetBill = () => {
@@ -235,48 +237,49 @@ const useAddBill = (name: string, balance: string) => {
   };
 };
 
-const useTinkoff = (
-  phone: string,
-  exportStartDate: string | null,
-  password: string,
-  code: string
-) => {
+export const useBankConnection = (bank: Banks, exportDate: string | null) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const userId = useSelector(GetUserId);
 
-  const [status, setStatus] = useState<"signin" | "code">("signin");
-  const [id, setId] = useState<string>();
+  const [act, setAct] = useState<"start" | "submit">("start");
+  const [bankUserId, setBankUserId] = useState<string>();
 
-  const signin = async (): Promise<void> => {
+  const startConnection = async (phone: string): Promise<void> => {
     try {
       if (!phone) {
         throw new Error("Введите номер телефона");
       }
 
-      if (!exportStartDate) {
+      if (!exportDate) {
         throw new Error("Введите дату");
       }
 
       dispatch(ShowPreloader());
 
       const { data } = await axios.post(
-        `${API_URL}api/v1/tinkoff/connect/start`,
+        `${API_URL}api/v1/${bank}/connect/start`,
         {
           userId,
           phone,
-          exportStartDate: new Date(exportStartDate),
+          exportStartDate: new Date(exportDate),
+          startExportDate: new Date(exportDate),
         }
       );
 
       if (data.status === 200) {
-        setStatus("code");
-        setId(data.data.id);
+        setAct("submit");
+        setBankUserId(data.data.id);
       }
     } catch (error: any) {
+      const text =
+        error.response.status === 400
+          ? "Интеграция уже подключена"
+          : error.message;
+
       dispatch(
         ShowToast({
-          text: error.message,
+          text,
           title: "Ошибка",
           type: "error",
         })
@@ -286,7 +289,11 @@ const useTinkoff = (
     }
   };
 
-  const syncTinkoff = async (): Promise<void> => {
+  const submitConnection = async (
+    password: string,
+    code: string | number,
+    onSuccess: () => void
+  ): Promise<void> => {
     try {
       if (!password) {
         throw new Error("Введите код");
@@ -296,14 +303,29 @@ const useTinkoff = (
         throw new Error("Введите код");
       }
 
-      const { data } = await axios.post(
-        `${API_URL}api/v1/tinkoff/connect/submit`,
-        {
-          id,
-          code,
-          password,
-        }
-      );
+      if (!exportDate) {
+        throw new Error("Введите дату");
+      }
+
+      if (!bankUserId) {
+        throw new Error("Не удалось подключить банк");
+      }
+      
+      dispatch(ShowPreloader());
+
+      const data = await submitBankConnection(bank, {
+        code,
+        bankUserId,
+        password,
+        exportDate,
+      });
+
+      if (data.status === 200) {
+        const isSync = await syncConnection();
+        isSync && onSuccess();
+      } else {
+        throw new Error(data.message);
+      }
     } catch (error: any) {
       dispatch(
         ShowToast({
@@ -317,37 +339,18 @@ const useTinkoff = (
     }
   };
 
-  return {
-    syncTinkoff,
-    signin,
-    status,
-  };
-};
-
-const useSber = (phone: string, startExportDate: string | null) => {
-  const dispatch = useDispatch<AppDispatch>();
-
-  const userId = useSelector(GetUserId);
-
-  const syncSber = async (): Promise<void> => {
+  const syncConnection = async (): Promise<boolean> => {
     try {
-      if (!phone) {
-        throw new Error("Введите логин");
+      const { data } = await axios.get(
+        `${API_URL}api/v1/${bank}/sync/${userId}`
+      );
+
+      if (data.status === 200) {
+        return true;
+      } else {
+        throw new Error(data.message);
       }
-
-      if (!startExportDate) {
-        throw new Error("Введите дату");
-      }
-
-      dispatch(ShowPreloader());
-
-      const { data } = await axios.post(`${API_URL}api/v1/sber/connect/start`, {
-        userId,
-        phone,
-        startExportDate: new Date(startExportDate),
-      });
     } catch (error: any) {
-      dispatch(HidePreloader());
       dispatch(
         ShowToast({
           text: error.message,
@@ -355,10 +358,17 @@ const useSber = (phone: string, startExportDate: string | null) => {
           type: "error",
         })
       );
+    } finally {
+      dispatch(HidePreloader());
     }
+
+    return false;
   };
+
   return {
-    syncSber,
+    act,
+    startConnection,
+    submitConnection,
   };
 };
 
@@ -368,6 +378,4 @@ export default {
   useGetSberCards,
   useGetTochkaCards,
   useAddBill,
-  useTinkoff,
-  useSber,
 };

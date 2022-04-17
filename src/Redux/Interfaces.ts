@@ -6,7 +6,7 @@ import {
   SHOW_PRELOADER,
   SHOW_TOAST,
   UPDATE_CATEGORY,
-  UPDATE_OPERATION
+  UPDATE_OPERATION,
 } from "Redux/Constants";
 import { UserType } from "Services/Interfaces";
 import { IToast } from "./StateInterface";
