@@ -13,6 +13,9 @@
   -webkit-backdrop-filter: blur(20px);
   font-size: 1rem;
   font-weight: 500;
+  @media screen and (max-width: 500px) {
+    padding: 5px 10px;
+  }
 
   &-logo {
     width: 300px;
@@ -34,9 +37,13 @@
   input {
     width: 385px;
     height: 60px;
+
     text-align-last: left;
     background: #ffffff;
     border-radius: 20px;
+    @media screen and (max-width: 500px) {
+      width: 100%;
+    }
   }
   button {
   }

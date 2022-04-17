@@ -42,27 +42,31 @@ const PersonalAreaLayer: React.FunctionComponent<Props> = (props: Props) => {
   }, [location.pathname]);
   return (
     <div className="personal-area-layer" id="body">
-      <div className="app">
+      <div
+        className="app"
+        onClick={(e) => {
+          const left = document.querySelector(".left-side");
+          const icon = document.querySelector(".menuIcon");
+          if (
+            e.target instanceof HTMLElement &&
+            !left?.contains(e.target) &&
+            !icon?.contains(e.target)
+          ) {
+            return setMobileMenu(false);
+          }
+        }}
+      >
         <div
-          className="meniIcon"
+          className="menuIcon"
           style={{
-            zIndex: 999,
+            zIndex: 9,
             display: innerWidth > 945 ? "none" : "block",
           }}
           onClick={() => setMobileMenu((a) => !a)}
         >
           <img src={MenuIcon} alt="menu" role="button" />
         </div>
-        <div
-          className="wrapper"
-          onClick={(e) => {
-            if (
-              e.target instanceof HTMLDivElement &&
-              !e.target.contains(document.querySelector(".meniIcon"))
-            )
-              return setMobileMenu(false);
-          }}
-        >
+        <div className="wrapper">
           <div
             className="left-side"
             style={{

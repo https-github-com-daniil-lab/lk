@@ -51,6 +51,7 @@
     @media screen and (max-width: 945px) {
       height: 100%;
       border-radius: 0;
+      overflow-y: auto;
     }
     .wrapper {
       width: 100%;
@@ -76,13 +77,18 @@
         overflow-y: auto;
         overflow-x: hidden;
         @media screen and (max-width: 945px) {
-          position: absolute;
           transform: translateX(calc(-100% - 20px));
           transition: transform 0.1s ease-in-out;
           z-index: 999999;
           height: 100%;
           border-radius: 0;
+          position: fixed;
+          padding: 5px 0 0 5px;
         }
+        @media screen and (max-width: 400px) {
+          width: 200px;
+        }
+
         &__image {
           width: calc(100% + 25px);
           position: relative;
@@ -107,7 +113,7 @@
   }
 }
 
-.meniIcon {
+.menuIcon {
   position: absolute;
   top: 10px;
   left: 10px;

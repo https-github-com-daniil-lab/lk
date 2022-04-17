@@ -6,6 +6,7 @@
     position: absolute;
     z-index: 1;
     transition: 0.4s;
+    right: 5px;
     &.active {
       opacity: 1;
       visibility: visible;
