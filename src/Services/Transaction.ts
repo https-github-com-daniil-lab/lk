@@ -2,7 +2,7 @@ import moment from "moment";
 import QrScanner from "qr-scanner";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ShowToast } from "Redux/Actions";
+import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
 import { GetUserId } from "Redux/Selectors";
 import ArrayGroups from "Utils/ArrayGroups";
 import axios from "Utils/Axios";
@@ -148,6 +148,7 @@ const useGetTransaction = () => {
     for (let i = 0; i < ordinaryTransactions.length; i++) {
       const transaction = ordinaryTransactions[i];
       t.push({
+        id: transaction.id,
         action: transaction.action,
         category: transaction.category ?? null,
         date: transaction.createAt,
@@ -160,6 +161,7 @@ const useGetTransaction = () => {
     for (let i = 0; i < tinkoffTransactions.length; i++) {
       const transaction = tinkoffTransactions[i];
       t.push({
+        id: transaction.id,
         action: transaction.transactionType,
         category: null,
         date: transaction.date,
@@ -395,4 +397,46 @@ export default {
   useGetTransaction,
   useAddOperation,
   useGetBudget,
+};
+
+export const useTransaction = (transactionId: string | null) => {
+  const dispatch = useDispatch();
+
+  const deleteTransaction = async () => {
+    try {
+      if (!transactionId) {
+        throw new Error("Ошибка обработки транзакции");
+      }
+
+      dispatch(ShowPreloader());
+
+      const { data } = await axios.delete(
+        `${API_URL}api/v1/transaction/${transactionId}`
+      );
+
+      if (data.status === 200) {
+        dispatch(
+          ShowToast({
+            text: "Операция удалена",
+            title: "Успешно",
+            type: "success",
+          })
+        );
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      dispatch(
+        ShowToast({
+          text: error.message,
+          title: "Ошибка",
+          type: "error",
+        })
+      );
+    } finally {
+      dispatch(HidePreloader());
+    }
+  };
+
+  return { deleteTransaction };
 };

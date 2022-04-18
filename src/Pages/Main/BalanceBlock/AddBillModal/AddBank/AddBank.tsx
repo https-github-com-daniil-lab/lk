@@ -61,7 +61,7 @@ const AddBank: React.FC = () => {
         </div>
         <img src={PlusFillIcon} />
       </div>
-      <div
+      {/* <div
         className="bank-wrapper"
         onClick={() =>
           setBankModal({
@@ -75,7 +75,7 @@ const AddBank: React.FC = () => {
           <span>Точка</span>
         </div>
         <img src={PlusFillIcon} />
-      </div>
+      </div> */}
       <Modal
         zIndex={12}
         show={bankModal.show}

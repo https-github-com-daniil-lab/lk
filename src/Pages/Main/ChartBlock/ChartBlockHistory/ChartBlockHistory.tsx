@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TransactionsSorted } from "Services/Interfaces";
 import ChartBlockHistoryWrapper from "./ChartBlockHistoryWrapper/ChartBlockHistoryWrapper";
 import ChartBlockHistoryItem from "./ChartBlockHistoryItem/ChartBlockHistoryItem";
@@ -7,6 +7,8 @@ import "Styles/Pages/Main/ChartBlock/ChartBlockHistory/ChartBlockHistory.scss";
 
 import BellIcon from "../../../../Static/icons/bell.svg";
 import moment from "moment";
+import Modal from "Components/Modal/Modal";
+import DeleteModal from "Pages/Main/BalanceBlock/DeleteModal/DeleteModal";
 
 interface Props {
   transactions: TransactionsSorted[];
@@ -14,6 +16,9 @@ interface Props {
 
 const ChartBlockHistory: React.FunctionComponent<Props> = (props: Props) => {
   const { transactions } = props;
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [transactionId, setTransactionId] = useState<string | null>(null);
 
   return (
     <div className="chart-block-history">
@@ -36,12 +41,25 @@ const ChartBlockHistory: React.FunctionComponent<Props> = (props: Props) => {
                     subtitle={"**** 1234"}
                     price={transaction.amount}
                     currency={transaction.currency}
+                    onClick={() => {
+                      console.log(transaction);
+                      
+                      setTransactionId(transaction.id);
+                      setShowDeleteModal(true);
+                    }}
                   />
                 );
               })}
             </ChartBlockHistoryWrapper>
           );
         })}
+
+      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+        <DeleteModal
+          closeModal={() => setShowDeleteModal(false)}
+          transactionId={transactionId}
+        />
+      </Modal>
     </div>
   );
 };

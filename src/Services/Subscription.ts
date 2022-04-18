@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { HidePreloader, ShowPreloader } from "Redux/Actions";
-import { GetUserToken } from "Redux/Selectors";
+import { GetUserId, GetUserToken } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 import axios from "Utils/Axios";
 import { API_URL } from "Utils/Config";
@@ -133,28 +133,24 @@ export const useGetSubscriptionGroupsById = (id: string) => {
   };
 };
 
-export const useGetActiveSubscriptions = () => {
-  const [activeSubscriptions, setActiveSubscriptions] = useState<
-    IActiveSubscription[]
-  >([]);
+export const useGetActiveSubscription = () => {
+  const [activeSubscription, setActiveSubscription] =
+    useState<IActiveSubscription | null>(null);
   const [load, setLoad] = useState<boolean>(false);
+
+  const userId = useSelector(GetUserId);
 
   const get = async (): Promise<void> => {
     try {
-      const { data } = await axios.get(`${API_URL}api/v1/subscription/`);
+      const { data } = await axios.get(
+        `${API_URL}api/v1/subscription/user/${userId}`
+      );
 
       if (data.status !== 200) {
         throw new Error(data.message);
       }
 
-      setActiveSubscriptions(
-        data.data
-          .filter((sub: IActiveSubscription) => sub.active)
-          .sort(
-            (a: IActiveSubscription, b: IActiveSubscription) =>
-              new Date(b.endDate) - new Date(a.endDate)
-          )
-      );
+      data.data.active && setActiveSubscription(data.data);
     } catch (error: any) {
       console.log(error.message);
     } finally {
@@ -171,7 +167,7 @@ export const useGetActiveSubscriptions = () => {
   }, []);
 
   return {
-    activeSubscriptions,
+    activeSubscription,
     load,
   };
 };

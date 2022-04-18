@@ -19,8 +19,6 @@
     font-size: 0.8rem;
     margin-top: 5px;
   }
-  &-amount {
-  }
   &-title {
     text-align: left;
     display: flex;
@@ -29,6 +27,24 @@
     flex-wrap: wrap;
     &-text {
       margin-left: 10px;
+    }
+  }
+  &-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    span:only-child {
+      margin-left: auto;
+    }
+  }
+  &-delete {
+    font-size: 12px;
+    text-decoration: underline;
+    color: #7f7f7f;
+
+    &:hover {
+      color: #555555;
     }
   }
 }

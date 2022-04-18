@@ -1,11 +1,11 @@
 import Load from "Components/Load/Load";
 import React from "react";
 import Bill from "Services/Bill";
+import SberIcon from "Static/Images/sber.png";
+import TinkoffIcon from "Static/Images/tinkoff.png";
 import "Styles/Pages/Main/BalanceBlock/BalanceBlock.scss";
 import BalanceBlockItem from "./BalanceBlockItem/BalanceBlockItem";
-import TinkoffIcon from "Static/Images/tinkoff.png";
-import SberIcon from "Static/Images/sber.png";
-import TochkaIcon from "Static/Images/tochka.svg";
+import CardBlockItem from "./CardBlockItem/CardBlockItem";
 
 const BalanceBlock: React.FC = () => {
   const { useGetBill, useGetTinkoffCards, useGetSberCards } = Bill;
@@ -15,7 +15,7 @@ const BalanceBlock: React.FC = () => {
 
   return (
     <Load
-      {...{ load: loadBill && loadTinkoffCards && loadSberCards }}
+      load={loadBill && loadTinkoffCards && loadSberCards}
       className="balance-block"
     >
       <h1 className="balance-block-title">Балансы</h1>
@@ -24,17 +24,15 @@ const BalanceBlock: React.FC = () => {
         title="Общий баланс"
         price={generalBalance}
       />
-      {balances.map((balance) => {
-        return (
-          <BalanceBlockItem
-            key={balance.id}
-            title={balance.name}
-            price={balance.balance.amount}
-          />
-        );
-      })}
-      {tinkoffCards.map((card) => (
+      {balances.map((balance) => (
         <BalanceBlockItem
+          key={balance.id}
+          title={balance.name}
+          price={balance.balance.amount}
+        />
+      ))}
+      {tinkoffCards.map((card) => (
+        <CardBlockItem
           key={card.id}
           title={card.bankName}
           price={card.balance.amount}
@@ -43,7 +41,7 @@ const BalanceBlock: React.FC = () => {
         />
       ))}
       {sberCards.map((card) => (
-        <BalanceBlockItem
+        <CardBlockItem
           key={card.id}
           title={card.bankName}
           price={card.balance.amount}

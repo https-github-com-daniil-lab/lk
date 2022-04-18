@@ -1,8 +1,7 @@
 import Load from "Components/Load/Load";
-import React, { useEffect, useState } from "react";
-import { IActiveSubscription } from "Services/Interfaces";
+import React from "react";
 import {
-  useGetActiveSubscriptions,
+  useGetActiveSubscription,
   useGetSubscriptionGroups,
 } from "Services/Subscription";
 import "Styles/Pages/Settings/SubscriptionBlock/SubscriptionBlock.scss";
@@ -12,8 +11,7 @@ import SubscriptionItem from "./SubscriptionItem/SubscriptionItem";
 
 const SubscriptionBlock: React.FC = () => {
   const { load: groupLoaded, subscriptionGroups } = useGetSubscriptionGroups();
-  const { load: activeLoaded, activeSubscriptions } =
-    useGetActiveSubscriptions();
+  const { load: activeLoaded, activeSubscription } = useGetActiveSubscription();
 
   return (
     <Swiper
@@ -43,7 +41,7 @@ const SubscriptionBlock: React.FC = () => {
             <SubscriptionItem
               key={subscriptionGroup.id}
               subscriptionGroup={subscriptionGroup}
-              activeSubscriptions={activeSubscriptions}
+              activeSubscription={activeSubscription}
               list={SubscriptionPossibilities[subscriptionGroup.name]}
             />
           </SwiperSlide>

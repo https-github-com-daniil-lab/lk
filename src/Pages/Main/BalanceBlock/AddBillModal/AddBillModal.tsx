@@ -1,6 +1,8 @@
+import AccessDenied from "Components/AccessDenied/AccessDenied";
 import Modal from "Components/Modal/Modal";
 import React, { useState } from "react";
 import Bill from "Services/Bill";
+import { useGetActiveSubscription } from "Services/Subscription";
 import CardIcon from "Static/icons/card.svg";
 import "Styles/Pages/Main/BalanceBlock/AddBillModal/AddBillModal.scss";
 import AddBank from "./AddBank/AddBank";
@@ -14,6 +16,8 @@ const AddBillModal: React.FunctionComponent<Props> = ({ onClose }: Props) => {
   const [balance, setBalance] = useState<string>("");
 
   const [addBankModal, setAddBankModal] = useState<boolean>(false);
+
+  const { activeSubscription } = useGetActiveSubscription();
 
   const { useAddBill } = Bill;
   const { addBill } = useAddBill(name, balance);
@@ -82,7 +86,15 @@ const AddBillModal: React.FunctionComponent<Props> = ({ onClose }: Props) => {
         show={addBankModal}
         onClose={() => setAddBankModal(false)}
       >
-        <AddBank />
+        {activeSubscription?.variant.role.name === "PremiumRole" ||
+        activeSubscription?.variant.role.name === "ProRole" ? (
+          <AddBank />
+        ) : (
+          <AccessDenied closeModal={() => setAddBankModal(false)}>
+            Оформите подписку, чтобы получить доступ к подключению банковского
+            счета
+          </AccessDenied>
+        )}
       </Modal>
     </div>
   );

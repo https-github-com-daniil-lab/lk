@@ -161,7 +161,7 @@ export interface IActiveSubscription {
   id: string;
   startDate: string;
   endDate: string;
-  variant: ISubscription & IRole;
+  variant: ISubscription & { role: IRole };
   active: boolean;
 }
 
@@ -196,6 +196,7 @@ export type UserTranscationsType = {
   currency: string;
   amount: string | number;
   title: string;
+  id: string;
 };
 
 export interface TransactionsSorted {

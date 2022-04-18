@@ -1,40 +1,34 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  IActiveSubscription,
-  ISubscription,
-  ISubscriptionGroup,
-} from "Services/Interfaces";
+import { IActiveSubscription, ISubscriptionGroup } from "Services/Interfaces";
 import "Styles/Pages/Settings/SubscriptionBlock/SubscriptionItem/SubscriptionItem.scss";
 import Logo from "../../../../Static/Images/Logo.svg";
 import SubscriptionItemLite from "./SubscriptionItemLite";
 
 interface Props {
   subscriptionGroup: ISubscriptionGroup;
-  activeSubscriptions: IActiveSubscription[];
+  activeSubscription: IActiveSubscription | null;
   list?: string[];
 }
 
 const SubscriptionItem: React.FC<Props> = ({
   subscriptionGroup,
-  activeSubscriptions,
+  activeSubscription,
   list,
 }) => {
   const { id, name, variants } = subscriptionGroup;
-  const [activeSubscription, setActiveSubscription] =
-    useState<IActiveSubscription>();
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    if (!variants || !activeSubscriptions) return;
+    if (!variants || !activeSubscription) return;
 
-    const subscription = activeSubscriptions.find(
-      (activeSubscription) =>
-        variants.map(({ id }) => id).indexOf(activeSubscription.variant.id) !== -1
+    const isSubscriptionActive = variants.find(
+      ({ id }) => activeSubscription.variant.id === id
     );
 
-    setActiveSubscription(subscription);
-  }, [variants, activeSubscriptions]);
+    isSubscriptionActive && setIsActive(true);
+  }, [variants, activeSubscription]);
 
   if (subscriptionGroup.name === "Lite") {
     return <SubscriptionItemLite />;
@@ -56,7 +50,7 @@ const SubscriptionItem: React.FC<Props> = ({
         ))}
       </ul>
 
-      {activeSubscription ? (
+      {activeSubscription && isActive ? (
         <>
           <span className="subscription-item-date">
             Действует до {moment(activeSubscription.endDate).format("DD.MM.Y")}

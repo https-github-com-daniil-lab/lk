@@ -10,6 +10,7 @@ interface Props {
   className?: string;
   subtitle?: string;
   icon?: string;
+  handleDelete?: () => void;
 }
 
 const BalanceBlockItem: React.FunctionComponent<Props> = ({
@@ -18,9 +19,10 @@ const BalanceBlockItem: React.FunctionComponent<Props> = ({
   className,
   subtitle,
   icon,
+  handleDelete,
 }: Props) => {
   return (
-    <div className={`balance-block-item ${className}`}>
+    <div className={`balance-block-item ${className || ""}`}>
       <div className="balance-block-item-title">
         <img src={icon || WalletBalanceIcon} alt="Wallet icon" width={20} />
         <span className="balance-block-item-title-text">{title}</span>
@@ -28,7 +30,14 @@ const BalanceBlockItem: React.FunctionComponent<Props> = ({
           <span className="balance-block-item-subtitle">{subtitle ?? ""}</span>
         )}
       </div>
-      <span className="balance-block-item-amount">{price} ₽</span>
+      <div className="balance-block-item-info">
+        {handleDelete && (
+          <span className="balance-block-item-delete" onClick={handleDelete}>
+            Удалить
+          </span>
+        )}
+        <span className="balance-block-item-amount">{price} ₽</span>
+      </div>
     </div>
   );
 };

@@ -15,13 +15,14 @@ interface Props {
     path: string | undefined;
   };
   currency?: string;
+  onClick?: () => void;
 }
 
 const ChartBlockHistoryItem: React.FunctionComponent<Props> = (
   props: Props
 ) => {
   return (
-    <div className="chart-block-history-item">
+    <div className="chart-block-history-item" onClick={props.onClick}>
       <div
         className="chart-block-history-item-image"
         style={{
