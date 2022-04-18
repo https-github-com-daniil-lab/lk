@@ -13,6 +13,9 @@
   height: 350px;
   overflow-x: hidden;
   overflow-y: auto;
+  @media screen and (max-width: 400px) {
+    border-radius: 0;
+  }
   &-title {
     font-size: 1.6rem;
     color: #555555;

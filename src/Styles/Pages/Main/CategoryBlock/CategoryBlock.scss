@@ -37,5 +37,10 @@
       gap: 10px 5px;
       margin-left: 5px;
     }
+    @media screen and (max-width: 400px) {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      grid-template-areas: none;
+    }
   }
 }

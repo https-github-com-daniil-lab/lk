@@ -72,3 +72,9 @@
     }
   }
 }
+
+.donut {
+  @media screen and (max-width: 320px) {
+    width: 225px !important;
+  }
+}
