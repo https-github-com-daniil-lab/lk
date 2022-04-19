@@ -41,7 +41,7 @@ const colors = [
 
 type arcradius = { x: number; y: number };
 
-const CreateDonutChart = (data: string[] | number[]) => {
+const CreateDonutChart = (data: (string | number)[]) => {
   const [chartData, setChartData] = useState<Array<any>>([]);
 
   const arcradius = (
@@ -70,13 +70,13 @@ const CreateDonutChart = (data: string[] | number[]) => {
     const array = data;
 
     array.forEach((v, i) => {
-      total += v;
+      total += +v;
     });
 
     array.forEach((v, i) => {
       let tmp: any = {};
 
-      let p = ((v + 1) / total) * 100;
+      let p = ((+v + 1) / total) * 100;
 
       count += p;
 

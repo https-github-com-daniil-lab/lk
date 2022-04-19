@@ -174,9 +174,26 @@ const addCategory = async (
   }
 };
 
+const deleteCategory = async (
+  params: CategoryType,
+  userId: string,
+  dispatch: AppDispatch
+): Promise<void> => {
+  try {
+    const response = await axios({
+      method: "DELETE",
+      url: `${API_URL}api/v1/category/`,
+    });
+    dispatch(UpdateCategory());
+  } catch (error: any) {
+    console.log(error);
+  }
+};
+
 export default {
   useGetCategory,
   useGetCategoryColors,
   useGetCategoryIcons,
   addCategory,
+  deleteCategory,
 };

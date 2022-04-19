@@ -5,13 +5,19 @@ import "Styles/Pages/Main/BalanceBlock/DeleteModal/DeleteModal.scss";
 interface Props {
   closeModal: () => void;
   transactionId: string | null;
+  deleteOp?: () => void;
 }
 
-const DeleteModal: React.FC<Props> = ({ closeModal, transactionId }) => {
+const DeleteModal: React.FC<Props> = ({
+  closeModal,
+  transactionId,
+  deleteOp,
+}) => {
   const { deleteTransaction } = useTransaction(transactionId);
 
   const handleDeleteTransaction = () => {
-    deleteTransaction();
+    if (deleteOp) deleteOp();
+    else deleteTransaction();
     closeModal();
   };
 
@@ -19,7 +25,7 @@ const DeleteModal: React.FC<Props> = ({ closeModal, transactionId }) => {
     <div className="delete">
       <p className="delete__title">Подтверждение удаления</p>
       <p className="delete__body">
-        Подтвердите удаление операции. Данное действие невозможно отменить
+        Подтвердите удаление. Данное действие невозможно отменить
       </p>
       <div className="delete__buttons">
         <button className="button-secondary" onClick={closeModal}>

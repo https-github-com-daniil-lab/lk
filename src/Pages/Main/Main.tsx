@@ -54,6 +54,7 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
           </div>
         </div>
         <BalanceBlock
+          selectedBill={selectedBill}
           setSelectedBill={(str: string | null) => setSelectedBill(str)}
         />
       </div>
