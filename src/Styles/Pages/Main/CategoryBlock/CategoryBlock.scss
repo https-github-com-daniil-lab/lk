@@ -22,18 +22,11 @@
     grid-auto-columns: 1fr;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
-    gap: 10px 0px;
-    grid-template-areas:
-      ". . ."
-      ". . ."
-      ". . ."
-      ". . .";
-    @media screen and (max-width: 500px) {
-      grid-template-areas:
-        ". ."
-        ". ."
-        ". ."
-        ". .";
+    gap: 10px 10px;
+
+    @media screen and (max-width: 945px) {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr;
       gap: 10px 5px;
       margin-left: 5px;
     }

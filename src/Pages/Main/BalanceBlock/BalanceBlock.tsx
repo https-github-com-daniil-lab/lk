@@ -7,7 +7,11 @@ import "Styles/Pages/Main/BalanceBlock/BalanceBlock.scss";
 import BalanceBlockItem from "./BalanceBlockItem/BalanceBlockItem";
 import CardBlockItem from "./CardBlockItem/CardBlockItem";
 
-const BalanceBlock: React.FC = () => {
+interface Props {
+  setSelectedBill: (str: string | null) => void;
+}
+
+const BalanceBlock: React.FC<Props> = ({ setSelectedBill }) => {
   const { useGetBill, useGetTinkoffCards, useGetSberCards } = Bill;
   const { load: loadBill, balances, generalBalance } = useGetBill();
   const { load: loadTinkoffCards, cards: tinkoffCards } = useGetTinkoffCards();
@@ -20,12 +24,14 @@ const BalanceBlock: React.FC = () => {
     >
       <h1 className="balance-block-title">Балансы</h1>
       <BalanceBlockItem
+        onClick={() => setSelectedBill(null)}
         className="general"
         title="Общий баланс"
         price={generalBalance}
       />
       {balances.map((balance) => (
         <BalanceBlockItem
+          onClick={(title) => setSelectedBill(title)}
           key={balance.id}
           title={balance.name}
           price={balance.balance.amount}
@@ -33,6 +39,7 @@ const BalanceBlock: React.FC = () => {
       ))}
       {tinkoffCards.map((card) => (
         <CardBlockItem
+          onClick={(title) => setSelectedBill(title)}
           key={card.id}
           title={card.bankName}
           price={card.balance.amount}
@@ -43,6 +50,7 @@ const BalanceBlock: React.FC = () => {
       {sberCards.map((card) => (
         <CardBlockItem
           key={card.id}
+          onClick={(title) => setSelectedBill(title)}
           title={card.bankName}
           price={card.balance.amount}
           subtitle={card.cardNumber}

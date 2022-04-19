@@ -11,6 +11,7 @@ interface Props {
   subtitle?: string;
   icon?: string;
   handleDelete?: () => void;
+  onClick?: (title: string) => void;
 }
 
 const BalanceBlockItem: React.FunctionComponent<Props> = ({
@@ -20,9 +21,13 @@ const BalanceBlockItem: React.FunctionComponent<Props> = ({
   subtitle,
   icon,
   handleDelete,
+  onClick,
 }: Props) => {
   return (
-    <div className={`balance-block-item ${className || ""}`}>
+    <div
+      className={`balance-block-item ${className || ""}`}
+      onClick={() => onClick && onClick(title)}
+    >
       <div className="balance-block-item-title">
         <img src={icon || WalletBalanceIcon} alt="Wallet icon" width={20} />
         <span className="balance-block-item-title-text">{title}</span>

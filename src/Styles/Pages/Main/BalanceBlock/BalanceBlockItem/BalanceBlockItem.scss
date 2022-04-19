@@ -6,7 +6,10 @@
   gap: 0px 0px;
   margin-bottom: 20px;
   text-align: right;
-
+  transition: background 0.1s ease;
+  &:active {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
   &.general {
     background: linear-gradient(90deg, #4776e6 0%, #8e54e9 100%);
     color: white;
@@ -18,6 +21,9 @@
     width: 100%;
     font-size: 0.8rem;
     margin-top: 5px;
+  }
+  &:not(.general) &-title img {
+    filter: invert(1);
   }
   &-title {
     text-align: left;

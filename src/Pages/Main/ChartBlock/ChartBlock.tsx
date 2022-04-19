@@ -5,9 +5,11 @@ import Load from "Components/Load/Load";
 import ChartBlockHistory from "./ChartBlockHistory/ChartBlockHistory";
 import "Styles/Pages/Main/ChartBlock/ChartBlock.scss";
 
-interface Props {}
+interface Props {
+  selectedBill: string | null;
+}
 
-const ChartBlock: React.FunctionComponent<Props> = (props: Props) => {
+const ChartBlock: React.FunctionComponent<Props> = ({ selectedBill }) => {
   const { useGetTransaction } = Transaction;
   const {
     load,
@@ -19,12 +21,15 @@ const ChartBlock: React.FunctionComponent<Props> = (props: Props) => {
     expenses,
     next,
     prev,
-  } = useGetTransaction();
+  } = useGetTransaction(selectedBill);
 
   return (
     <Load {...{ load }}>
       <div className="chart-block">
-        <ChartBlockHistory transactions={allTransactions} />
+        <ChartBlockHistory
+          transactions={allTransactions}
+          selectedBill={selectedBill}
+        />
         {load ? (
           <DonutChartBlock
             data={prices}

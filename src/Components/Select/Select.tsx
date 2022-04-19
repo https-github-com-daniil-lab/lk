@@ -16,7 +16,7 @@ const Select: React.FunctionComponent<Props> = ({
   width,
 }: Props) => {
   const [expand, toggle] = useState<boolean>(false);
-
+  console.log(value);
   const _handler = (i: number): void => {
     handler(i);
     toggle(!expand);
@@ -25,7 +25,7 @@ const Select: React.FunctionComponent<Props> = ({
     <div className="select" style={{ width }}>
       <div className="select-wrapper" onClick={() => toggle(!expand)}>
         <span>$</span>
-        <span>{value ? "Валюта" : "Не выбрано"}</span>
+        <span>{value ? value : "Не выбрано"}</span>
         <svg
           id="select-arrow-down"
           viewBox="0 0 10 6"

@@ -25,6 +25,12 @@ interface Props {
 const DonutChartBlock: React.FunctionComponent<Props> = (props: Props) => {
   const { data, selectedDate, setDate, next, prev } = props;
   const { chartData } = CreateDonutChart(data);
+
+  const [color, setColor] = useState("#9E9E9E");
+  useEffect(() => {
+    if (chartData.length == 0) setColor("#9E9E9E");
+    else if (chartData.length == 1) setColor("rgba(0, 255, 255, 1)");
+  }, [chartData.length]);
   return (
     <div className="donut-chart-wrapper">
       <span className="donut-chart-prev" onClick={prev}>
@@ -58,27 +64,27 @@ const DonutChartBlock: React.FunctionComponent<Props> = (props: Props) => {
               cy="21"
               r="15"
               fill="transparent"
-              stroke="rgba(255, 255, 255, 1)"
+              stroke={"rgba(255, 255, 255, 1)"}
               strokeWidth="7"
             ></circle>
-            {chartData.length !== 0 && chartData.length > 1
-              ? chartData.map((p, i) => {
-                  return <Path key={i} d={p.d} stroke={p.stroke} index={i} />;
-                })
-              : chartData.length !== 0 && (
-                  <circle
-                    strokeLinejoin="round"
-                    cx="21"
-                    cy="21"
-                    r="15"
-                    fill="transparent"
-                    stroke="rgba(0, 255, 255, 1)"
-                    strokeWidth="7"
-                    style={{
-                      WebkitAnimation: `all 1s linear forwards`,
-                    }}
-                  ></circle>
-                )}
+            {chartData.length == 0 || chartData.length == 1 ? (
+              <circle
+                strokeLinejoin="round"
+                cx="21"
+                cy="21"
+                r="15"
+                fill="transparent"
+                stroke={color}
+                strokeWidth="7"
+                style={{
+                  WebkitAnimation: `all 1s linear forwards`,
+                }}
+              ></circle>
+            ) : (
+              chartData.map((p, i) => {
+                return <Path key={i} d={p.d} stroke={p.stroke} index={i} />;
+              })
+            )}
           </svg>
         </div>
         <div className="donut-chart-label">

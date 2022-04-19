@@ -16,10 +16,13 @@ import {
   UserTranscationsType,
 } from "./Interfaces";
 
-const useGetTransaction = () => {
+const useGetTransaction = (selecterBill?: string | null) => {
   const userId = useSelector(GetUserId);
 
   const [load, setLoad] = useState<boolean>(false);
+  const [income, setIncome] = useState<number>(0);
+  const [expenses, setExpenses] = useState<number>(0);
+  const [prices, setPreces] = useState<(string | number)[]>([]);
 
   const [selectedDate, setSelectedDate] = useState<string[]>([
     moment().format("YYYY-MM-DD"),
@@ -49,27 +52,37 @@ const useGetTransaction = () => {
     return moment(now).get("month") == moment(v.date).get("month");
   };
 
-  const income = useMemo(() => {
-    return transactions
+  const mapBySelectedBill = (v: TransactionsSorted) => {
+    return {
+      ...v,
+      transactions: v.transactions.filter(
+        (b) => !selecterBill || b.title == selecterBill
+      ),
+    };
+  };
+
+  useEffect(() => {
+    const newIcome = transactions
       .filter(filterByDate)
+      .map(mapBySelectedBill)
       .map((item) =>
         item.transactions
           .filter((i) => i.action === "DEPOSIT" || i.action === "EARN")
           .reduce((x, y) => +x + +y.amount, 0)
       )
       .reduce((x, y) => x + y, 0);
-  }, [selectedDate, transactions]);
-
-  const expenses = useMemo(() => {
-    return transactions
+    const newExpenses = transactions
       .filter(filterByDate)
+      .map(mapBySelectedBill)
       .map((item) =>
         item.transactions
           .filter((i) => i.action === "WITHDRAW" || i.action === "SPEND")
           .reduce((x, y) => +x + +y.amount, 0)
       )
       .reduce((x, y) => x + y, 0);
-  }, [selectedDate, transactions]);
+    setIncome(newIcome);
+    setExpenses(newExpenses);
+  }, [selectedDate, transactions, selecterBill]);
 
   const setDate = (dates: string[]): void =>
     setSelectedDate(dates.map((i) => moment(i).format("YYYY-MM-DD")));
@@ -81,14 +94,15 @@ const useGetTransaction = () => {
     else return [];
   }, [selectedDate, transactions]);
 
-  const prices = useMemo(() => {
+  useEffect(() => {
     const f = transactions
       .find(filterByDate)
-      ?.transactions.map((t) => t.amount);
+      ?.transactions.filter((b) => !selecterBill || b.title == selecterBill)
+      .map((t) => t.amount);
 
-    if (f) return f as number[] | string[];
-    else return [];
-  }, [selectedDate, transactions]);
+    if (f) setPreces(f);
+    else setPreces([]);
+  }, [selectedDate, transactions, selecterBill]);
 
   const sorted = (array: UserTranscationsType[]): TransactionsSorted[] => {
     const sortedTransactionByGroup = ArrayGroups(array);

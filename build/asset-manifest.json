@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.9b096cda.css",
-    "main.js": "/static/js/main.167f4ae6.js",
+    "main.css": "/static/css/main.16fc3878.css",
+    "main.js": "/static/js/main.ad0cac10.js",
     "static/js/684.571305c4.chunk.js": "/static/js/684.571305c4.chunk.js",
     "static/js/787.94269350.chunk.js": "/static/js/787.94269350.chunk.js",
     "static/media/wallet-side-budget.svg": "/static/media/wallet-side-budget.29ff5b90cd4bf03828697651487333fe.svg",
@@ -16,11 +16,9 @@
     "static/media/sidebar-support-icon.svg": "/static/media/sidebar-support-icon.48f121c548f9ac5491537e2be513f8ed.svg",
     "static/media/sidebar-card-scan.svg": "/static/media/sidebar-card-scan.e24e3385f94c945ecb8fed94af028ae1.svg",
     "static/media/search-gery.svg": "/static/media/search-gery.4d3671345a74224082d5d9efa764b9a9.svg",
-    "static/media/search.svg": "/static/media/search.204d42d46762572ee5f317c6013b2f60.svg",
     "static/media/sidebar-logout-icon.svg": "/static/media/sidebar-logout-icon.dd32a2ed2d2b0105eb9082708e45a79e.svg",
     "static/media/sidebar-budget-icon.svg": "/static/media/sidebar-budget-icon.0035438e6a795edb340cb0c1565bd1f4.svg",
     "static/media/sidebar-main-icon.svg": "/static/media/sidebar-main-icon.57454555bc6425d047ea2c94936f1887.svg",
-    "static/media/bell.svg": "/static/media/bell.5f4efb1c57e05e6f491db6a2700855ae.svg",
     "static/media/Loader.svg": "/static/media/Loader.bd16730b57840ce2903662bfac803e83.svg",
     "static/media/wallet-balance-icon.svg": "/static/media/wallet-balance-icon.53f931e6ada3238009c9776c05cf5877.svg",
     "static/media/sidebar-bonuscard-icon.svg": "/static/media/sidebar-bonuscard-icon.567b96967ba6af7b9f488a9522c9cba5.svg",
@@ -33,19 +31,18 @@
     "static/media/remove.svg": "/static/media/remove.f66631f4ddad3aab0bd9d0f82c75f149.svg",
     "static/media/card.svg": "/static/media/card.f3991ec6d5e1dc9589bc7133cd91506e.svg",
     "static/media/calendar-dark.svg": "/static/media/calendar-dark.adb65a9de4b24c44887d9bbe4984548c.svg",
-    "static/media/mail.svg": "/static/media/mail.3995283352e0c423c318390d5a6e6968.svg",
     "static/media/mail-user.svg": "/static/media/mail-user.04b3f9807777325afe5a441160978369.svg",
     "static/media/plus-circle-fill.svg": "/static/media/plus-circle-fill.e58cb2b891659837d9c44a1eaf14601c.svg",
     "static/media/plus.svg": "/static/media/plus.537a294d0063bb2b2726deef63a4caaf.svg",
     "static/media/next.svg": "/static/media/next.74a714aea4b5ea2914b3852fce0ac612.svg",
     "static/media/prev.svg": "/static/media/prev.192199e6db1acd2a38b868ae4fa22904.svg",
-    "main.9b096cda.css.map": "/static/css/main.9b096cda.css.map",
-    "main.167f4ae6.js.map": "/static/js/main.167f4ae6.js.map",
+    "main.16fc3878.css.map": "/static/css/main.16fc3878.css.map",
+    "main.ad0cac10.js.map": "/static/js/main.ad0cac10.js.map",
     "684.571305c4.chunk.js.map": "/static/js/684.571305c4.chunk.js.map",
     "787.94269350.chunk.js.map": "/static/js/787.94269350.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9b096cda.css",
-    "static/js/main.167f4ae6.js"
+    "static/css/main.16fc3878.css",
+    "static/js/main.ad0cac10.js"
   ]
 }

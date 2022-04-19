@@ -7,7 +7,8 @@
   height: 100%;
   overflow-y: auto;
   grid-template-areas:
-    "header header"
+    // "header header"
+
     "greet greet"
     ". ."
     ". .";
@@ -19,13 +20,18 @@
     overflow-y: initial;
     grid-template-columns: 1fr;
     border-radius: 0;
+    grid-template-rows: none;
     grid-template-areas:
-      "header"
+      // "header"
+
       "greet"
       "."
       "."
       "."
       ".";
+    &__title {
+      margin-top: 40px;
+    }
   }
   @media screen and (max-width: 500px) {
     padding: 0 0 0 5px;

@@ -23,6 +23,8 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
     useState<boolean>(false);
 
   const [showBillModal, setShowBillModal] = useState<boolean>(false);
+
+  const [selectedBill, setSelectedBill] = useState<string | null>(null);
   return (
     <div className="main">
       <Header />
@@ -39,7 +41,7 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
             <img src={PlusCircleFill} alt={"Plus icon"} />
           </div>
         </div>
-        <ChartBlock />
+        <ChartBlock selectedBill={selectedBill} />
       </div>
       <div className="app-card">
         <div className="app-card-header">
@@ -51,7 +53,9 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
             <img src={PlusCircleFill} alt={"Plus icon"} />
           </div>
         </div>
-        <BalanceBlock />
+        <BalanceBlock
+          setSelectedBill={(str: string | null) => setSelectedBill(str)}
+        />
       </div>
       <div className="app-card">
         <div className="app-card-header">

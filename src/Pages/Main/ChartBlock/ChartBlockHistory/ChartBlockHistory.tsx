@@ -12,18 +12,25 @@ import DeleteModal from "Pages/Main/BalanceBlock/DeleteModal/DeleteModal";
 
 interface Props {
   transactions: TransactionsSorted[];
+  selectedBill: string | null;
 }
 
 const ChartBlockHistory: React.FunctionComponent<Props> = (props: Props) => {
-  const { transactions } = props;
+  const { transactions, selectedBill } = props;
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
-
+  console.log(transactions);
   return (
     <div className="chart-block-history">
       {transactions
         .sort((a, b) => (moment(a.date).isAfter(moment(b.date)) ? -1 : 1))
+        .map((a) => ({
+          ...a,
+          transactions: a.transactions.filter(
+            (b) => !selectedBill || selectedBill == b.title
+          ),
+        }))
         .map((g, i) => {
           return (
             <ChartBlockHistoryWrapper key={i} date={g.date}>
@@ -43,7 +50,7 @@ const ChartBlockHistory: React.FunctionComponent<Props> = (props: Props) => {
                     currency={transaction.currency}
                     onClick={() => {
                       console.log(transaction);
-                      
+
                       setTransactionId(transaction.id);
                       setShowDeleteModal(true);
                     }}
