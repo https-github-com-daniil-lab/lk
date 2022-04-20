@@ -10,11 +10,12 @@ interface Props {
   name: string;
   icon: string;
   color: string;
+  onClick: () => void;
 }
 
 const CategoryItem: React.FunctionComponent<Props> = (props: Props) => {
   return (
-    <div className="category-item">
+    <div className="category-item" onClick={props.onClick}>
       <div
         className="category-item-image"
         style={{

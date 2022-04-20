@@ -49,8 +49,6 @@ const ChartBlockHistory: React.FunctionComponent<Props> = (props: Props) => {
                     price={transaction.amount}
                     currency={transaction.currency}
                     onClick={() => {
-                      console.log(transaction);
-
                       setTransactionId(transaction.id);
                       setShowDeleteModal(true);
                     }}

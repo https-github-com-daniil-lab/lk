@@ -13,7 +13,7 @@ import { dateFormat } from "highcharts";
 import moment from "moment";
 
 interface Props {
-  data: number[] | string[];
+  data: (number | string)[];
   income: number;
   expenses: number;
   selectedDate: string[];

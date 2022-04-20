@@ -31,6 +31,9 @@
       ".";
     &__title {
       margin-top: 40px;
+      @media screen and (max-width: 945px) {
+        text-align: center;
+      }
     }
   }
   @media screen and (max-width: 500px) {
