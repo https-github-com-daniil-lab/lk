@@ -1,34 +1,26 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { IActiveSubscription, ISubscriptionGroup } from "Services/Interfaces";
+import {
+  IActiveSubscriptionGroup,
+  ISubscriptionGroup,
+} from "Services/Interfaces";
 import "Styles/Pages/Settings/SubscriptionBlock/SubscriptionItem/SubscriptionItem.scss";
 import Logo from "../../../../Static/Images/Logo.svg";
 import SubscriptionItemLite from "./SubscriptionItemLite";
 
 interface Props {
-  subscriptionGroup: ISubscriptionGroup;
-  activeSubscription: IActiveSubscription | null;
+  subscriptionGroup: ISubscriptionGroup & IActiveSubscriptionGroup;
   list?: string[];
+  isSubscribed: boolean;
 }
 
 const SubscriptionItem: React.FC<Props> = ({
   subscriptionGroup,
-  activeSubscription,
   list,
+  isSubscribed,
 }) => {
-  const { id, name, variants } = subscriptionGroup;
-  const [isActive, setIsActive] = useState(false);
-
-  useEffect(() => {
-    if (!variants || !activeSubscription) return;
-
-    const isSubscriptionActive = variants.find(
-      ({ id }) => activeSubscription.variant.id === id
-    );
-
-    isSubscriptionActive && setIsActive(true);
-  }, [variants, activeSubscription]);
+  const { id, name, subscribedTo } = subscriptionGroup;
 
   if (subscriptionGroup.name === "Lite") {
     return <SubscriptionItemLite />;
@@ -50,27 +42,27 @@ const SubscriptionItem: React.FC<Props> = ({
         ))}
       </ul>
 
-      {activeSubscription && isActive ? (
-        <>
-          <span className="subscription-item-date">
-            Действует до {moment(activeSubscription.endDate).format("DD.MM.Y")}
-          </span>
-          <button className="button-primary subscription-item-button" disabled>
-            Активировано
-          </button>
-        </>
+      {subscribedTo ? (
+        <span className="subscription-item-date">
+          Действует до {moment(subscribedTo).format("DD.MM.Y")}
+        </span>
       ) : (
-        <>
-          <span className="subscription-item-date">
-            от {subscriptionGroup.variants[0].newPrice} руб./мес
-          </span>
-          <Link
-            to={`/sub/${id}`}
-            className="button-primary subscription-item-button"
-          >
-            Оформить подписку
-          </Link>
-        </>
+        <span className="subscription-item-date">
+          от {subscriptionGroup.variants[0].newPrice} руб./мес
+        </span>
+      )}
+
+      {isSubscribed ? (
+        <button className="button-primary subscription-item-button" disabled>
+          Активировано
+        </button>
+      ) : (
+        <Link
+          to={`/sub/${id}`}
+          className="button-primary subscription-item-button"
+        >
+          Оформить подписку
+        </Link>
       )}
     </div>
   );

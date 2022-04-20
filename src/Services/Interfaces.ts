@@ -152,6 +152,11 @@ export interface ISubscriptionGroup {
   variants: ISubscription[];
 }
 
+export interface IActiveSubscriptionGroup {
+  subscribedTo: string | null;
+  isSubscribed: boolean;
+}
+
 export interface IRole {
   id: string;
   name: string;
@@ -202,4 +207,33 @@ export type UserTranscationsType = {
 export interface TransactionsSorted {
   date: string;
   transactions: UserTranscationsType[];
+}
+
+export interface IBonus {
+  blank: {
+    description: string;
+    id: string;
+    image: {
+      id: string;
+      name: string;
+      path: string;
+      tag: string;
+    };
+    name: string;
+  };
+  data: string;
+  id: string;
+  user: UserType;
+}
+
+export interface IBonusBlank {
+  id: string;
+  name: string;
+  description: string;
+  image: {
+    id: string;
+    name: string;
+    path: string;
+    tag: string;
+  };
 }

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { HidePreloader, ShowPreloader } from "Redux/Actions";
+import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
 import { GetUserId, GetUserToken } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 import axios from "Utils/Axios";
 import { API_URL } from "Utils/Config";
 import {
   IActiveSubscription,
+  IActiveSubscriptionGroup,
   ISubscription,
   ISubscriptionGroup,
 } from "./Interfaces";
@@ -46,44 +47,72 @@ export const useGetSubscriptions = () => {
 
 export const useGetSubscriptionGroups = () => {
   const [subscriptionGroups, setSubscriptionGroups] = useState<
-    ISubscriptionGroup[]
+    (ISubscriptionGroup & IActiveSubscriptionGroup)[]
   >([]);
   const [load, setLoad] = useState<boolean>(false);
+  const { load: activeSubscriptionLoad, activeSubscription } =
+    useGetActiveSubscription();
 
-  const get = async (): Promise<void> => {
-    try {
-      const { data } = await axios.get(
-        `${API_URL}api/v1/subscription-variant/group/`
-      );
-      if (data.status !== 200) {
-        throw new Error(data.message);
-      }
+  const dispatch = useDispatch();
 
-      setSubscriptionGroups(
-        Object.values<ISubscriptionGroup>(data.data).map(
-          (group: ISubscriptionGroup) => ({
-            ...group,
-            variants: group.variants.sort((a, b) => a.price - b.price),
-          })
-        )
-      );
-
-      // Injecting lite subscription
-      setSubscriptionGroups((subs) => [
-        { id: "lite", name: "Lite", variants: [] },
-        ...subs,
-      ]);
-      setLoad(true);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
-  const init = async (): Promise<void> => {
-    await get();
-  };
   useEffect(() => {
-    init();
-  }, []);
+    const getSubscriptionGroups = async (): Promise<void> => {
+      if (!activeSubscriptionLoad) return;
+
+      try {
+        const { data } = await axios.get(
+          `${API_URL}api/v1/subscription-variant/group/`
+        );
+
+        if (data.status !== 200) {
+          throw new Error(data.message);
+        }
+
+        const groups = data.data;
+
+        const isSubscribed = (group: ISubscriptionGroup) =>
+          !!group.variants.find(
+            ({ id }) => activeSubscription?.variant.id === id
+          );
+
+        setSubscriptionGroups(
+          Object.values<ISubscriptionGroup>(groups).map(
+            (group: ISubscriptionGroup) => ({
+              ...group,
+              variants: group.variants.sort((a, b) => a.price - b.price),
+              subscribedTo:
+                (isSubscribed(group) && activeSubscription?.endDate) || null,
+              isSubscribed: isSubscribed(group),
+            })
+          )
+        );
+
+        // Injecting lite subscription
+        setSubscriptionGroups((subs) => [
+          {
+            id: "lite",
+            name: "Lite",
+            variants: [],
+            subscribedTo: null,
+            isSubscribed: true,
+          },
+          ...subs,
+        ]);
+        setLoad(true);
+      } catch (error: any) {
+        dispatch(
+          ShowToast({
+            title: "Ошибка",
+            text: "Не удалось загрузить подписки",
+            type: "error",
+          })
+        );
+      }
+    };
+
+    getSubscriptionGroups();
+  }, [activeSubscription, activeSubscriptionLoad]);
+
   return {
     subscriptionGroups,
     load,

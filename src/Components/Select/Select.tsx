@@ -16,7 +16,7 @@ const Select: React.FunctionComponent<Props> = ({
   width,
 }: Props) => {
   const [expand, toggle] = useState<boolean>(false);
-  console.log(value);
+
   const _handler = (i: number): void => {
     handler(i);
     toggle(!expand);

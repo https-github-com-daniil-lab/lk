@@ -1,144 +1,164 @@
-import axios from "axios";
-import { CategoryType } from "Pages/Main/CategoryBlock/CategoryConstructor/CategoryConstructor";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { UpdateCategory } from "Redux/Actions";
-import { GetUpdateCategory, GetUserId, GetUserToken } from "Redux/Selectors";
-import { AppDispatch } from "Redux/Store";
+import { useDispatch, useSelector } from "react-redux";
+import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
+import { GetUserId } from "Redux/Selectors";
+import axios from "Utils/Axios";
 import { API_URL } from "Utils/Config";
-import { ColorType, IconType, UserType } from "./Interfaces";
+import { IBonus, IBonusBlank } from "./Interfaces";
 
-export interface IBonus {
-  blank: {
-    description: string;
-    id: string;
-    image: {
-      id: string;
-      name: string;
-      path: string;
-      tag: string;
-    };
-    name: string;
-  };
-  data: string;
-  id: string;
-  user: UserType;
-}
-
-const useGetCards = () => {
+export const useBonusCards = () => {
   const userId = useSelector(GetUserId);
-  const token = useSelector(GetUserToken);
-  const updateCategory = useSelector(GetUpdateCategory);
+  const dispatch = useDispatch();
 
-  const [bonus, setbonus] = useState<IBonus[]>([]);
-  const [load, setLoad] = useState<boolean>(false);
+  const [bonusCards, setBonusCards] = useState<IBonus[]>([]);
+  const [isLoad, setIsLoad] = useState<boolean>(false);
 
-  const get = async (): Promise<void> => {
+  const getBonusCards = async () => {
     try {
-      setLoad(false);
-      const res = await axios.get(
-        `${API_URL}api/v1/loyalty-card/?userId=${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      setIsLoad(false);
+
+      const { data } = await axios.get(
+        `${API_URL}api/v1/loyalty-card/user/?userId=${userId}`
       );
-      if (res.data.status === 200) {
-        setbonus(res.data.data);
-        setLoad(true);
+
+      if (data.status === 200) {
+        setBonusCards(data.data);
       } else {
-        throw new Error(res.data.message);
+        throw new Error(data.message);
       }
     } catch (error: any) {
-      console.log(error.message);
+      dispatch(
+        ShowToast({
+          title: "Ошибка",
+          text: error.message,
+          type: "error",
+        })
+      );
+    } finally {
+      setIsLoad(true);
     }
   };
 
-  const init = async (): Promise<void> => {
-    await get();
+  const deleteBonusCard = async (cardId: string | number) => {
+    try {
+      dispatch(ShowPreloader());
+
+      const { data } = await axios.delete(
+        `${API_URL}api/v1/loyalty-card/${cardId}`
+      );
+
+      if (data.status === 200) {
+        dispatch(
+          ShowToast({
+            title: "Успешно",
+            text: "Карточка успешно удалена",
+            type: "success",
+          })
+        );
+        getBonusCards();
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      dispatch(
+        ShowToast({
+          title: "Ошибка",
+          text: error.message,
+          type: "error",
+        })
+      );
+    } finally {
+      dispatch(HidePreloader());
+    }
+  };
+
+  const createBonusCard = async (
+    blankId: string,
+    code: string,
+    onSuccess: () => void
+  ) => {
+    try {
+      dispatch(ShowPreloader());
+
+      const response = await axios.post(`${API_URL}api/v1/loyalty-card/`, {
+        blankId,
+        userId,
+        data: code,
+      });
+
+      if (response.data.status === 201) {
+        dispatch(
+          ShowToast({
+            title: "Успешно",
+            text: "Карточка успешно создана",
+            type: "success",
+          })
+        );
+        getBonusCards();
+        onSuccess();
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error: any) {
+      dispatch(
+        ShowToast({
+          title: "Ошибка",
+          text: error.message,
+          type: "error",
+        })
+      );
+    } finally {
+      dispatch(HidePreloader());
+    }
   };
 
   useEffect(() => {
-    init();
-  }, [updateCategory]);
+    getBonusCards();
+  }, []);
 
   return {
-    bonus,
-    load,
+    bonusCards,
+    isLoad,
+    deleteBonusCard,
+    createBonusCard,
   };
 };
 
-// const useGetCategoryColors = () => {
-//   const [colors, setColors] = useState<ColorType[]>([]);
-//   const [load, setLoad] = useState<boolean>(false);
+export const useBonusCardBlanks = () => {
+  const dispatch = useDispatch();
+  const [isLoad, setIsLoad] = useState(false);
+  const [bonusCardBlanks, setBonusCardBlanks] = useState<IBonusBlank[]>([]);
 
-//   const get = async (): Promise<void> => {
-//     try {
-//       const res = await axios.get(`${API_URL}api/v1/category/colors`);
-//       if (res.data.status === 200) {
-//         setColors(res.data.data);
-//         setLoad(true);
-//       } else {
-//         throw new Error(res.data.message);
-//       }
-//     } catch (error: any) {
-//       console.log(error.message);
-//     }
-//   };
-
-//   const init = async (): Promise<void> => {
-//     await get();
-//   };
-
-//   useEffect(() => {
-//     init();
-//   }, []);
-//   return { colors, load };
-// };
-
-const DeleteCard = (id: string) => {
-  const get = async (): Promise<void> => {
+  const getBlanks = async () => {
     try {
-      const res = await axios.get(`${API_URL}api/v1/loyalty-card/${id}`);
-      if (res.data.status === 200) {
+      setIsLoad(false);
+
+      const { data } = await axios.get(`${API_URL}api/v1/loyalty-blank/`);
+
+      if (data.status === 200) {
+        setBonusCardBlanks(data.data);
       } else {
-        throw new Error(res.data.message);
+        throw new Error(data.message);
       }
     } catch (error: any) {
-      console.log(error.message);
+      dispatch(
+        ShowToast({
+          title: "Ошибка",
+          text: error.message,
+          type: "error",
+        })
+      );
+    } finally {
+      setIsLoad(true);
     }
   };
 
-  const init = async (): Promise<void> => {
-    await get();
+  useEffect(() => {
+    getBlanks();
+  }, []);
+
+  return {
+    bonusCardBlanks,
+    isLoad,
   };
-};
-
-// const addCategory = async (
-//   params: CategoryType,
-//   userId: string,
-//   dispatch: AppDispatch
-// ): Promise<void> => {
-//   try {
-//     const response = await axios({
-//       method: "post",
-//       url: `${API_URL}api/v1/category/`,
-//       data: {
-//         name: params.name,
-//         icon: params.icon?.id,
-//         color: params.color?.systemName,
-//         userId: userId,
-//         categoryLimit: 0,
-//       },
-//     });
-//     dispatch(UpdateCategory());
-//   } catch (error: any) {
-//     console.log(error);
-//   }
-// };
-
-export default {
-  useGetCards,
-  DeleteCard,
 };

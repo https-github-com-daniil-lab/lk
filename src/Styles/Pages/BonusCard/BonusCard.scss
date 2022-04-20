@@ -98,9 +98,20 @@
       color: #555555;
     }
     img {
-      height: 104px;
+      width: 165px;
       border-radius: 14px;
       cursor: pointer;
     }
+  }
+  &-blanks {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, 165px);
+  }
+  &-tip {
+    margin-top: 5rem;
+    color: #fff;
+    font-size: 2rem;
+    margin-left: 1rem;
   }
 }
