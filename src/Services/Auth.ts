@@ -213,7 +213,6 @@ class Auth {
   public async CreateUser(
     username,
     password,
-    walletType,
     email,
     type
   ): Promise<void> {
@@ -222,7 +221,7 @@ class Auth {
         const data = {
           username: `+${this.clearNumber(username)}`,
           password: Buffer.from(password).toString("base64"),
-          walletType,
+          walletType: "RUB",
           email,
           type,
         };
@@ -234,6 +233,7 @@ class Auth {
         });
         if (response.status === 201) {
           this.dispatch(HidePreloader());
+          this.SignIn(username, password);
         } else {
           throw new Error(response.data.message);
         }
