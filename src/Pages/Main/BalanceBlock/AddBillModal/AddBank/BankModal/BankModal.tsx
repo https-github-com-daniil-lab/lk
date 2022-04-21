@@ -32,6 +32,14 @@ const BankModal: React.FC<Props> = ({ onClose, bank }) => {
     act === "submit" && (await submitConnection(password, code, onClose));
   };
 
+  const handleClose = () => {
+    onClose();
+    setPhone("");
+    setDate(null);
+    setCode("");
+    setPassword("");
+  };
+
   return (
     <div className="tinkoff-bank">
       <span className="add-bill-modal-title">{names[bank]}</span>
@@ -43,7 +51,19 @@ const BankModal: React.FC<Props> = ({ onClose, bank }) => {
       </p>
       <div className="tinkoff-bank-container">
         <span>Введите логин от мобильного банка</span>
-        <PhoneField value={phone} onChange={(e) => setPhone(e.target.value)} />
+        {bank === "sber" ? (
+          <input
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Логин"
+          />
+        ) : (
+          <PhoneField
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+        )}
       </div>
 
       <DateField date={date} setDate={setDate} label="Дата загрузки операций" />
@@ -73,7 +93,7 @@ const BankModal: React.FC<Props> = ({ onClose, bank }) => {
       )}
 
       <div className="buttons">
-        <button className="button-secondary" onClick={onClose}>
+        <button className="button-secondary" onClick={handleClose}>
           Отмена
         </button>
 
