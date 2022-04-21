@@ -15,12 +15,27 @@
   padding: 20px;
   background: linear-gradient(90deg, #4776e6 0%, #8e54e9 65.67%);
   border-radius: 25px 0px 0px 25px;
+  @media screen and (max-width: 1315px) {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas:
+    // "header header"
+
+      "greet"
+      "."
+      "."
+      "."
+      ".";
+  }
+  @media screen and (max-width: 1315px) {
+  }
   @media screen and (max-width: 945px) {
     padding: 10px;
     overflow-y: initial;
-    grid-template-columns: 1fr;
     border-radius: 0;
-    grid-template-rows: none;
     grid-template-areas:
       // "header"
 
