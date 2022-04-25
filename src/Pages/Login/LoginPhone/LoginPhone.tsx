@@ -43,10 +43,6 @@ const LoginPhone: React.FC<LoginSwitcherParams> = (props) => {
     }
   };
 
-  const handleRestore = () => {
-    navigate("restore-password", {});
-  };
-
   return (
     <form onSubmit={_auth} className={`login-phone`}>
       <img src={Logo} alt="Wallet Box" className="login-phone-logo" />

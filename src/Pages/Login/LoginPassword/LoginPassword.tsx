@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-
-import Auth from "Services/Auth";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "Redux/Store";
-import { LoginSwitcherParams } from "Utils/Hooks/useLoginNavigation";
-
+import Auth from "Services/Auth";
+import { useEditPassword } from "Services/User";
 import Logo from "Static/Images/Logo.svg";
-
 import "Styles/Pages/Login/LoginPassword/LoginPassword.scss";
+import { LoginSwitcherParams } from "Utils/Hooks/useLoginNavigation";
 
 interface Props extends LoginSwitcherParams {}
 
@@ -15,6 +13,7 @@ const LoginPassword: React.FunctionComponent<Props> = (props: Props) => {
   const { params } = props;
 
   const dispatch = useDispatch<AppDispatch>();
+  const { editPassword } = useEditPassword();
 
   const [password, setPassword] = useState<string>("");
 
@@ -33,8 +32,13 @@ const LoginPassword: React.FunctionComponent<Props> = (props: Props) => {
         type: props.params.type,
         password,
       });
-    } else if (params.type === 'restore') {
-      // TODO
+    } else if (params.type === "restore") {
+      const auth = new Auth(dispatch);
+      if (params.phone) {
+        await editPassword(password);
+        await auth.SignIn(params.phone, password);
+        window.location.reload();
+      }
     }
   };
 

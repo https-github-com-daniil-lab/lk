@@ -216,6 +216,51 @@ class Auth {
     }
   }
 
+  public async SmsAuth(id: string, code: string) {
+    if (this.dispatch) {
+      try {
+        if (code === "") throw new Error("Заполните все поля");
+        this.dispatch(ShowPreloader());
+
+        const data = {
+          id,
+          code,
+        };
+
+        const response = await axios({
+          method: "post",
+          url: `${API_URL}api/v1/auth/sms`,
+          data,
+        });
+
+        if (response.status === 200) {
+          this.dispatch(HidePreloader());
+          const { token, user } = response.data.data;
+          if (token && user) {
+            localStorage.setItem("token", token);
+            localStorage.setItem("user_id", user.id);
+          }
+          return true;
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (error: any) {
+        this.dispatch(HidePreloader());
+        if (error.response.status === 400) {
+          this.dispatch(
+            ShowToast({
+              title: "Ошибка",
+              text: "Неверный смс код",
+              type: "error",
+            })
+          );
+        } else {
+          alert(error.message);
+        }
+      }
+    }
+  }
+
   public async CreateUser(username, password, email, type): Promise<void> {
     if (this.dispatch) {
       try {

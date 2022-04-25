@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { LoginSwitcherParams } from "Utils/Hooks/useLoginNavigation";
-
-import Logo from "Static/Images/Logo.svg";
-
-import "Styles/Pages/Login/LoginCode/LoginCode.scss";
-import Auth from "Services/Auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "Redux/Store";
+import Auth from "Services/Auth";
+import Logo from "Static/Images/Logo.svg";
+import "Styles/Pages/Login/LoginCode/LoginCode.scss";
+import { LoginSwitcherParams } from "Utils/Hooks/useLoginNavigation";
 
 interface Props extends LoginSwitcherParams {}
 
@@ -19,7 +17,11 @@ const LoginCode: React.FunctionComponent<Props> = (props: Props) => {
   const _confirm = async (): Promise<void> => {
     const auth = new Auth(dispatch);
     if (params.id && params.phone) {
-      const confirmed = await auth.SmsConfirm(params.id, code);
+      const confirmed =
+        params.type === "restore"
+          ? await auth.SmsAuth(params.id, code)
+          : await auth.SmsConfirm(params.id, code);
+
       if (confirmed) {
         navigate("login-password", {
           phone: params.phone,

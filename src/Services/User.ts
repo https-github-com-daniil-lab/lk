@@ -6,6 +6,7 @@ import { API_URL } from "Utils/Config";
 import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
 import IsPhone from "Utils/IsPhone";
 import IsEmail from "Utils/IsEmail";
+import { Buffer } from "buffer";
 
 const useEditEmail = (email: string) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -93,10 +94,7 @@ const useEditPhone = (phone: string) => {
   };
 };
 
-const useExportData = (
-  startDate: string | null,
-  endDate: string | null
-) => {
+const useExportData = (startDate: string | null, endDate: string | null) => {
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector(GetUserId);
 
@@ -138,10 +136,7 @@ const useExportData = (
   };
 };
 
-const useRemoveData = (
-  startDate: string | null,
-  endDate: string | null
-) => {
+const useRemoveData = (startDate: string | null, endDate: string | null) => {
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector(GetUserId);
 
@@ -189,6 +184,44 @@ const useRemoveData = (
 
   return {
     removeData,
+  };
+};
+
+export const useEditPassword = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const editPassword = async (password: string) => {
+    try {
+      dispatch(ShowPreloader());
+      const { data } = await axios.patch(`${API_URL}api/v1/user/`, {
+        password: Buffer.from(password).toString("base64"),
+      });
+      if (data.status === 200) {
+        dispatch(HidePreloader());
+        dispatch(
+          ShowToast({
+            text: "Пароль изменен",
+            title: "Успех",
+            type: "success",
+          })
+        );
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      dispatch(HidePreloader());
+      dispatch(
+        ShowToast({
+          text: error.message,
+          title: "Ошибка",
+          type: "error",
+        })
+      );
+    }
+  };
+
+  return {
+    editPassword,
   };
 };
 
