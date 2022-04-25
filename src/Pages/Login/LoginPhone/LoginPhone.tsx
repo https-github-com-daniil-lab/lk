@@ -1,27 +1,19 @@
 import React, { useState } from "react";
-
 import { useDispatch } from "react-redux";
-
 import { AppDispatch } from "Redux/Store";
-
 import Auth from "Services/Auth";
-
+import Logo from "Static/Images/Logo.svg";
+import "Styles/Pages/Login/LoginPhone/LoginPhone.scss";
+import { LoginSwitcherParams } from "Utils/Hooks/useLoginNavigation";
 import PhoneMask from "Utils/PhoneMask";
 
-import { LoginSwitcherParams } from "Utils/Hooks/useLoginNavigation";
-
-import Logo from "Static/Images/Logo.svg";
-
-import "Styles/Pages/Login/LoginPhone/LoginPhone.scss";
-
-interface Props extends LoginSwitcherParams {}
-
-const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
+const LoginPhone: React.FC<LoginSwitcherParams> = (props) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { navigate } = props;
 
   const [phone, setPhone] = useState<string>("");
+  const [type, setType] = useState<"signin" | "restore">("signin");
 
   const _handlePhone = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const mask = PhoneMask(event.target.value);
@@ -35,10 +27,10 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
 
     const isRegister = await auth.ChekRegister(phone);
 
-    if (isRegister) {
+    if (isRegister && type === "signin") {
       navigate("login-password", {
         phone,
-        type: "signin",
+        type,
       });
     } else {
       const id = await auth.SmsSubmit(phone);
@@ -46,8 +38,13 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
         navigate("login-code", {
           phone,
           id,
+          type,
         });
     }
+  };
+
+  const handleRestore = () => {
+    navigate("restore-password", {});
   };
 
   return (
@@ -59,6 +56,7 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
         onChange={_handlePhone}
         placeholder="Номер телефона"
         style={{ textAlign: "center" }}
+        required
       />
       <p className="login-phone-subtitle">
         Введите номер мобильного телефона
@@ -67,15 +65,21 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
       </p>
       <p className="login-phone-subtitle">
         Авторизуясь, вы соглашаетесь с<br />
-        <span>
+        <a
+          href="https://walletbox.app/uploads/policy.pdf"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: "#6a82fb" }}
+        >
           условиями использования и политикой
           <br />
           конфиденциальности
-        </span>
+        </a>
       </p>
       <button
         className="button-info"
         type="submit"
+        onClick={() => setType("signin")}
         style={{
           width: "262px",
           height: "60px",
@@ -83,9 +87,19 @@ const LoginPhone: React.FunctionComponent<Props> = (props: Props) => {
       >
         Продолжить
       </button>
-      <p className="login-phone-subtitle">
-        <span>Восстановаить аккаунт</span>
-      </p>
+      <button
+        className="login-phone-subtitle"
+        type="submit"
+        onClick={() => setType("restore")}
+        style={{
+          textDecoration: "underline",
+          cursor: "pointer",
+          background: "none",
+          border: "none",
+        }}
+      >
+        Восстановить аккаунт
+      </button>
     </form>
   );
 };

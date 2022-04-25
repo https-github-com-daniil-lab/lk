@@ -23,7 +23,7 @@ const LoginCode: React.FunctionComponent<Props> = (props: Props) => {
       if (confirmed) {
         navigate("login-password", {
           phone: params.phone,
-          type: "signup",
+          type: params?.type || "signup",
         });
       }
     }

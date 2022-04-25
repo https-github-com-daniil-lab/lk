@@ -1,13 +1,17 @@
-import React, { useMemo, useState } from "react";
-
-import useLoginNavigation from "Utils/Hooks/useLoginNavigation";
-import SwitchRouter from "./SwitchRouter/SwitchRouter";
-
+import React from "react";
 import "Styles/Animations/LoginSwitcher/LoginSwitcher.scss";
+import useLoginNavigation, {
+  PassParamasType,
+} from "Utils/Hooks/useLoginNavigation";
+import SwitchRouter from "./SwitchRouter/SwitchRouter";
 
 export interface LoginSwitcherRoutes {
   name: string;
-  component: any;
+  component: (
+    navigate: (v: string) => void,
+    back: () => void,
+    params: PassParamasType
+  ) => any;
 }
 
 interface Props {

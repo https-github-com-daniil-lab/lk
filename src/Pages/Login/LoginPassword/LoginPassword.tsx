@@ -33,6 +33,8 @@ const LoginPassword: React.FunctionComponent<Props> = (props: Props) => {
         type: props.params.type,
         password,
       });
+    } else if (params.type === 'restore') {
+      // TODO
     }
   };
 

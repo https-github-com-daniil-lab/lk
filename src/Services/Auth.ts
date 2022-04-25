@@ -30,7 +30,6 @@ class Auth {
   public async ChekRegister(username: string): Promise<boolean | undefined> {
     if (this.dispatch) {
       try {
-        if (username === "") throw new Error("Поле не должно быть пустым");
         this.dispatch(ShowPreloader());
 
         const response = await axios({
@@ -48,12 +47,19 @@ class Auth {
           throw new Error(response.data.message);
         }
       } catch (error: any) {
-        this.dispatch(HidePreloader());
-        if (error.request.status === 404) {
+        if (error.request?.status === 404) {
           return false;
         } else {
-          alert(error.message);
+          this.dispatch(
+            ShowToast({
+              title: "Ошибка",
+              text: error.message,
+              type: "error",
+            })
+          );
         }
+      } finally {
+        this.dispatch(HidePreloader());
       }
     }
   }
@@ -210,12 +216,7 @@ class Auth {
     }
   }
 
-  public async CreateUser(
-    username,
-    password,
-    email,
-    type
-  ): Promise<void> {
+  public async CreateUser(username, password, email, type): Promise<void> {
     if (this.dispatch) {
       try {
         const data = {

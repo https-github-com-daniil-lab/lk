@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export type PassParamasType = {
   id?: string | null;
   phone?: string | null;
-  type?: "signin" | "signup";
+  type?: "signin" | "signup" | "restore";
   password?: string;
 };
 

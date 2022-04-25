@@ -1,21 +1,15 @@
-import React, { useMemo } from "react";
-
 import LoginSwitcher from "Animations/LoginSwitcher/LoginSwitcher";
-import LoginPhone from "Pages/Login/LoginPhone/LoginPhone";
-
 import LoginCode from "Pages/Login/LoginCode/LoginCode";
-import LoginPassword from "Pages/Login/LoginPassword/LoginPassword";
-import { PassParamasType } from "Utils/Hooks/useLoginNavigation";
-import { useSelector } from "react-redux";
-import { GetUserToken } from "Redux/Selectors";
-import { useNavigate } from "react-router-dom";
-
-import "Styles/Layers/Login/LoginLayer.scss";
 import LoginEmail from "Pages/Login/LoginEmail/LoginEmail";
+import LoginPassword from "Pages/Login/LoginPassword/LoginPassword";
+import LoginPhone from "Pages/Login/LoginPhone/LoginPhone";
+import React, { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { GetUserToken } from "Redux/Selectors";
+import "Styles/Layers/Login/LoginLayer.scss";
 
-interface Props {}
-
-const LoginLayer: React.FunctionComponent<Props> = (props: Props) => {
+const LoginLayer = () => {
   const token = useSelector(GetUserToken);
 
   const navigate = useNavigate();
@@ -33,35 +27,27 @@ const LoginLayer: React.FunctionComponent<Props> = (props: Props) => {
         routes={[
           {
             name: "login-phone",
-            component: (
-              navigate: (v: string) => void,
-              back: () => void,
-              params: PassParamasType
-            ) => <LoginPhone {...{ navigate, back, params }} />,
+            component: (navigate, back, params) => (
+              <LoginPhone {...{ navigate, back, params }} />
+            ),
           },
           {
             name: "login-password",
-            component: (
-              navigate: (v: string) => void,
-              back: () => void,
-              params: PassParamasType
-            ) => <LoginPassword {...{ navigate, back, params }} />,
+            component: (navigate, back, params) => (
+              <LoginPassword {...{ navigate, back, params }} />
+            ),
           },
           {
             name: "login-code",
-            component: (
-              navigate: (v: string) => void,
-              back: () => void,
-              params: PassParamasType
-            ) => <LoginCode {...{ navigate, back, params }} />,
+            component: (navigate, back, params) => (
+              <LoginCode {...{ navigate, back, params }} />
+            ),
           },
           {
             name: "login-email",
-            component: (
-              navigate: (v: string) => void,
-              back: () => void,
-              params: PassParamasType
-            ) => <LoginEmail {...{ navigate, back, params }} />,
+            component: (navigate, back, params) => (
+              <LoginEmail {...{ navigate, back, params }} />
+            ),
           },
         ]}
       />
