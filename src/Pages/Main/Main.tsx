@@ -1,19 +1,19 @@
+import ContextButton from "Components/ContextButton/ContextButton";
+import Header from "Components/Header/Header";
+import Modal from "Components/Modal/Modal";
 import React, { useState } from "react";
-import ChartBlock from "./ChartBlock/ChartBlock";
+import { useSelector } from "react-redux";
+import Bill from "Services/Bill";
+import Category from "Services/Category";
+import PlusCircleFill from "Static/icons/plus-circle-fill.svg";
+import "Styles/Pages/Main/Main.scss";
+import AddBillModal from "./BalanceBlock/AddBillModal/AddBillModal";
 import BalanceBlock from "./BalanceBlock/BalanceBlock";
 import Banner from "./Banner/Banner";
 import CategoryBlock from "./CategoryBlock/CategoryBlock";
-import ContextButton from "Components/ContextButton/ContextButton";
 import CategoryConstructor from "./CategoryBlock/CategoryConstructor/CategoryConstructor";
-import PlusCircleFill from "Static/icons/plus-circle-fill.svg";
-import Modal from "Components/Modal/Modal";
 import AddOperationModal from "./ChartBlock/AddOperationModal/AddOperationModal";
-import FadeIn from "Components/FadeIn/FadeIn";
-import AddBillModal from "./BalanceBlock/AddBillModal/AddBillModal";
-
-import "Styles/Pages/Main/Main.scss";
-import Header from "Components/Header/Header";
-import { useSelector } from "react-redux";
+import ChartBlock from "./ChartBlock/ChartBlock";
 
 interface Props {}
 
@@ -25,6 +25,23 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
   const [showBillModal, setShowBillModal] = useState<boolean>(false);
 
   const [selectedBill, setSelectedBill] = useState<string | null>(null);
+  const { useGetCategory } = Category;
+  const { categories, load: isCategoriesLoad } = useGetCategory();
+  const { useGetBill } = Bill;
+  const { load: loadBill, balances } = useGetBill();
+
+  const handleAddOperation = () => {
+    if (!!balances.length && !!categories.length) {
+      setShowAddOperationModal(true);
+    } else if (!!balances.length) {
+      alert("Добавьте категорию!");
+    } else if (!!categories.length) {
+      alert("Добавьте счет!");
+    } else {
+      alert("Добавьте категорию и счет!");
+    }
+  };
+
   return (
     <div className="main">
       <Header />
@@ -35,7 +52,7 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
         <div className="app-card-header">
           <div
             className="content-section-controll"
-            onClick={() => setShowAddOperationModal(true)}
+            onClick={handleAddOperation}
           >
             <span>Добавить операцию </span>
             <img src={PlusCircleFill} alt={"Plus icon"} />
@@ -77,7 +94,7 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
             />
           </div>
         </div>
-        <CategoryBlock />
+        <CategoryBlock categories={categories} load={isCategoriesLoad} />
       </div>
       <div className="app-card" style={{ minHeight: "200px" }}>
         <Banner />

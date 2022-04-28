@@ -1,19 +1,22 @@
-import React, { useState } from "react";
-import CategoryItem from "./CategoryItem/CategoryItem";
-import Category from "Services/Category";
 import Load from "Components/Load/Load";
-
-import "Styles/Pages/Main/CategoryBlock/CategoryBlock.scss";
 import Modal from "Components/Modal/Modal";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import Category, { ICategory } from "Services/Category";
+import "Styles/Pages/Main/CategoryBlock/CategoryBlock.scss";
 import DeleteModal from "../BalanceBlock/DeleteModal/DeleteModal";
+import CategoryItem from "./CategoryItem/CategoryItem";
 
-interface Props {}
+interface Props {
+  categories: ICategory[];
+  load: boolean;
+}
 
-const CategoryBlock: React.FunctionComponent<Props> = (props: Props) => {
-  const { useGetCategory } = Category;
-  const { categories, load } = useGetCategory();
+const CategoryBlock: React.FC<Props> = ({ categories, load }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryId, setCategoryId] = useState<string | null>(null);
+  const { deleteCategory } = Category;
+  const dispatch = useDispatch();
   return (
     <Load {...{ load }}>
       <div className="category-block">
@@ -38,6 +41,7 @@ const CategoryBlock: React.FunctionComponent<Props> = (props: Props) => {
         <DeleteModal
           closeModal={() => setShowDeleteModal(false)}
           transactionId={categoryId}
+          deleteOp={() => categoryId && deleteCategory(categoryId, dispatch)}
         />
       </Modal>
     </Load>

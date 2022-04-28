@@ -3,7 +3,7 @@ import { CategoryType } from "Pages/Main/CategoryBlock/CategoryConstructor/Categ
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { UpdateCategory } from "Redux/Actions";
-import { GetUpdateCategory, GetUserId, GetUserToken } from "Redux/Selectors";
+import { GetUpdateCategory, GetUserToken } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 import { API_URL } from "Utils/Config";
 import { ColorType, IconType } from "./Interfaces";
@@ -52,7 +52,6 @@ export interface ICategory {
 }
 
 const useGetCategory = () => {
-  const userId = useSelector(GetUserId);
   const token = useSelector(GetUserToken);
   const updateCategory = useSelector(GetUpdateCategory);
 
@@ -62,14 +61,11 @@ const useGetCategory = () => {
   const get = async (): Promise<void> => {
     try {
       setLoad(false);
-      const res = await axios.get(
-        `${API_URL}api/v1/category/?userId=${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.get(`${API_URL}api/v1/category/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (res.data.status === 200) {
         setCategories(res.data.data);
         setLoad(true);
@@ -166,6 +162,7 @@ const addCategory = async (
         color: params.color?.systemName,
         userId: userId,
         categoryLimit: 0,
+        onlyForEarn: true,
       },
     });
     dispatch(UpdateCategory());
@@ -175,14 +172,13 @@ const addCategory = async (
 };
 
 const deleteCategory = async (
-  params: CategoryType,
-  userId: string,
+  categoryId: string,
   dispatch: AppDispatch
 ): Promise<void> => {
   try {
     const response = await axios({
       method: "DELETE",
-      url: `${API_URL}api/v1/category/`,
+      url: `${API_URL}api/v1/category/${categoryId}`,
     });
     dispatch(UpdateCategory());
   } catch (error: any) {

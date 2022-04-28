@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
-import { GetUserId, GetUserToken } from "Redux/Selectors";
+import { GetUserToken } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 import axios from "Utils/Axios";
 import { API_URL } from "Utils/Config";
@@ -167,13 +167,9 @@ export const useGetActiveSubscription = () => {
     useState<IActiveSubscription | null>(null);
   const [load, setLoad] = useState<boolean>(false);
 
-  const userId = useSelector(GetUserId);
-
   const get = async (): Promise<void> => {
     try {
-      const { data } = await axios.get(
-        `${API_URL}api/v1/subscription/user/${userId}`
-      );
+      const { data } = await axios.get(`${API_URL}api/v1/subscription/`);
 
       if (data.status !== 200) {
         throw new Error(data.message);

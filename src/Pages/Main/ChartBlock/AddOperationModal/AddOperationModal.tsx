@@ -49,6 +49,8 @@ const AddOperationModal: React.FC<Props> = ({
 
   const [description, setDescription] = useState<string>("");
 
+  const [placeName, setPlaceName] = useState<string>("");
+
   const [location, setLocation] = useState<number[] | null>(null);
 
   const [mapModal, setMapModal] = useState<boolean>(false);
@@ -84,6 +86,7 @@ const AddOperationModal: React.FC<Props> = ({
     location,
     operationType,
     qr,
+    placeName,
   });
 
   const _addOperation = async (): Promise<void> => {
@@ -226,6 +229,19 @@ const AddOperationModal: React.FC<Props> = ({
             <span>Адрес еще не указан</span>
           )}
         </div>
+      </div>
+
+      <div className="add-operation-modal-block">
+        <span className="add-operation-modal-block-title">
+          Название местоположения
+        </span>
+        <input
+          type="text"
+          placeholder="Введите название местоположения"
+          className="add-operation-modal-input"
+          value={placeName}
+          onChange={(e) => setPlaceName(e.target.value)}
+        />
       </div>
 
       {!noQrLink && (

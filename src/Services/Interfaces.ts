@@ -191,6 +191,7 @@ export type OperationParamsType = {
   description: string | null;
   location: number[] | null;
   operationType: TransactionType;
+  placeName: string;
   qr?: File;
 };
 

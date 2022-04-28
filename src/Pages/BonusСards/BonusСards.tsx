@@ -24,7 +24,7 @@ const BonusСards: React.FC = () => {
         <div className="bonuscard-content">
           <Header />
           <h1 className="bonuscard__title main__title">Бонусные карты</h1>
-          <BonusNav />
+          <BonusNav setActiveCard={setActiveCard} bonusCards={bonusCards} />
           {bonusCards.length ? (
             <Load load={!!activeCard}>
               {activeCard && (

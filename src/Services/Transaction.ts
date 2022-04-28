@@ -1,9 +1,8 @@
 import moment from "moment";
 import QrScanner from "qr-scanner";
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { HidePreloader, ShowPreloader, ShowToast } from "Redux/Actions";
-import { GetUserId } from "Redux/Selectors";
 import ArrayGroups from "Utils/ArrayGroups";
 import axios from "Utils/Axios";
 import { API_URL } from "Utils/Config";
@@ -17,8 +16,6 @@ import {
 } from "./Interfaces";
 
 const useGetTransaction = (selecterBill?: string | null) => {
-  const userId = useSelector(GetUserId);
-
   const [load, setLoad] = useState<boolean>(false);
   const [income, setIncome] = useState<number>(0);
   const [expenses, setExpenses] = useState<number>(0);
@@ -116,7 +113,7 @@ const useGetTransaction = (selecterBill?: string | null) => {
   const getOrdinaryTransactions = async (): Promise<ITransaction[]> => {
     try {
       const res = await axios.get(
-        `${API_URL}api/v1/transaction/user/${userId}?page=0&pageSize=100`
+        `${API_URL}api/v1/transaction/user/?page=0&pageSize=100`
       );
       if (res.data.status === 200) {
         return res.data.data.page;
@@ -131,7 +128,7 @@ const useGetTransaction = (selecterBill?: string | null) => {
 
   const getTinkoffTransactions = async (): Promise<ITinkoffTransaction[]> => {
     try {
-      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/${userId}`);
+      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/`);
       if (res.data.status === 200) {
         const cards = res.data.data;
 
@@ -286,6 +283,7 @@ const useAddOperation = (OperationParams: OperationParamsType) => {
         location,
         date,
         qr,
+        placeName,
       } = OperationParams;
 
       if (!date) {
@@ -298,6 +296,10 @@ const useAddOperation = (OperationParams: OperationParamsType) => {
 
       if (!location) {
         throw new Error("Укажите местоположение");
+      }
+
+      if (operationType === "WITHDRAW" && !placeName) {
+        throw new Error("Укажите название местоположения");
       }
 
       if (qr) {
@@ -365,7 +367,7 @@ const useAddOperation = (OperationParams: OperationParamsType) => {
               categoryId: selectedCategory?.id,
               lon: location![1],
               lat: location![0],
-              placeName: "string",
+              placeName,
               time: `${date}T16:23:25.356Z`,
             }
           : {

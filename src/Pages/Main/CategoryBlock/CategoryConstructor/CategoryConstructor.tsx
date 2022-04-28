@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-
-import { ColorType, IconType } from "Services/Interfaces";
-import { API_URL } from "Utils/Config";
-import Category from "Services/Category";
-
-import ColorsBlock from "./ColorsBlock/ColorsBlock";
-import IconsBlock from "./IconsBlock/IconsBlock";
-
-import "Styles/Pages/Main/CategoryBlock/CategoryConstructor/CategoryConstructor.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserId } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
+import Category from "Services/Category";
+import { ColorType, IconType } from "Services/Interfaces";
+import "Styles/Pages/Main/CategoryBlock/CategoryConstructor/CategoryConstructor.scss";
+import { API_URL } from "Utils/Config";
+import ColorsBlock from "./ColorsBlock/ColorsBlock";
+import IconsBlock from "./IconsBlock/IconsBlock";
 
 interface Props {
   close: () => void;
@@ -39,6 +36,16 @@ const CategoryConstructor: React.FunctionComponent<Props> = (props: Props) => {
 
   const setColor = (color: ColorType): void =>
     setCategory({ ...category, color });
+
+  const handleStoreCategory = () => {
+    if (!category.name) {
+      alert("Введите название категории");
+      return;
+    }
+
+    addCategory(category, userId!, dispatch);
+    props.close();
+  };
 
   return (
     <div className="category-constructor">
@@ -70,13 +77,7 @@ const CategoryConstructor: React.FunctionComponent<Props> = (props: Props) => {
         <ColorsBlock onColorChange={setColor} color={category.color} />
       </div>
       <div className="category-constructor-controll">
-        <button
-          className="button-primary"
-          onClick={() => {
-            addCategory(category, userId!, dispatch);
-            props.close();
-          }}
-        >
+        <button className="button-primary" onClick={handleStoreCategory}>
           Добавить
         </button>
         <button className="button-secondary" onClick={props.close}>

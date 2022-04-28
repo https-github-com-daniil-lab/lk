@@ -12,8 +12,6 @@ import { IBalances, ISberCard, ITinkoffCard, ITochkaCard } from "./Interfaces";
 const useGetBill = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const userId = useSelector(GetUserId);
-
   const [balances, setBalances] = useState<IBalances[]>([]);
 
   const [generalBalance, setGeneralBalance] = useState<number>(0);
@@ -28,7 +26,7 @@ const useGetBill = () => {
 
   const get = async (): Promise<void> => {
     try {
-      const res = await axios.get(`${API_URL}api/v1/bill/?userId=${userId}`);
+      const res = await axios.get(`${API_URL}api/v1/bill/`);
       if (res.data.status === 200) {
         setBalances(res.data.data);
         getGeneralBalance(res.data.data);
@@ -66,15 +64,13 @@ const useGetBill = () => {
 const useGetTinkoffCards = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const userId = useSelector(GetUserId);
-
   const [cards, setCards] = useState<ITinkoffCard[]>([]);
 
   const [load, setLoad] = useState<boolean>(false);
 
   const get = async (): Promise<void> => {
     try {
-      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/${userId}`);
+      const res = await axios.get(`${API_URL}api/v1/tinkoff/cards/`);
       if (res.data.status === 200) {
         setCards(res.data.data);
         setLoad(true);
@@ -108,15 +104,13 @@ const useGetTinkoffCards = () => {
 const useGetSberCards = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const userId = useSelector(GetUserId);
-
   const [cards, setCards] = useState<ISberCard[]>([]);
 
   const [load, setLoad] = useState<boolean>(false);
 
   const get = async (): Promise<void> => {
     try {
-      const { data } = await axios.get(`${API_URL}api/v1/sber/cards/${userId}`);
+      const { data } = await axios.get(`${API_URL}api/v1/sber/cards/`);
       if (data.status === 200) {
         setCards(data.data);
         setLoad(true);
@@ -150,17 +144,13 @@ const useGetSberCards = () => {
 const useGetTochkaCards = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const userId = useSelector(GetUserId);
-
   const [cards, setCards] = useState<ITochkaCard[]>([]);
 
   const [load, setLoad] = useState<boolean>(false);
 
   const get = async (): Promise<void> => {
     try {
-      const { data } = await axios.get(
-        `${API_URL}api/v1/tochka/cards/${userId}`
-      );
+      const { data } = await axios.get(`${API_URL}api/v1/tochka/cards/`);
       if (data.status === 200) {
         setCards(data.data);
         setLoad(true);
@@ -258,9 +248,8 @@ export const useBankConnection = (bank: Banks, exportDate: string | null) => {
       dispatch(ShowPreloader());
 
       const { data } = await axios.post(
-        `${API_URL}api/v1/${bank}/connect/start`,
+        `${API_URL}api/v1/${bank}/connect/start/`,
         {
-          userId,
           phone,
           exportStartDate: new Date(exportDate),
           startExportDate: new Date(exportDate),
@@ -310,7 +299,7 @@ export const useBankConnection = (bank: Banks, exportDate: string | null) => {
       if (!bankUserId) {
         throw new Error("Не удалось подключить банк");
       }
-      
+
       dispatch(ShowPreloader());
 
       const data = await submitBankConnection(bank, {
@@ -341,9 +330,7 @@ export const useBankConnection = (bank: Banks, exportDate: string | null) => {
 
   const syncConnection = async (): Promise<boolean> => {
     try {
-      const { data } = await axios.get(
-        `${API_URL}api/v1/${bank}/sync/${userId}`
-      );
+      const { data } = await axios.get(`${API_URL}api/v1/${bank}/sync/`);
 
       if (data.status === 200) {
         return true;
