@@ -113,7 +113,7 @@ const useGetTransaction = (selecterBill?: string | null) => {
   const getOrdinaryTransactions = async (): Promise<ITransaction[]> => {
     try {
       const res = await axios.get(
-        `${API_URL}api/v1/transaction/user/?page=0&pageSize=100`
+        `${API_URL}api/v1/transaction/user/?page=0&pageSize=10`
       );
       if (res.data.status === 200) {
         return res.data.data.page;
@@ -136,7 +136,7 @@ const useGetTransaction = (selecterBill?: string | null) => {
 
         for (let i = 0; i < cards.length; i++) {
           const tr = await axios.get(
-            `${API_URL}api/v1/tinkoff/transactions/${cards[i].id}?page=0&pageSize=100`
+            `${API_URL}api/v1/tinkoff/transactions/${cards[i].id}?page=0&pageSize=10`
           );
           array = [...array, ...tr.data.data.page];
         }

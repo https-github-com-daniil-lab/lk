@@ -2,7 +2,7 @@ import axios from "axios";
 import { CategoryType } from "Pages/Main/CategoryBlock/CategoryConstructor/CategoryConstructor";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { UpdateCategory } from "Redux/Actions";
+import { ShowToast, UpdateCategory } from "Redux/Actions";
 import { GetUpdateCategory, GetUserToken } from "Redux/Selectors";
 import { AppDispatch } from "Redux/Store";
 import { API_URL } from "Utils/Config";
@@ -151,24 +151,46 @@ const addCategory = async (
   params: CategoryType,
   userId: string,
   dispatch: AppDispatch
-): Promise<void> => {
+): Promise<boolean> => {
   try {
-    const response = await axios({
+    if (!params.name) {
+      throw new Error("Введите название категории");
+    }
+    
+    if (!params.icon) {
+      throw new Error("Выберите иконку категории");
+    }
+    
+    if (!params.color) {
+      throw new Error("Выберите цвет категории");
+    }
+
+    await axios({
       method: "post",
       url: `${API_URL}api/v1/category/`,
       data: {
         name: params.name,
-        icon: params.icon?.id,
-        color: params.color?.systemName,
+        icon: params.icon.id,
+        color: params.color.systemName,
         userId: userId,
         categoryLimit: 0,
         onlyForEarn: true,
       },
     });
+
     dispatch(UpdateCategory());
+    return true
   } catch (error: any) {
-    console.log(error);
+    dispatch(
+      ShowToast({
+        title: "Ошибка",
+        text: error.message,
+        type: "error",
+      })
+    );
   }
+
+  return false
 };
 
 const deleteCategory = async (

@@ -20,14 +20,7 @@ const Modal = ({ show, children, onClose, zIndex, style }: Props) => {
           className={`modal ${id} ${show ? "active" : "inactive"}`}
           style={{ zIndex: zIndex ?? 10 }}
           onClick={(e: any) => {
-            if (show) {
-              if (e.target.className.includes("modal " + id)) {
-                onClose();
-              }
-              document.body.style.overflow = "hidden";
-            } else {
-              document.body.style.overflow = "auto";
-            }
+            show && e.target.className.includes("modal " + id) && onClose();
           }}
         >
           <div className="modal-wrapper" {...{ style }}>

@@ -28,6 +28,7 @@ const SubscriptionBlock: React.FC = () => {
         position: "relative",
         bottom: "-60px",
         paddingBottom: "30px",
+        width: "100%"
       }}
       breakpoints={{
         940: {

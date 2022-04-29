@@ -20,7 +20,7 @@ const ChartBlockHistory: React.FunctionComponent<Props> = (props: Props) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
-  console.log(transactions);
+
   return (
     <div className="chart-block-history">
       {transactions

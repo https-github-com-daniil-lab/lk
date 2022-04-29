@@ -14,13 +14,13 @@
 
 body {
   font-family: "Montserrat";
-  overflow: hidden;
+  overflow-x: hidden;
   height: 100%;
 }
 html {
   font-size: 15px;
   height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
   @media screen and (max-width: 945px) {
     font-size: 12px;
   }

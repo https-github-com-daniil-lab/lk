@@ -37,14 +37,9 @@ const CategoryConstructor: React.FunctionComponent<Props> = (props: Props) => {
   const setColor = (color: ColorType): void =>
     setCategory({ ...category, color });
 
-  const handleStoreCategory = () => {
-    if (!category.name) {
-      alert("Введите название категории");
-      return;
-    }
-
-    addCategory(category, userId!, dispatch);
-    props.close();
+  const handleStoreCategory = async () => {
+    const isAdded = await addCategory(category, userId!, dispatch);
+    isAdded && props.close();
   };
 
   return (
