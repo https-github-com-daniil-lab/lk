@@ -1,25 +1,36 @@
+import Checkbox from "Components/Checkbox/Checkbox";
 import ContextButton from "Components/ContextButton/ContextButton";
 import DatePicker from "Components/DatePicker/DatePicker";
 import Modal from "Components/Modal/Modal";
 import Select from "Components/Select/Select";
-import React, { useEffect, useState } from "react";
+import useAddTransaction from "Hooks/useAddTransaction";
+import useGetBill from "Hooks/useGetBill";
+import useGetCategories from "Hooks/useGetCategories";
+import { BillModel } from "Models/BillModel";
+import { BaseCategoryModel, CategoryModel } from "Models/CategoryModel";
+import { TransactionType } from "Models/TransactionModel";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Bill from "Services/Bill";
-import Category from "Services/Category";
-import { IBalances, IBaseCategory, TransactionType } from "Services/Interfaces";
-import Transaction from "Services/Transaction";
+import { useGetActiveSubscription } from "Services/Subscription";
 import CalendarDark from "Static/icons/calendar-dark.svg";
 import ScanQr from "Static/icons/scan-qr-nigger.svg";
 import "Styles/Pages/Main/ChartBlock/AddOperationModal/AddOperationModal.scss";
 import { API_URL } from "Utils/Config";
 import HexToRgbA from "Utils/HexToRgbA";
 import MapModal from "./MapModal/MapModal";
+import { HidePreloader } from "Redux/Actions";
+import { useDispatch } from "react-redux";
 
 interface Props {
   onClose: () => void;
   qr?: File;
   initialSum?: string;
   noQrLink?: boolean;
+  updateTransactions: () => void;
+  updateBills: () => void;
+  addTransaction: (config: any) => Promise<boolean | undefined>;
+  bills: any;
+  category: any;
 }
 
 const AddOperationModal: React.FC<Props> = ({
@@ -27,39 +38,33 @@ const AddOperationModal: React.FC<Props> = ({
   qr,
   initialSum,
   noQrLink,
+  updateTransactions,
+  addTransaction,
+  updateBills,
+  bills,
+  category,
 }) => {
-  const { useAddOperation } = Transaction;
-  const { useGetBill } = Bill;
-  const { useGetCategory } = Category;
-
-  const { categories, load } = useGetCategory();
-  const { balances, load: loadBill } = useGetBill();
+  const { activeSubscription } = useGetActiveSubscription();
 
   const [date, setDate] = useState<null | string[]>(null);
-
+  const [expand, setExpand] = useState<boolean>(false);
   const [operationType, setOperationType] =
     useState<TransactionType>("WITHDRAW");
-
   const [selectedCategory, setSelectedCategory] =
-    useState<IBaseCategory | null>(null);
-
-  const [bill, setBill] = useState<IBalances | null>(null);
-
+    useState<BaseCategoryModel | null>(null);
+  const [onlyForEarnCategories, setOnlyForEarnCategories] = useState<
+    CategoryModel[]
+  >([]);
+  const [standartCategories, setStandartCategories] = useState<CategoryModel[]>(
+    []
+  );
   const [summ, setSumm] = useState("");
-
+  const [bill, setBill] = useState<BillModel | null>(null);
   const [description, setDescription] = useState<string>("");
-
   const [placeName, setPlaceName] = useState<string>("");
-
   const [location, setLocation] = useState<number[] | null>(null);
-
   const [mapModal, setMapModal] = useState<boolean>(false);
-
-  const [expand, setExpand] = useState<boolean>(false);
-
-  useEffect(() => {
-    initialSum && setSumm(initialSum);
-  }, [initialSum]);
+  const dispatch = useDispatch();
 
   const onEnter = (v: string[]): void => {
     if (Array.isArray(v)) {
@@ -77,26 +82,59 @@ const AddOperationModal: React.FC<Props> = ({
     setLocation(null);
   };
 
-  const { OperationAdd } = useAddOperation({
-    bill,
-    date,
-    selectedCategory,
-    summ,
-    description,
-    location,
-    operationType,
-    qr,
-    placeName,
-  });
-
   const _addOperation = async (): Promise<void> => {
-    await OperationAdd(onClose);
+    try {
+      const action = await addTransaction({
+        bill,
+        operationType,
+        summ,
+        description,
+        selectedCategory,
+        location,
+        date,
+        qr,
+        placeName,
+      });
+      if (action) {
+        onClose();
+        updateTransactions();
+        updateBills();
+      }
+    } catch(ex) {
+      dispatch(HidePreloader()); // закрываем прелоадер в случае ошибки
+      console.log(ex)
+    }
   };
 
   useEffect(() => {
-    if (load) setSelectedCategory(categories[0]);
-    if (loadBill) setBill(balances[0]);
-  }, [load, loadBill]);
+    initialSum && setSumm(initialSum);
+  }, [initialSum]);
+
+  useMemo(() => {
+    if (category.categories) {
+      const standartArr: CategoryModel[] = [];
+
+      const earnArr: CategoryModel[] = [];
+
+      category.categories.forEach((category) => {
+        if (category.forEarn) earnArr.push(category);
+        if (category.forSpend) standartArr.push(category);
+      });
+
+      setStandartCategories(standartArr);
+      setOnlyForEarnCategories(earnArr);
+    }
+  }, [category.load, category.categories]);
+
+  useMemo(() => {
+    if (standartCategories.length != 0 && operationType == "WITHDRAW") {
+      setSelectedCategory(standartCategories[0]);
+    }
+  }, [category.load, standartCategories]);
+
+  useEffect(() => {
+    if (bills.load) setBill(bills.data[0]);
+  }, [bills.load]);
 
   return (
     <div className="add-operation-modal">
@@ -116,51 +154,71 @@ const AddOperationModal: React.FC<Props> = ({
       <div className="add-operation-modal-block">
         <span className="add-operation-modal-block-title">Тип операции</span>
         <div className="add-operation-modal-operation-type-container">
-          <label className="checkbox">
-            <input
-              type="radio"
-              name="radio"
-              defaultChecked
-              onChange={(e) => setOperationType("WITHDRAW")}
-            />
-            <span>Расход</span>
-          </label>
-          <label className="checkbox">
-            <input
-              type="radio"
-              name="radio"
-              onChange={(e) => setOperationType("DEPOSIT")}
-            />
-            <span>Доход</span>
-          </label>
+          <Checkbox
+            onChange={() => {
+              setOperationType("WITHDRAW");
+              if (standartCategories.length > 0) setSelectedCategory(standartCategories[0]);
+              else setSelectedCategory(null)
+            }}
+            value={operationType === "WITHDRAW"}
+            lable={"Расход"}
+          />
+          <Checkbox
+            onChange={() => {
+              setOperationType("DEPOSIT");
+              if (onlyForEarnCategories.length > 0) setSelectedCategory(onlyForEarnCategories[0]);
+              else setSelectedCategory(null)
+            }}
+            value={operationType === "DEPOSIT"}
+            lable={"Доход"}
+          />
         </div>
       </div>
 
       <div className="add-operation-modal-block">
         <span className="add-operation-modal-block-title">Категория</span>
         <div className="add-operation-modal-base-category-container">
-          <div
-            className="image"
-            style={{
-              background: `linear-gradient(135deg, ${
-                selectedCategory?.color.hex ?? "#8fe87b"
-              } 0%, ${HexToRgbA(
-                selectedCategory?.color.hex ?? "#8fe87b"
-              )} 100%)`,
-            }}
-          >
-            <img
-              src={`${API_URL}api/v1/image/content/${selectedCategory?.icon.name}`}
-              alt="Category base icon"
-            />
-          </div>
-          <Select
-            value={selectedCategory?.name ?? ""}
-            data={categories.map((i) => ({
-              label: i.name,
-            }))}
-            handler={(index) => setSelectedCategory(categories[index])}
-          />
+          {(operationType === "DEPOSIT" &&
+            onlyForEarnCategories.length === 0) ||
+          (operationType === "WITHDRAW" && standartCategories.length === 0) ? (
+            <span>Нет доступных категорий для выбраной операции</span>
+          ) : (
+            <React.Fragment>
+              <div
+                className="image"
+                style={{
+                  background: `linear-gradient(135deg, ${
+                    selectedCategory?.color.hex ?? "#8fe87b"
+                  } 0%, ${HexToRgbA(
+                    selectedCategory?.color.hex ?? "#8fe87b"
+                  )} 100%)`,
+                }}
+              >
+                {selectedCategory != null && (
+                  <img
+                    src={`${API_URL}api/v1/image/content/${selectedCategory?.icon.name}`}
+                    alt="Category base icon"
+                  />
+                )}
+              </div>
+              <Select
+                value={selectedCategory?.name ?? ""}
+                data={(operationType === "DEPOSIT"
+                  ? onlyForEarnCategories
+                  : standartCategories
+                ).map((i) => ({
+                  label: i.name,
+                }))}
+                handler={(index) =>
+                  setSelectedCategory(
+                    (operationType === "DEPOSIT"
+                      ? onlyForEarnCategories
+                      : standartCategories)[index]
+                  )
+                }
+              />
+            </React.Fragment>
+          )}
         </div>
       </div>
       <div className="add-operation-modal-block">
@@ -180,10 +238,10 @@ const AddOperationModal: React.FC<Props> = ({
           <span>{bill?.name}</span>
           <Select
             value={bill?.name ?? ""}
-            data={balances.map((i) => ({
+            data={bills.data.map((i) => ({
               label: i.name,
             }))}
-            handler={(index) => setBill(balances[index])}
+            handler={(index) => setBill(bills.data[index])}
           />
         </div>
       </div>
@@ -210,39 +268,54 @@ const AddOperationModal: React.FC<Props> = ({
         />
       </div>
 
-      <div
-        className="add-operation-modal-block"
-        onClick={() => setMapModal(true)}
-      >
-        <span className="add-operation-modal-block-title">Местоположение</span>
-        <div className="add-operation-modal-block-controls">
-          {location ? (
-            <>
-              <span>
-                {location[0]} - {location[1]}
-              </span>
-              <button className="button-primary" onClick={clearLocation}>
-                Очистить
-              </button>
-            </>
-          ) : (
-            <span>Адрес еще не указан</span>
-          )}
-        </div>
-      </div>
+      {activeSubscription?.variant.role.name === "PremiumRole" ||
+      activeSubscription?.variant.role.name === "ProRole" ? (
+        <React.Fragment>
+          <div
+            className="add-operation-modal-block"
+            onClick={() => setMapModal(true)}
+          >
+            <span className="add-operation-modal-block-title">
+              Местоположение
+            </span>
+            <div className="add-operation-modal-block-controls">
+              {location ? (
+                <>
+                  <span>
+                    {location[0]} - {location[1]}
+                  </span>
+                  <button className="button-primary" onClick={clearLocation}>
+                    Очистить
+                  </button>
+                </>
+              ) : (
+                <span>Адрес еще не указан</span>
+              )}
+            </div>
+          </div>
 
-      <div className="add-operation-modal-block">
-        <span className="add-operation-modal-block-title">
-          Название местоположения
-        </span>
-        <input
-          type="text"
-          placeholder="Введите название местоположения"
-          className="add-operation-modal-input"
-          value={placeName}
-          onChange={(e) => setPlaceName(e.target.value)}
-        />
-      </div>
+          <div className="add-operation-modal-block">
+            <span className="add-operation-modal-block-title">
+              Название местоположения
+            </span>
+            <input
+              type="text"
+              placeholder="Введите название местоположения"
+              className="add-operation-modal-input"
+              value={placeName}
+              onChange={(e) => setPlaceName(e.target.value)}
+            />
+          </div>
+        </React.Fragment>
+      ) : (
+        <div
+          style={{
+            marginBottom: 15,
+          }}
+        >
+          <span>Оформите подписку, чтобы получить доступ к геометкам</span>
+        </div>
+      )}
 
       {!noQrLink && (
         <Link to="/cardscan" className="add-operation-modal-scan">
@@ -263,6 +336,7 @@ const AddOperationModal: React.FC<Props> = ({
       <Modal
         style={{
           padding: 0,
+          width: 400,
         }}
         zIndex={16}
         show={mapModal}

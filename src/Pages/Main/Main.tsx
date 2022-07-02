@@ -1,10 +1,12 @@
 import ContextButton from "Components/ContextButton/ContextButton";
 import Header from "Components/Header/Header";
 import Modal from "Components/Modal/Modal";
-import React, { useState } from "react";
+import useAddTransaction from "Hooks/useAddTransaction";
+import useGetBill from "Hooks/useGetBill";
+import useGetCategories from "Hooks/useGetCategories";
+import useGetTransaction from "Hooks/useGetTransaction";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Bill from "Services/Bill";
-import Category from "Services/Category";
 import PlusCircleFill from "Static/icons/plus-circle-fill.svg";
 import "Styles/Pages/Main/Main.scss";
 import AddBillModal from "./BalanceBlock/AddBillModal/AddBillModal";
@@ -19,23 +21,19 @@ interface Props {}
 
 const Main: React.FunctionComponent<Props> = (props: Props) => {
   const username = useSelector((state: any) => state?.user?.user?.username);
-  const [showAddOperationModal, setShowAddOperationModal] =
-    useState<boolean>(false);
+  const bills = useGetBill();
+  const categories = useGetCategories();
+  const transaction = useGetTransaction();
+  const addTransaction = useAddTransaction();
 
   const [showBillModal, setShowBillModal] = useState<boolean>(false);
 
-  const [selectedBill, setSelectedBill] = useState<string | null>(null);
-  const { useGetCategory } = Category;
-  const { categories, load: isCategoriesLoad } = useGetCategory();
-  const { useGetBill } = Bill;
-  const { load: loadBill, balances } = useGetBill();
-
   const handleAddOperation = () => {
-    if (!!balances.length && !!categories.length) {
-      setShowAddOperationModal(true);
-    } else if (!!balances.length) {
+    if (!!bills.data.length && !!categories.categories.length) {
+      addTransaction.modal.setShowAddOperationModal(true);
+    } else if (!!bills.data.length) {
       alert("Добавьте категорию!");
-    } else if (!!categories.length) {
+    } else if (!!categories.categories.length) {
       alert("Добавьте счет!");
     } else {
       alert("Добавьте категорию и счет!");
@@ -58,7 +56,11 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
             <img src={PlusCircleFill} alt={"Plus icon"} />
           </div>
         </div>
-        <ChartBlock selectedBill={selectedBill} />
+        <ChartBlock
+          transaction={transaction}
+          categories={categories}
+          bills={bills}
+        />
       </div>
       <div className="app-card">
         <div className="app-card-header">
@@ -71,10 +73,21 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
           </div>
         </div>
         <BalanceBlock
-          selectedBill={selectedBill}
-          setSelectedBill={(str: string | null) => setSelectedBill(str)}
+          data={bills.data}
+          generalBalance={bills.generalBalance}
+          load={bills.load}
+          setBill={transaction.setBill}
+          selected={transaction.bill}
+          billType={transaction.billType}
+          setBillType={transaction.setBillType}
+          updateBill={bills.updateBill}
+          tinkoffCards={bills.tinkoffCards}
+          sberCards={bills.sberCards}
+          tochkaCards={bills.tochkaCards}
+          updateTransactions={transaction.updateTransactions}
         />
       </div>
+      {/* MARK : Category list */}
       <div className="app-card">
         <div className="app-card-header">
           <div className="content-section-title content-section-category">
@@ -89,24 +102,42 @@ const Main: React.FunctionComponent<Props> = (props: Props) => {
                 </div>
               }
               content={(params, ctx) => (
-                <CategoryConstructor {...{ ...ctx, params }} />
+                <CategoryConstructor
+                  updateCategory={categories.updateCategory}
+                  {...{ ...ctx, params }}
+                />
               )}
             />
           </div>
         </div>
-        <CategoryBlock categories={categories} load={isCategoriesLoad} />
+        <CategoryBlock
+          categories={categories.categories}
+          load={categories.load}
+          updateCategory={categories.updateCategory}
+        />
       </div>
       <div className="app-card" style={{ minHeight: "200px" }}>
         <Banner />
       </div>
       <Modal
-        show={showAddOperationModal}
-        onClose={() => setShowAddOperationModal(false)}
+        show={addTransaction.modal.showAddOperationModal}
+        onClose={() => addTransaction.modal.setShowAddOperationModal(false)}
       >
-        <AddOperationModal onClose={() => setShowAddOperationModal(false)} />
+        <AddOperationModal
+          onClose={() => addTransaction.modal.setShowAddOperationModal(false)}
+          updateTransactions={transaction.updateTransactions}
+          addTransaction={addTransaction.addTransaction}
+          updateBills={bills.updateBill}
+          bills={bills}
+          category={categories}
+        />
       </Modal>
+
       <Modal show={showBillModal} onClose={() => setShowBillModal(false)}>
-        <AddBillModal onClose={() => setShowBillModal(false)} />
+        <AddBillModal
+          onClose={() => setShowBillModal(false)}
+          updateBill={bills.updateBill}
+        />
       </Modal>
     </div>
   );

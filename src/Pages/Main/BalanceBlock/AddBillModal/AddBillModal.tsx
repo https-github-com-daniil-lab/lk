@@ -1,7 +1,10 @@
 import AccessDenied from "Components/AccessDenied/AccessDenied";
 import Modal from "Components/Modal/Modal";
 import React, { useState } from "react";
-import Bill from "Services/Bill";
+import { useDispatch, useSelector } from "react-redux";
+import { GetUserId } from "Redux/Selectors";
+import { AppDispatch } from "Redux/Store";
+import BillRepository from "Repository/BillRepository";
 import { useGetActiveSubscription } from "Services/Subscription";
 import CardIcon from "Static/icons/card.svg";
 import "Styles/Pages/Main/BalanceBlock/AddBillModal/AddBillModal.scss";
@@ -9,9 +12,17 @@ import AddBank from "./AddBank/AddBank";
 
 interface Props {
   onClose: () => void;
+  updateBill: () => void;
 }
 
-const AddBillModal: React.FunctionComponent<Props> = ({ onClose }: Props) => {
+const AddBillModal: React.FunctionComponent<Props> = ({
+  onClose,
+  updateBill,
+}: Props) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const billRepository = new BillRepository();
+
+  const userId = useSelector(GetUserId);
   const [name, setName] = useState<string>("");
   const [balance, setBalance] = useState<string>("");
 
@@ -19,12 +30,15 @@ const AddBillModal: React.FunctionComponent<Props> = ({ onClose }: Props) => {
 
   const { activeSubscription } = useGetActiveSubscription();
 
-  const { useAddBill } = Bill;
-  const { addBill } = useAddBill(name, balance);
-
   const addDefaulBill = async (): Promise<void> => {
-    await addBill();
-    onClose();
+    if (name.length === 0) return alert("Добавьте название");
+    if (balance.length === 0) return alert("Добавьте баланс");
+
+    if (userId) {
+      await billRepository.addBill(userId, name, balance);
+      updateBill();
+      onClose();
+    }
   };
 
   return (

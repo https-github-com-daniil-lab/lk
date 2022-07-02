@@ -1,50 +1,104 @@
 import Load from "Components/Load/Load";
 import Modal from "Components/Modal/Modal";
+import { CategoryModel } from "Models/CategoryModel";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import Category, { ICategory } from "Services/Category";
 import "Styles/Pages/Main/CategoryBlock/CategoryBlock.scss";
-import DeleteModal from "../BalanceBlock/DeleteModal/DeleteModal";
+import DeleteModal from "../BalanceBlock/BalanceEditModal/BalanceEditModal";
 import CategoryItem from "./CategoryItem/CategoryItem";
+import Image from "Components/Image/Image";
+import CategoriesEmpty from "Static/icons/categories-empty.svg";
+import EditCategory from "./EditCategory/EditCategory";
+import useEditCategory from "Hooks/useEditCategory";
 
 interface Props {
-  categories: ICategory[];
+  categories: CategoryModel[];
   load: boolean;
+  updateCategory: () => void;
 }
 
-const CategoryBlock: React.FC<Props> = ({ categories, load }) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [categoryId, setCategoryId] = useState<string | null>(null);
-  const { deleteCategory } = Category;
-  const dispatch = useDispatch();
+const CategoryBlock: React.FC<Props> = ({
+  categories,
+  load,
+  updateCategory,
+}) => {
+  const editCategory = useEditCategory(categories);
+
+  if (!load) {
+    return (
+      <Load {...{ load }}>
+        <span></span>
+      </Load>
+    );
+  }
   return (
-    <Load {...{ load }}>
+    <React.Fragment>
       <div className="category-block">
-        <div className="category-block-wrapper">
-          {categories.map((category, i) => {
-            return (
-              <CategoryItem
-                key={i}
-                icon={category.icon.name}
-                color={category.color.hex}
-                name={category.name}
-                onClick={() => {
-                  setShowDeleteModal(true);
-                  setCategoryId(category.id);
-                }}
-              />
-            );
-          })}
-        </div>
+        <Load
+          {...{ load }}
+          className={`category-block-wrapper ${
+            categories.length === 0 && "categories-empty"
+          }`}
+        >
+          <div
+            className={`category-block-wrapper ${
+              categories.length === 0 && "categories-empty"
+            }`}
+          >
+            {categories.length === 0 ? (
+              <div className="categories-empty">
+                <Image
+                  src={CategoriesEmpty}
+                  alt="Categories"
+                  frame={{ width: 100, height: 100 }}
+                />
+              </div>
+            ) : (
+              categories.map((category, i) => {
+                return (
+                  <CategoryItem
+                    key={i}
+                    icon={category.icon.name}
+                    color={category.color.hex}
+                    name={category.name}
+                    onClick={() => {
+                      editCategory.setCategoryId(category.id);
+                      editCategory.modal.setShow(true);
+                    }}
+                  />
+                );
+              })
+            )}
+          </div>
+        </Load>
       </div>
-      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-        <DeleteModal
-          closeModal={() => setShowDeleteModal(false)}
-          transactionId={categoryId}
-          deleteOp={() => categoryId && deleteCategory(categoryId, dispatch)}
+      <Modal
+        show={editCategory.modal.show}
+        onClose={() => {
+          editCategory.modal.setShow(false);
+          editCategory.__clearState();
+        }}
+      >
+        <EditCategory
+          edit={editCategory.edit}
+          remove={editCategory.remove}
+          name={editCategory.name}
+          setName={editCategory.setName}
+          icon={editCategory.icon}
+          setIcon={editCategory.setIcon}
+          color={editCategory.color}
+          setColor={editCategory.setColor}
+          categoryLimit={editCategory.categoryLimit}
+          setCategoryLimit={editCategory.setCategoryLimit}
+          onClose={() => editCategory.modal.setShow(false)}
+          updateCategory={updateCategory}
+          clearState={editCategory.__clearState}
+          forEarn={editCategory.forEarn}
+          setForEarn={editCategory.setForEarn}
+          forSpend={editCategory.forSpend}
+          setForSpend={editCategory.setForSpend}
         />
       </Modal>
-    </Load>
+    </React.Fragment>
   );
 };
 

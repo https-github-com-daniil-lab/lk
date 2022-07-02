@@ -7,20 +7,22 @@ import MailIcon from "Static/icons/mail-user.svg";
 import DownloadIcon from "Static/icons/download.svg";
 import RemoveIcon from "Static/icons/remove.svg";
 import PencilIcon from "Static/icons/pencil.svg";
-import { IWallet } from "Services/Interfaces";
 import Modal from "Components/Modal/Modal";
 import ModalPhone from "./ModalPhone/ModalPhone";
 import ModalEmail from "./ModalEmail/ModalEmail";
 import { useSelector } from "react-redux";
-import { GetUserEmail, GetUserName } from "Redux/Selectors";
+import { GetUserEmail, GetUserName, GetUserWallet } from "Redux/Selectors";
 import "Styles/Pages/Settings/UserBlock/UserBlock.scss";
 import ModalRemoveData from "./ModalRemoveData/ModalRemoveData";
 import ModalExportData from "./ModalExportData/ModalExportData";
+import User from "Services/User";
 
 interface Props {}
 
 const UserBlock: React.FunctionComponent<Props> = (props: Props) => {
+  const userWallet = useSelector(GetUserWallet);
   const { load, wallets } = useGetWallets();
+  const { useEditUserСurrency } = User;
 
   const userPhone = useSelector(GetUserName);
   const userEmail = useSelector(GetUserEmail);
@@ -31,10 +33,11 @@ const UserBlock: React.FunctionComponent<Props> = (props: Props) => {
   const [exportDataModal, setExportDataModal] = useState<boolean>(false);
   const [removeDataModal, setRemoveDataModal] = useState<boolean>(false);
 
-  const [wallet, setWallet] = useState<IWallet>();
+  const { wallet, setWallet, updateUserCurrency } = useEditUserСurrency();
 
   useEffect(() => {
-    if (load) setWallet(wallets[0]);
+    if (load)
+      setWallet(wallets.filter((w) => w.walletSystemName === userWallet)[0]);
   }, [load]);
 
   return (
@@ -82,7 +85,7 @@ const UserBlock: React.FunctionComponent<Props> = (props: Props) => {
             label: i.walletDisplayName,
             symbol: i.walletSystemName,
           }))}
-          handler={(index) => {}}
+          handler={async (index) => await updateUserCurrency(wallets[index])}
         />
       </UserBlockWrapper>
       <Modal show={phoneModal} onClose={() => setPhoneModal(false)}>

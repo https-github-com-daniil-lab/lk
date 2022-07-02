@@ -1,47 +1,55 @@
 import React from "react";
-import Transaction from "Services/Transaction";
 import DonutChartBlock from "./DonutChartBlock/DonutChartBlock";
-import Load from "Components/Load/Load";
 import ChartBlockHistory from "./ChartBlockHistory/ChartBlockHistory";
 import "Styles/Pages/Main/ChartBlock/ChartBlock.scss";
+import Load from "Components/Load/Load";
+import TransactionsIcon from "Static/icons/transaction.svg";
+import Image from "Components/Image/Image";
 
 interface Props {
-  selectedBill: string | null;
+  transaction: any;
+  categories: any;
+  bills: any;
 }
 
-const ChartBlock: React.FunctionComponent<Props> = ({ selectedBill }) => {
-  const { useGetTransaction } = Transaction;
-  const {
-    load,
-    allTransactions,
-    selectedDate,
-    setDate,
-    prices,
-    income,
-    expenses,
-    next,
-    prev,
-  } = useGetTransaction(selectedBill);
-
+const ChartBlock: React.FunctionComponent<Props> = (props: Props) => {
+  const { transaction, categories, bills } = props;
   return (
-    <Load {...{ load }}>
-      <div className="chart-block">
-        <ChartBlockHistory
-          transactions={allTransactions}
-          selectedBill={selectedBill}
-        />
-        {load ? (
-          <DonutChartBlock
-            data={prices}
-            income={income}
-            expenses={expenses}
-            {...{ selectedDate, setDate }}
-            next={next}
-            prev={prev}
+    <div className="chart-block">
+      <Load {...{ load: transaction.load }} className="chart-block-history">
+        {transaction.transactions.length > 0 ? (
+          <ChartBlockHistory
+            bills={bills}
+            transactions={transaction.transactions}
+            selectedBill={transaction.bill}
+            billType={transaction.billType}
+            updateTransactions={transaction.updateTransactions}
+            categories={categories}
           />
-        ) : null}
-      </div>
-    </Load>
+        ) : (
+          <div className="transaction-history-isEmpty">
+            <Image
+              src={TransactionsIcon}
+              alt="Transactions"
+              frame={{ width: 100, height: 100 }}
+            />
+          </div>
+        )}
+      </Load>
+      <Load {...{ load: transaction.load }}>
+        <DonutChartBlock
+          data={transaction.prices}
+          nextMonth={transaction.date.nextMonth}
+          prevMonth={transaction.date.prevMonth}
+          selectedDate={transaction.date.date}
+          setStartDate={transaction.date.setStart}
+          setEndDate={transaction.date.setEnd}
+          income={transaction.income}
+          expenses={transaction.expenses}
+          isLastMonth={transaction.isLastMonth}
+        />
+      </Load>
+    </div>
   );
 };
 
