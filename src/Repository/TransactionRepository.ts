@@ -62,9 +62,11 @@ export default class TransactionRepository {
       );
       if (data.status === 200) {
         return data.data.data.page;
+      } else {
+        return []
       }
     } catch (error: any) {
-      throw new Error();
+      return []
     }
   }
 
@@ -80,10 +82,10 @@ export default class TransactionRepository {
       if (data.status === 200) {
         return data.data.data.page;
       } else {
-        throw new Error();
+        return []
       }
     } catch (error: any) {
-      throw new Error();
+      return []
     }
   }
 
@@ -98,9 +100,11 @@ export default class TransactionRepository {
       );
       if (data.status === 200) {
         return data.data.data.page;
+      } else {
+        return []
       }
     } catch (error: any) {
-      throw new Error();
+      return []
     }
   }
 

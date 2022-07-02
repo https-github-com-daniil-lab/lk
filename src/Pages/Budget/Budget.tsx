@@ -87,7 +87,7 @@ const Budget: React.FunctionComponent<Props> = (props: Props) => {
     }
   }, [selectedCategory]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (categories.load) setSelectedCategory(fillterCategory[0]);
   }, [categories.load]);
 
@@ -126,7 +126,7 @@ const Budget: React.FunctionComponent<Props> = (props: Props) => {
             updateCategories={categories.updateCategory}
             getIncomeCategory={getIncomeCategory}
             load={
-              transactions.load && categories.load && selectedCategory != null
+              transactions.load && categories.load
             }
             generalBudget={createBudget.getGeneralBudget(
               fillterTransactionsByCategories,
